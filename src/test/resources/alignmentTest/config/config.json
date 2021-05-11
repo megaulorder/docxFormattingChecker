@@ -1,0 +1,13 @@
+{
+  "styles": {
+    "header": {
+      "paragraphs": [1, 2],
+      "paragraph_properties": {
+        "alignment": "center"
+      },
+      "run_properties": {
+        "font-family": "Arial"
+      }
+    }
+  }
+}
