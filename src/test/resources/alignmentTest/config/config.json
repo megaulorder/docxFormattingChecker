@@ -1,12 +1,30 @@
 {
+  "pages": [1, 2],
+  "section": {
+    "orientation": "portrait",
+    "margins" : [1.5, 1.5, 2, 2],
+    "page-height": "23.2",
+    "page-width": "19.0"
+  },
   "styles": {
     "header": {
       "paragraphs": [1, 2],
       "paragraph_properties": {
-        "alignment": "center"
+        "alignment": "center",
+        "line-spacing": "1.5",
+        "spacing-before": "7.0",
+        "spacing-after": "8.0",
+        "first-line-indent": "1.25",
+        "left-indent": "2.0",
+        "right-indent": "5.0"
       },
       "run_properties": {
-        "font-family": "Arial"
+        "font-family": "Arial",
+        "font-size": "14.0pt",
+        "bold": "true",
+        "underline": "single",
+        "strikethrough": "true",
+        "color": "FFFFFF"
       }
     }
   }

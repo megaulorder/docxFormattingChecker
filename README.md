@@ -1,5 +1,5 @@
 Run app\
-`./gradlew run --args="{path to config.json} {path to .docx}"`
+```./gradlew run --args="/Path/To/Config.json /Path/To/Document.docx"```
 
 Run tests\
-`./gradlew test`
+```./gradlew test```
