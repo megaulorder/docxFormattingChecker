@@ -2,12 +2,10 @@ package com.formatChecker.config.model.participants;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class Section {
+public class Section<T> {
     String orientation;
 
-    List<Double> margins;
+    protected T margins;
 
     @SerializedName("page-height")
     String pageHeight;
@@ -19,7 +17,7 @@ public class Section {
         this.orientation = orientation;
     }
 
-    public void setMargins(List<Double> margins) {
+    public void setMargins(T margins) {
         this.margins = margins;
     }
 
@@ -29,5 +27,21 @@ public class Section {
 
     public void setPageWidth(String pageWidth) {
         this.pageWidth = pageWidth;
+    }
+
+    public String getOrientation() {
+        return orientation;
+    }
+
+    public T getMargins() {
+        return margins;
+    }
+
+    public String getPageHeight() {
+        return pageHeight;
+    }
+
+    public String getPageWidth() {
+        return pageWidth;
     }
 }

@@ -14,8 +14,8 @@ import java.util.List;
 public class SectionParser implements Converter {
     static final String DEFAULT_ORIENTATION = "portrait";
 
-    public Section parseSection(SectPr sectionProperties) {
-        Section section = new Section();
+    public Section<List<Double>> parseSection(SectPr sectionProperties) {
+        Section<List<Double>> section = new Section<>();
 
         setOrientation(section, sectionProperties);
         setMargins(section, sectionProperties);
@@ -50,19 +50,19 @@ public class SectionParser implements Converter {
                 pageValToCm(margins.getLeft())));
     }
 
-    void setOrientation(Section section, SectPr sectionProperties) {
+    void setOrientation(Section<List<Double>> section, SectPr sectionProperties) {
         section.setOrientation(getOrientation(sectionProperties));
     }
 
-    void setPageHeight(Section section, SectPr sectionProperties) {
+    void setPageHeight(Section<List<Double>> section, SectPr sectionProperties) {
         section.setPageHeight(getPageHeight(sectionProperties));
     }
 
-    void setPageWidth(Section section, SectPr sectionProperties) {
+    void setPageWidth(Section<List<Double>> section, SectPr sectionProperties) {
         section.setPageWidth(getPageWidth(sectionProperties));
     }
 
-    void setMargins(Section section, SectPr sectionProperties) {
+    void setMargins(Section<List<Double>> section, SectPr sectionProperties) {
         section.setMargins(getMargins(sectionProperties));
     }
 }

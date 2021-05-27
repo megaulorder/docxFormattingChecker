@@ -10,6 +10,7 @@ public class Paragraph {
     }
 
     List<Run> runs;
+
     String text;
 
     String alignment;
@@ -95,5 +96,13 @@ public class Paragraph {
 
     public String getSpacingAfter() {
         return spacingAfter;
+    }
+
+    public List<Run> getRuns() {
+        return runs;
+    }
+
+    public String getText() {
+        return text;
     }
 }

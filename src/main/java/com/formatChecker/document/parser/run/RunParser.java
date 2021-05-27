@@ -17,8 +17,8 @@ public interface RunParser extends Converter {
         if (runProperties == null) { return null; }
         else {
             RFonts fontProperties = runProperties.getRFonts();
-            return fontProperties.getAscii() != null ? fontProperties.getAscii().toLowerCase() :
-                    themePart.getMajorLatin().getTypeface().toLowerCase();
+            return fontProperties.getAscii() != null ? fontProperties.getAscii() :
+                    themePart.getMajorLatin().getTypeface();
         }
     }
 
@@ -58,7 +58,7 @@ public interface RunParser extends Converter {
         if (runProperties == null) { return null; }
         else {
             U underline = runProperties.getU();
-            return underline == null ? null : underline.getVal().value().toLowerCase();
+            return underline == null ? null : underline.getVal().value();
         }
     }
 
@@ -66,7 +66,7 @@ public interface RunParser extends Converter {
         if (runProperties == null) { return null; }
         else {
             Color textColor = runProperties.getColor();
-            return textColor == null ? null : textColor.getVal().toLowerCase();
+            return textColor == null ? null : textColor.getVal();
         }
     }
 

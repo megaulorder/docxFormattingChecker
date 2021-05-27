@@ -2,7 +2,7 @@ package com.formatChecker.config.model.participants;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Run {
+public class Run<T> {
     String text;
 
     @SerializedName("font-family")
@@ -11,9 +11,9 @@ public class Run {
     @SerializedName("font-size")
     String fontSize;
 
-    Boolean bold;
-    Boolean italic;
-    Boolean strikethrough;
+    T bold;
+    T italic;
+    T strikethrough;
     String underline;
     String textColor;
 
@@ -29,15 +29,15 @@ public class Run {
         this.fontSize = fontSize;
     }
 
-    public void setBold(Boolean bold) {
+    public void setBold(T bold) {
         this.bold = bold;
     }
 
-    public void setItalic(Boolean italic) {
+    public void setItalic(T italic) {
         this.italic = italic;
     }
 
-    public void setStrikethrough(Boolean strikethrough) {
+    public void setStrikethrough(T strikethrough) {
         this.strikethrough = strikethrough;
     }
 
@@ -61,15 +61,15 @@ public class Run {
         return fontSize;
     }
 
-    public Boolean getBold() {
+    public T getBold() {
         return bold;
     }
 
-    public Boolean getItalic() {
+    public T getItalic() {
         return italic;
     }
 
-    public Boolean getStrikethrough() {
+    public T getStrikethrough() {
         return strikethrough;
     }
 

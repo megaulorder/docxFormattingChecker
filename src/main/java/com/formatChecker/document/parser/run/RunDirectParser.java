@@ -12,17 +12,17 @@ import org.docx4j.wml.Text;
 import javax.xml.bind.JAXBElement;
 
 public class RunDirectParser implements RunParser {
-     public Run parseRun(R r, String styleId, Styles styles, DocDefaults docDefaults, ThemePart themePart)
+     public Run<Boolean> parseRun(R r, String styleId, Styles styles, DocDefaults docDefaults, ThemePart themePart)
             throws Docx4JException {
-        Run run = new Run();
+        Run<Boolean> run = new Run<>();
 
         String text = getText(r);
         run.setText(text);
 
         RPr runProperties = r.getRPr();
 
-        Run styleRun = getStyleProperties(styleId, styles, docDefaults, themePart);
-        Run defaultRun = getDefaultProperties(docDefaults, themePart);
+        Run<Boolean> styleRun = getStyleProperties(styleId, styles, docDefaults, themePart);
+        Run<Boolean> defaultRun = getDefaultProperties(docDefaults, themePart);
 
         setFontFamily(run, runProperties, styleRun, defaultRun);
         setFontSize(run, runProperties, styleRun, defaultRun);
@@ -44,15 +44,15 @@ public class RunDirectParser implements RunParser {
 
     String getFontFamily(RPr runProperties) {
         if (runProperties == null) { return null; }
-        else { return runProperties.getRFonts() == null ? null : runProperties.getRFonts().getAscii().toLowerCase(); }
+        else { return runProperties.getRFonts() == null ? null : runProperties.getRFonts().getAscii(); }
     }
 
-    Run getStyleProperties(String styleId, Styles styles, DocDefaults docDefaults, ThemePart themePart)
+    Run<Boolean> getStyleProperties(String styleId, Styles styles, DocDefaults docDefaults, ThemePart themePart)
             throws Docx4JException {
         return new RunStyleParser().parseRun(styleId, styles, docDefaults, themePart);
     }
 
-    void setFontFamily(Run run, RPr runProperties, Run styleRun, Run defaultRun) {
+    void setFontFamily(Run<Boolean> run, RPr runProperties, Run<Boolean> styleRun, Run<Boolean> defaultRun) {
         String fontFamily = getFontFamily(runProperties);
         if (fontFamily == null) {
             fontFamily = styleRun != null ? styleRun.getFontFamily() : defaultRun.getFontFamily();
@@ -60,7 +60,7 @@ public class RunDirectParser implements RunParser {
         run.setFontFamily(fontFamily);
     }
 
-    void setFontSize(Run run, RPr runProperties, Run styleRun, Run defaultRun) {
+    void setFontSize(Run<Boolean> run, RPr runProperties, Run<Boolean> styleRun, Run<Boolean>defaultRun) {
         String fontSize = getFontSize(runProperties);
         if (fontSize == null) {
             fontSize = styleRun != null ? styleRun.getFontSize() : defaultRun.getFontSize();
@@ -68,7 +68,7 @@ public class RunDirectParser implements RunParser {
         run.setFontSize(fontSize);
     }
 
-    void setBold(Run run, RPr runProperties, Run styleRun, Run defaultRun) {
+    void setBold(Run<Boolean> run, RPr runProperties, Run<Boolean> styleRun, Run<Boolean> defaultRun) {
         Boolean isBold = getBold(runProperties);
         if (isBold == null) {
             isBold = styleRun != null ? styleRun.getBold() : defaultRun.getBold();
@@ -76,7 +76,7 @@ public class RunDirectParser implements RunParser {
         run.setBold(isBold);
     }
 
-    void setItalic(Run run, RPr runProperties, Run styleRun, Run defaultRun) {
+    void setItalic(Run<Boolean> run, RPr runProperties, Run<Boolean> styleRun, Run<Boolean>defaultRun) {
         Boolean isItalic = getItalic(runProperties);
         if (isItalic == null) {
             isItalic = styleRun != null ? styleRun.getItalic() : defaultRun.getItalic();
@@ -84,7 +84,7 @@ public class RunDirectParser implements RunParser {
         run.setItalic(isItalic);
     }
 
-    void setStrikethrough(Run run, RPr runProperties, Run styleRun, Run defaultRun) {
+    void setStrikethrough(Run<Boolean> run, RPr runProperties, Run<Boolean> styleRun, Run<Boolean> defaultRun) {
         Boolean isStrikethrough = getStrikethrough(runProperties);
         if (isStrikethrough == null) {
             isStrikethrough = styleRun != null ? styleRun.getStrikethrough() : defaultRun.getStrikethrough();
@@ -92,7 +92,7 @@ public class RunDirectParser implements RunParser {
         run.setStrikethrough(isStrikethrough);
     }
 
-    void setUnderline(Run run, RPr runProperties, Run styleRun, Run defaultRun) {
+    void setUnderline(Run<Boolean> run, RPr runProperties, Run<Boolean> styleRun, Run<Boolean> defaultRun) {
         String underline = getUnderline(runProperties);
         if (underline == null) {
             underline = styleRun != null ? styleRun.getUnderline() : defaultRun.getUnderline();
@@ -100,7 +100,7 @@ public class RunDirectParser implements RunParser {
         run.setUnderline(underline);
     }
 
-    void setTextColor(Run run, RPr runProperties, Run styleRun, Run defaultRun) {
+    void setTextColor(Run<Boolean> run, RPr runProperties, Run<Boolean> styleRun, Run<Boolean> defaultRun) {
         String textColor = getTextColor(runProperties);
         if (textColor == null) {
             textColor = styleRun != null ? styleRun.getTextColor() : defaultRun.getTextColor();

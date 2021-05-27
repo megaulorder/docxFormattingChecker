@@ -1,16 +1,19 @@
 {
-  "pages": [1, 2],
+  "pages": {
+    "min" : 3,
+    "max": 5
+  },
   "section": {
-    "orientation": "portrait",
+    "orientation": "landscape",
     "margins" : [1.5, 1.5, 2, 2],
     "page-height": "23.2",
     "page-width": "19.0"
   },
   "styles": {
     "header": {
-      "paragraphs": [1, 2],
+      "paragraphs": [2, 3],
       "paragraph_properties": {
-        "alignment": "center",
+        "alignment": "justify",
         "line-spacing": "1.5",
         "spacing-before": "7.0",
         "spacing-after": "8.0",
@@ -20,10 +23,27 @@
       },
       "run_properties": {
         "font-family": "Arial",
-        "font-size": "14.0pt",
-        "bold": "true",
+        "font-size": "14.0",
         "underline": "single",
-        "strikethrough": "true",
+        "italic": true,
+        "color": "FFFFFF"
+      }
+    },
+    "body": {
+      "paragraphs": [1],
+      "paragraph_properties": {
+        "alignment": "center",
+        "line-spacing": "1.0",
+        "spacing-before": "7.0",
+        "spacing-after": "8.0",
+        "first-line-indent": "1.25",
+        "left-indent": "2.0",
+        "right-indent": "5.0"
+      },
+      "run_properties": {
+        "font-family": "Comic Sans MS",
+        "font-size": "12.0",
+        "bold": true,
         "color": "FFFFFF"
       }
     }

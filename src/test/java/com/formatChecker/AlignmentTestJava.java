@@ -1,8 +1,6 @@
 package com.formatChecker;
 
-import com.formatChecker.compare.CompareProperties;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 

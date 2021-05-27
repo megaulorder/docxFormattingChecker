@@ -13,8 +13,8 @@ public class RunDefaultsParser implements RunParser {
     static final String DEFAULT_UNDERLINE = "none";
     static final Boolean DEFAULT_BOOL_VALUE = false;
 
-    public Run parseRun(DocDefaults docDefaults, ThemePart themePart) throws Docx4JException {
-        Run run = new Run();
+    public Run<Boolean> parseRun(DocDefaults docDefaults, ThemePart themePart) throws Docx4JException {
+        Run<Boolean> run = new Run<>();
         RPr runProperties = docDefaults.getRPrDefault().getRPr();
 
         if (runProperties == null) {
@@ -39,37 +39,37 @@ public class RunDefaultsParser implements RunParser {
         return run;
     }
 
-    void setFontFamily(Run run, RPr runProperties, ThemePart themePart) throws Docx4JException {
+    void setFontFamily(Run<Boolean> run, RPr runProperties, ThemePart themePart) throws Docx4JException {
         String fontFamily = getFontFamily(runProperties, themePart);
         run.setFontFamily(fontFamily != null ? fontFamily : DEFAULT_FONT_FAMILY);
     }
 
-    void setFontSize(Run run, RPr runProperties) {
+    void setFontSize(Run<Boolean> run, RPr runProperties) {
         String fontSize = getFontSize(runProperties);
         run.setFontSize(fontSize != null ? fontSize : DEFAULT_FONT_SIZE);
     }
 
-    void setBold(Run run, RPr runProperties) {
+    void setBold(Run<Boolean> run, RPr runProperties) {
         Boolean isBold = getBold(runProperties);
         run.setBold(isBold != null ? isBold : DEFAULT_BOOL_VALUE);
     }
 
-    void setItalic(Run run, RPr runProperties) {
+    void setItalic(Run<Boolean> run, RPr runProperties) {
         Boolean isItalic = getItalic(runProperties);
         run.setItalic(isItalic != null ? isItalic : DEFAULT_BOOL_VALUE);
     }
 
-    void setStrikethrough(Run run, RPr runProperties) {
+    void setStrikethrough(Run<Boolean> run, RPr runProperties) {
         Boolean isStrikethrough = getStrikethrough(runProperties);
         run.setStrikethrough(isStrikethrough != null ? isStrikethrough : DEFAULT_BOOL_VALUE);
     }
 
-    void setUnderline(Run run, RPr runProperties) {
+    void setUnderline(Run<Boolean> run, RPr runProperties) {
         String underline = getUnderline(runProperties);
         run.setUnderline(underline != null ? underline : DEFAULT_UNDERLINE);
     }
 
-    void setTextColor(Run run, RPr runProperties) {
+    void setTextColor(Run<Boolean> run, RPr runProperties) {
         String textColor = getTextColor(runProperties);
         run.setTextColor(textColor != null ? textColor : DEFAULT_UNDERLINE);
     }
