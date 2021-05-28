@@ -12,7 +12,9 @@ import org.docx4j.wml.PPr;
 import org.docx4j.wml.R;
 import org.docx4j.wml.Styles;
 
+import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ParagraphDirectParser implements ParagraphParser {
     public Paragraph parseParagraph(P par, Styles styles, DocDefaults docDefaults, ThemePart themePart)
@@ -48,13 +50,16 @@ public class ParagraphDirectParser implements ParagraphParser {
         setSpacingBefore(paragraph, paragraphProperties, styleParagraph, defaultParagraph);
         setSpacingAfter(paragraph, paragraphProperties, styleParagraph, defaultParagraph);
 
+        setIsHeader(par, paragraph);
+
         return paragraph;
     }
 
     String getText(P par) { return par.toString(); }
 
     String getStyleId(P par) {
-        return par.getPPr().getPStyle() == null ? null : par.getPPr().getPStyle().getVal();
+        if (par.getPPr() == null) return null;
+        else return par.getPPr().getPStyle() == null ? null : par.getPPr().getPStyle().getVal();
     }
 
     Paragraph getStyleProperties(String styleId, Styles styles, DocDefaults docDefaults) {
@@ -128,5 +133,10 @@ public class ParagraphDirectParser implements ParagraphParser {
                     defaultParagraph.getSpacingAfter();
         }
         paragraph.setSpacingAfter(spacingAfter);
+    }
+
+    void setIsHeader(P par, Paragraph paragraph) {
+        Optional<Object> tocElement = par.getContent().stream().filter(i -> i instanceof JAXBElement).findFirst();
+        paragraph.setIsHeader(tocElement.isPresent());
     }
 }

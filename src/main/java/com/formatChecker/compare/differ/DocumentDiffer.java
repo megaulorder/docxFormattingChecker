@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.util.*;
 
 public class DocumentDiffer {
+    private static final String headerStyleName = "header";
+    private static final String bodyStyleName = "body";
+
     public Difference compare(String configPath, String documentPath) throws Docx4JException, IOException {
 
         DocxDocument document = new DocxParser().getDocumentProperties(documentPath);
@@ -25,14 +28,31 @@ public class DocumentDiffer {
         difference.setPages(comparePages(document.getPages(), config.getPages()));
         difference.setSection(new SectionDiffer().getSectionDifference(document.getSection(), config.getSection()));
 
-        List<Paragraph> paragraphs = Arrays.asList(new Paragraph[document.getParagraphs().size()]);
+        List<Paragraph> paragraphs = new ArrayList<>();
 
-        for (Map.Entry<String, Style> entry : config.getStyles().entrySet()) {
-            List<Integer> paragraphIds = entry.getValue().getParagraphIndexes();
-            for (Integer id: paragraphIds) {
-                Style style = config.getStyles().get(entry.getKey());
-                paragraphs.set(id - 1, new ParagraphDiffer().getParagraphDifference(
-                        document.getParagraphs().get(id - 1), style.getParagraph(), style.getRun()));
+        if (!config.getFinByToc()) {
+            paragraphs = Arrays.asList(new Paragraph[document.getParagraphs().size()]);
+
+            for (Map.Entry<String, Style> entry : config.getStyles().entrySet()) {
+                List<Integer> paragraphIds = entry.getValue().getParagraphIndexes();
+                for (Integer id: paragraphIds) {
+                    Style style = config.getStyles().get(entry.getKey());
+                    paragraphs.set(id - 1, new ParagraphDiffer().getParagraphDifference(
+                            document.getParagraphs().get(id - 1), style.getParagraph(), style.getRun()));
+                }
+            }
+        }
+        else {
+            for (Paragraph p : document.getParagraphs()) {
+                if (p.getIsHeader()) {
+                    Style headerStyle = config.getStyles().get(headerStyleName);
+                    paragraphs.add(new ParagraphDiffer().
+                            getParagraphDifference(p, headerStyle.getParagraph(), headerStyle.getRun()));
+                } else {
+                    Style bodyStyle = config.getStyles().get(bodyStyleName);
+                    paragraphs.add(new ParagraphDiffer().
+                            getParagraphDifference(p, bodyStyle.getParagraph(), bodyStyle.getRun()));
+                }
             }
         }
 

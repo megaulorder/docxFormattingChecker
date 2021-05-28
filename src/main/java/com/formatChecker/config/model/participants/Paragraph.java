@@ -13,6 +13,8 @@ public class Paragraph {
 
     String text;
 
+    Boolean isHeader;
+
     String alignment;
 
     @SerializedName("first-line-indent")
@@ -40,6 +42,10 @@ public class Paragraph {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public void setIsHeader(Boolean isHeader) {
+        this.isHeader = isHeader;
     }
 
     public void setAlignment(String alignment) {
@@ -104,5 +110,9 @@ public class Paragraph {
 
     public String getText() {
         return text;
+    }
+
+    public Boolean getIsHeader() {
+        return isHeader;
     }
 }

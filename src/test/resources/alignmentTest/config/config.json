@@ -3,6 +3,7 @@
     "min" : 3,
     "max": 5
   },
+  "find-headers-by-TOC": true,
   "section": {
     "orientation": "landscape",
     "margins" : [1.5, 1.5, 2, 2],
@@ -30,7 +31,7 @@
       }
     },
     "body": {
-      "paragraphs": [1],
+      "paragraphs": [1, 4],
       "paragraph_properties": {
         "alignment": "center",
         "line-spacing": "1.0",

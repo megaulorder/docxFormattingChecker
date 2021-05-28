@@ -43,10 +43,12 @@ public class DocxParser {
         document.setSection(new SectionParser().parseSection(sectionProperties));
 
         for (Object p : paragraphs) {
-            P par = (P) p;
-            Paragraph paragraph = new ParagraphDirectParser()
-                    .parseParagraph(par, styles, docDefaults, themePart);
-            document.addParagraph(paragraph);
+            if (p instanceof P) {
+                P par = (P) p;
+                Paragraph paragraph = new ParagraphDirectParser()
+                        .parseParagraph(par, styles, docDefaults, themePart);
+                document.addParagraph(paragraph);
+            }
         }
 
         return document;
