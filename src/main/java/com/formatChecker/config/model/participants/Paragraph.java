@@ -1,7 +1,5 @@
 package com.formatChecker.config.model.participants;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class Paragraph {
@@ -17,22 +15,12 @@ public class Paragraph {
 
     String alignment;
 
-    @SerializedName("first-line-indent")
     String firstLineIndent;
-
-    @SerializedName("left-indent")
     String leftIndent;
-
-    @SerializedName("right-indent")
     String rightIndent;
 
-    @SerializedName("line-spacing")
     String lineSpacing;
-
-    @SerializedName("spacing-before")
     String spacingBefore;
-
-    @SerializedName("spacing-after")
     String spacingAfter;
 
     public List<Run> addRun(Run run) {

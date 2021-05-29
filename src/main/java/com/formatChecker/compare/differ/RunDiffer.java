@@ -2,8 +2,16 @@ package com.formatChecker.compare.differ;
 
 import com.formatChecker.config.model.participants.Run;
 
-public class RunDiffer implements Differ{
-    public Run<String> getRunDifference(Run<Boolean> actualRun, Run<Boolean> expectedRun) {
+public class RunDiffer implements Differ {
+    Run<Boolean> actualRun;
+    Run<Boolean> expectedRun;
+
+    public RunDiffer(Run<Boolean> actualRun, Run<Boolean> expectedRun) {
+        this.actualRun = actualRun;
+        this.expectedRun = expectedRun;
+    }
+
+    public Run<String> getRunDifference() {
         Run<String> runDifference = new Run<>();
 
         runDifference.setFontFamily(checkStringParameter(actualRun.getFontFamily(), expectedRun.getFontFamily(), "font family"));

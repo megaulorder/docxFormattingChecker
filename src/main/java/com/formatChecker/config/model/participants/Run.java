@@ -1,19 +1,15 @@
 package com.formatChecker.config.model.participants;
 
-import com.google.gson.annotations.SerializedName;
-
 public class Run<T> {
     String text;
 
-    @SerializedName("font-family")
     String fontFamily;
-
-    @SerializedName("font-size")
     String fontSize;
 
     T bold;
     T italic;
     T strikethrough;
+
     String underline;
     String textColor;
 

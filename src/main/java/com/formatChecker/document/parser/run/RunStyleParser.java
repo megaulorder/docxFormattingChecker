@@ -11,24 +11,36 @@ import org.docx4j.wml.Styles;
 
 import java.util.Optional;
 
-public class RunStyleParser implements RunParser, StyleHierarchy {
-    public Run<Boolean> parseRun(String styleId, Styles styles, DocDefaults docDefaults, ThemePart themePart)
+public class RunStyleParser extends RunParser implements RunSetProperties, StyleHierarchy {
+    String styleId;
+    Styles styles;
+
+    Run<Boolean> defaultRun;
+    Optional<Style> style;
+    Optional<Style> parentStyle;
+
+    public RunStyleParser(DocDefaults docDefaults, ThemePart themePart, String styleId, Styles styles)
             throws Docx4JException {
-        Run<Boolean> run = new Run<>();
-        Run<Boolean> defaultRun = getDefaultProperties(docDefaults, themePart);
+        super(docDefaults, themePart);
 
-        Optional<Style> style = getStyleById(styleId, styles);
-        Optional<Style> parentStyle = getParentStyle(style, styles);
+        this.style = getStyleById(styleId, styles);
+        this.runProperties = getRunProperties(style);
 
-        RPr runProperties = getRunProperties(style);
+        this.styleId = styleId;
+        this.styles = styles;
+        this.parentStyle = getParentStyle(style, styles);
 
-        setFontFamily(run, runProperties, defaultRun, parentStyle, styles, themePart);
-        setFontSize(run, runProperties, defaultRun, parentStyle, styles);
-        setBold(run, runProperties, defaultRun, parentStyle, styles);
-        setItalic(run, runProperties, defaultRun, parentStyle, styles);
-        setStrikethrough(run, runProperties, defaultRun, parentStyle, styles);
-        setUnderline(run, runProperties, defaultRun, parentStyle, styles);
-        setTextColor(run, runProperties, defaultRun, parentStyle, styles);
+        this.defaultRun = getDefaultProperties(docDefaults, themePart);
+    }
+
+    public Run<Boolean> parseRun() throws Docx4JException {
+        setFontFamily();
+        setFontSize();
+        setBold();
+        setItalic();
+        setStrikethrough();
+        setUnderline();
+        setTextColor();
 
         return run;
     }
@@ -37,8 +49,8 @@ public class RunStyleParser implements RunParser, StyleHierarchy {
         return style.map(Style::getRPr).orElse(null);
     }
 
-    void setFontFamily(Run<Boolean> run, RPr runProperties, Run defaultRun, Optional<Style> parentStyle, Styles styles,
-                       ThemePart themePart) throws Docx4JException {
+    @Override
+    public void setFontFamily() throws Docx4JException {
         String fontFamily = getFontFamily(runProperties, themePart);
 
         while (parentStyle != null && fontFamily == null) {
@@ -53,8 +65,8 @@ public class RunStyleParser implements RunParser, StyleHierarchy {
         run.setFontFamily(fontFamily);
     }
 
-    void setFontSize(Run<Boolean> run, RPr runProperties, Run<Boolean> defaultRun,
-                       Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setFontSize() {
         String fontSize = getFontSize(runProperties);
 
         while (parentStyle != null && fontSize == null) {
@@ -69,8 +81,8 @@ public class RunStyleParser implements RunParser, StyleHierarchy {
         run.setFontSize(fontSize);
     }
 
-    void setBold(Run<Boolean> run, RPr runProperties, Run<Boolean> defaultRun,
-                     Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setBold() {
         Boolean isBold = getBold(runProperties);
 
         while (parentStyle != null && isBold == null) {
@@ -85,8 +97,8 @@ public class RunStyleParser implements RunParser, StyleHierarchy {
         run.setBold(isBold);
     }
 
-    void setItalic(Run<Boolean> run, RPr runProperties, Run<Boolean> defaultRun,
-                 Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setItalic() {
         Boolean isItalic = getItalic(runProperties);
 
         while (parentStyle != null && isItalic == null) {
@@ -101,8 +113,8 @@ public class RunStyleParser implements RunParser, StyleHierarchy {
         run.setItalic(isItalic);
     }
 
-    void setStrikethrough(Run<Boolean> run, RPr runProperties, Run<Boolean> defaultRun,
-                   Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setStrikethrough() {
         Boolean isStrikethrough = getStrikethrough(runProperties);
 
         while (parentStyle != null && isStrikethrough == null) {
@@ -117,8 +129,8 @@ public class RunStyleParser implements RunParser, StyleHierarchy {
         run.setStrikethrough(isStrikethrough);
     }
 
-    void setUnderline(Run<Boolean> run, RPr runProperties, Run<Boolean> defaultRun,
-                          Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setUnderline() {
         String underline = getUnderline(runProperties);
 
         while (parentStyle != null && underline == null) {
@@ -133,8 +145,8 @@ public class RunStyleParser implements RunParser, StyleHierarchy {
         run.setUnderline(underline);
     }
 
-    void setTextColor(Run<Boolean> run, RPr runProperties, Run<Boolean> defaultRun,
-                      Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setTextColor() {
         String textColor = getTextColor(runProperties);
 
         while (parentStyle != null && textColor == null) {

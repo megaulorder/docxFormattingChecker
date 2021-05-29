@@ -6,7 +6,17 @@ import com.formatChecker.config.model.participants.Run;
 import java.util.ArrayList;
 
 public class ParagraphDiffer implements Differ {
-    public Paragraph getParagraphDifference(Paragraph actualParagraph, Paragraph expectedParagraph, Run expectedRun) {
+    Paragraph actualParagraph;
+    Paragraph expectedParagraph;
+    Run<Boolean> expectedRun;
+
+    public ParagraphDiffer(Paragraph actualParagraph, Paragraph expectedParagraph, Run<Boolean> expectedRun) {
+        this.actualParagraph = actualParagraph;
+        this.expectedParagraph = expectedParagraph;
+        this.expectedRun = expectedRun;
+    }
+
+    public Paragraph getParagraphDifference() {
         Paragraph paragraphDifference = new Paragraph(new ArrayList<>());
 
         paragraphDifference.setText(actualParagraph.getText());
@@ -29,7 +39,7 @@ public class ParagraphDiffer implements Differ {
                 actualParagraph.getSpacingAfter(), expectedParagraph.getSpacingAfter(), "spacing after", "pt"));
 
         for (Run<Boolean> r: actualParagraph.getRuns()) {
-            paragraphDifference.addRun(new RunDiffer().getRunDifference(r, expectedRun));
+            paragraphDifference.addRun(new RunDiffer(r, expectedRun).getRunDifference());
         }
 
         return  paragraphDifference;

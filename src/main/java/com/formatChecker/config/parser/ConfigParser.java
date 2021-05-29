@@ -7,7 +7,13 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class ConfigParser {
-    public static Config parseConfig(String filePath) throws IOException {
+    String filePath;
+
+    public ConfigParser(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public Config parseConfig() throws IOException {
 
         Gson gson = new Gson();
         FileReader fileReader = new FileReader(filePath);

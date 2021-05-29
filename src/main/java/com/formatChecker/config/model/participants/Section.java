@@ -1,16 +1,9 @@
 package com.formatChecker.config.model.participants;
 
-import com.google.gson.annotations.SerializedName;
-
 public class Section<T> {
     String orientation;
-
     protected T margins;
-
-    @SerializedName("page-height")
     String pageHeight;
-
-    @SerializedName("page-width")
     String pageWidth;
 
     public void setOrientation(String orientation) {

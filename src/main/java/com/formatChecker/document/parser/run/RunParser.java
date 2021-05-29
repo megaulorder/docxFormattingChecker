@@ -4,16 +4,23 @@ import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.document.converter.Converter;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
-import org.docx4j.wml.BooleanDefaultTrue;
-import org.docx4j.wml.Color;
-import org.docx4j.wml.DocDefaults;
-import org.docx4j.wml.HpsMeasure;
-import org.docx4j.wml.RFonts;
-import org.docx4j.wml.RPr;
-import org.docx4j.wml.U;
+import org.docx4j.wml.*;
 
-public interface RunParser extends Converter {
-    default String getFontFamily(RPr runProperties, ThemePart themePart) throws Docx4JException {
+public abstract class RunParser implements Converter {
+    DocDefaults docDefaults;
+    ThemePart themePart;
+
+    Run<Boolean> run;
+    RPr runProperties;
+
+    public RunParser(DocDefaults docDefaults, ThemePart themePart) {
+        this.docDefaults = docDefaults;
+        this.themePart = themePart;
+
+        this.run = new Run<>();
+    }
+
+    String getFontFamily(RPr runProperties, ThemePart themePart) throws Docx4JException {
         if (runProperties == null) { return null; }
         else {
             RFonts fontProperties = runProperties.getRFonts();
@@ -22,7 +29,7 @@ public interface RunParser extends Converter {
         }
     }
 
-    default String getFontSize(RPr runProperties) {
+    String getFontSize(RPr runProperties) {
         if (runProperties == null) { return null; }
         else {
             HpsMeasure fontSize = runProperties.getSz();
@@ -30,7 +37,7 @@ public interface RunParser extends Converter {
         }
     }
 
-    default Boolean getBold(RPr runProperties) {
+    Boolean getBold(RPr runProperties) {
         if (runProperties == null) { return null; }
         else {
             BooleanDefaultTrue isBold = runProperties.getB();
@@ -38,7 +45,7 @@ public interface RunParser extends Converter {
         }
     }
 
-    default Boolean getItalic(RPr runProperties) {
+    Boolean getItalic(RPr runProperties) {
         if (runProperties == null) { return null; }
         else {
             BooleanDefaultTrue isItalic = runProperties.getI();
@@ -46,7 +53,7 @@ public interface RunParser extends Converter {
         }
     }
 
-    default Boolean getStrikethrough(RPr runProperties) {
+    Boolean getStrikethrough(RPr runProperties) {
         if (runProperties == null) { return null; }
         else {
             BooleanDefaultTrue isStrikethrough = runProperties.getStrike();
@@ -54,7 +61,7 @@ public interface RunParser extends Converter {
         }
     }
 
-    default String getUnderline(RPr runProperties) {
+    String getUnderline(RPr runProperties) {
         if (runProperties == null) { return null; }
         else {
             U underline = runProperties.getU();
@@ -62,7 +69,7 @@ public interface RunParser extends Converter {
         }
     }
 
-    default String getTextColor(RPr runProperties) {
+    String getTextColor(RPr runProperties) {
         if (runProperties == null) { return null; }
         else {
             Color textColor = runProperties.getColor();
@@ -70,7 +77,7 @@ public interface RunParser extends Converter {
         }
     }
 
-    default Run getDefaultProperties(DocDefaults docDefaults, ThemePart themePart) throws Docx4JException {
-        return new RunDefaultsParser().parseRun(docDefaults, themePart);
+    Run getDefaultProperties(DocDefaults docDefaults, ThemePart themePart) throws Docx4JException {
+        return new RunDefaultsParser(docDefaults, themePart).parseRun();
     }
 }

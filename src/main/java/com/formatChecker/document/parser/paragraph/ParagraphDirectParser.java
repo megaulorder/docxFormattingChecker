@@ -8,66 +8,79 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.wml.DocDefaults;
 import org.docx4j.wml.P;
-import org.docx4j.wml.PPr;
 import org.docx4j.wml.R;
 import org.docx4j.wml.Styles;
 
 import javax.xml.bind.JAXBElement;
-import java.util.ArrayList;
 import java.util.Optional;
 
-public class ParagraphDirectParser implements ParagraphParser {
-    public Paragraph parseParagraph(P par, Styles styles, DocDefaults docDefaults, ThemePart themePart)
-            throws Docx4JException {
-        Paragraph paragraph = new Paragraph(new ArrayList<>());
+public class ParagraphDirectParser extends ParagraphParser implements ParagraphSetProperties {
+    P par;
+    Styles styles;
+    ThemePart themePart;
 
-        PPr paragraphProperties = par.getPPr();
+    String styleId;
+    Paragraph styleParagraph;
+    Paragraph defaultParagraph;
+    String text;
 
-        String styleId = getStyleId(par);
-        Paragraph styleParagraph = styleId == null ? null : getStyleProperties(styleId, styles, docDefaults);
-        Paragraph defaultParagraph = getDefaultProperties(docDefaults);
+    public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par) {
+        super(docDefaults);
 
+        this.par = par;
+        this.styles = styles;
+        this.themePart = themePart;
+
+        this.styleId = getStyleId(par);
+        this.styleParagraph = styleId == null ? null : getStyleProperties();
+        this.defaultParagraph = getDefaultProperties(docDefaults);
+
+        this.paragraphProperties = par.getPPr();
+
+        this.text = getText();
+    }
+
+    public Paragraph parseParagraph() throws Docx4JException {
         for (Object o : par.getContent()) {
             if (o instanceof R) {
                 R r = (R) o;
-                Run run = new RunDirectParser().parseRun(r, styleId, styles, docDefaults, themePart);
+                Run run = new RunDirectParser(docDefaults, themePart, styleId, styles, r).parseRun();
                 if (!StringUtils.isBlank(run.getText())) {
                     paragraph.addRun(run);
                 }
             }
         }
 
-        String text = getText(par);
         paragraph.setText(text);
 
-        setAlignment(paragraph, paragraphProperties, styleParagraph, defaultParagraph);
+        setAlignment();
 
-        setFirstLineIndent(paragraph, paragraphProperties, styleParagraph, defaultParagraph);
-        setLeftIndent(paragraph, paragraphProperties, styleParagraph, defaultParagraph);
-        setRightIndent(paragraph, paragraphProperties, styleParagraph, defaultParagraph);
+        setFirstLineIndent();
+        setLeftIndent();
+        setRightIndent();
 
-        setLineSpacing(paragraph, paragraphProperties, styleParagraph, defaultParagraph);
-        setSpacingBefore(paragraph, paragraphProperties, styleParagraph, defaultParagraph);
-        setSpacingAfter(paragraph, paragraphProperties, styleParagraph, defaultParagraph);
+        setLineSpacing();
+        setSpacingBefore();
+        setSpacingAfter();
 
-        setIsHeader(par, paragraph);
+        setIsHeader();
 
         return paragraph;
     }
 
-    String getText(P par) { return par.toString(); }
+    String getText() { return par.toString(); }
 
     String getStyleId(P par) {
         if (par.getPPr() == null) return null;
         else return par.getPPr().getPStyle() == null ? null : par.getPPr().getPStyle().getVal();
     }
 
-    Paragraph getStyleProperties(String styleId, Styles styles, DocDefaults docDefaults) {
-        return new ParagraphStyleParser().parseParagraph(styleId, styles, docDefaults);
+    Paragraph getStyleProperties() {
+        return new ParagraphStyleParser(docDefaults, styles, styleId).parseParagraph();
     }
 
-    void setAlignment(Paragraph paragraph, PPr paragraphProperties,
-                      Paragraph styleParagraph, Paragraph defaultParagraph) {
+    @Override
+    public void setAlignment() {
         String alignment = getAlignment(paragraphProperties);
         if (alignment == null) {
             alignment = styleParagraph != null ? styleParagraph.getAlignment() : defaultParagraph.getAlignment();
@@ -75,8 +88,8 @@ public class ParagraphDirectParser implements ParagraphParser {
         paragraph.setAlignment(alignment);
     }
 
-    void setFirstLineIndent(Paragraph paragraph, PPr paragraphProperties,
-                      Paragraph styleParagraph, Paragraph defaultParagraph) {
+    @Override
+    public void setFirstLineIndent() {
         String firstLineIndent = getFirstLineIndent(getIndent(paragraphProperties));
         if (firstLineIndent == null) {
             firstLineIndent = styleParagraph != null ? styleParagraph.getFirstLineIndent() :
@@ -85,8 +98,8 @@ public class ParagraphDirectParser implements ParagraphParser {
         paragraph.setFirstLineIndent(firstLineIndent);
     }
 
-    void setLeftIndent(Paragraph paragraph, PPr paragraphProperties,
-                            Paragraph styleParagraph, Paragraph defaultParagraph) {
+    @Override
+    public void setLeftIndent() {
         String leftIndent = getLeftIndent(getIndent(paragraphProperties));
         if (leftIndent == null) {
             leftIndent = styleParagraph != null ? styleParagraph.getLeftIndent() :
@@ -95,8 +108,8 @@ public class ParagraphDirectParser implements ParagraphParser {
         paragraph.setLeftIndent(leftIndent);
     }
 
-    void setRightIndent(Paragraph paragraph, PPr paragraphProperties,
-                       Paragraph styleParagraph, Paragraph defaultParagraph) {
+    @Override
+    public void setRightIndent() {
         String rightIndent = getRightIndent(getIndent(paragraphProperties));
         if (rightIndent == null) {
             rightIndent = styleParagraph != null ? styleParagraph.getRightIndent() :
@@ -105,8 +118,8 @@ public class ParagraphDirectParser implements ParagraphParser {
         paragraph.setRightIndent(rightIndent);
     }
 
-    void setLineSpacing(Paragraph paragraph, PPr paragraphProperties,
-                        Paragraph styleParagraph, Paragraph defaultParagraph) {
+    @Override
+    public void setLineSpacing() {
         String lineSpacing = getLineSpacing(getSpacing(paragraphProperties));
         if (lineSpacing == null) {
             lineSpacing = styleParagraph != null ? styleParagraph.getLineSpacing() :
@@ -115,8 +128,8 @@ public class ParagraphDirectParser implements ParagraphParser {
         paragraph.setLineSpacing(lineSpacing);
     }
 
-    void setSpacingBefore(Paragraph paragraph, PPr paragraphProperties,
-                        Paragraph styleParagraph, Paragraph defaultParagraph) {
+    @Override
+    public void setSpacingBefore() {
         String spacingBefore = getSpacingBefore(getSpacing(paragraphProperties));
         if (spacingBefore == null) {
             spacingBefore = styleParagraph != null ? styleParagraph.getSpacingBefore() :
@@ -125,8 +138,8 @@ public class ParagraphDirectParser implements ParagraphParser {
         paragraph.setSpacingBefore(spacingBefore);
     }
 
-    void setSpacingAfter(Paragraph paragraph, PPr paragraphProperties,
-                          Paragraph styleParagraph, Paragraph defaultParagraph) {
+    @Override
+    public void setSpacingAfter() {
         String spacingAfter = getSpacingAfter(getSpacing(paragraphProperties));
         if (spacingAfter == null) {
             spacingAfter = styleParagraph != null ? styleParagraph.getSpacingAfter() :
@@ -135,7 +148,7 @@ public class ParagraphDirectParser implements ParagraphParser {
         paragraph.setSpacingAfter(spacingAfter);
     }
 
-    void setIsHeader(P par, Paragraph paragraph) {
+    void setIsHeader() {
         Optional<Object> tocElement = par.getContent().stream().filter(i -> i instanceof JAXBElement).findFirst();
         paragraph.setIsHeader(tocElement.isPresent());
     }

@@ -14,33 +14,39 @@ import java.util.List;
 public class SectionParser implements Converter {
     static final String DEFAULT_ORIENTATION = "portrait";
 
-    public Section<List<Double>> parseSection(SectPr sectionProperties) {
+    private final SectPr sectionProperties;
+
+    public SectionParser(SectPr sectionProperties) {
+        this.sectionProperties = sectionProperties;
+    }
+
+    public Section<List<Double>> parseSection() {
         Section<List<Double>> section = new Section<>();
 
-        setOrientation(section, sectionProperties);
-        setMargins(section, sectionProperties);
-        setPageHeight(section, sectionProperties);
-        setPageWidth(section, sectionProperties);
+        setOrientation(section);
+        setMargins(section);
+        setPageHeight(section);
+        setPageWidth(section);
 
         return section;
     }
 
-    String getOrientation(SectPr sectionProperties) {
+    String getOrientation() {
         STPageOrientation orientation = sectionProperties.getPgSz().getOrient();
         return orientation != null ? orientation.value().toLowerCase() : DEFAULT_ORIENTATION;
     }
 
-    String getPageHeight(SectPr sectionProperties) {
+    String getPageHeight() {
         BigInteger pageHeight = sectionProperties.getPgSz().getH();
         return pageValToCm(pageHeight).toString();
     }
 
-    String getPageWidth(SectPr sectionProperties) {
+    String getPageWidth() {
         BigInteger pageWidth = sectionProperties.getPgSz().getW();
         return pageValToCm(pageWidth).toString();
     }
 
-    List<Double> getMargins(SectPr sectionProperties) {
+    List<Double> getMargins() {
         PgMar margins = sectionProperties.getPgMar();
 
         return new ArrayList<>(Arrays.asList(
@@ -50,19 +56,19 @@ public class SectionParser implements Converter {
                 pageValToCm(margins.getLeft())));
     }
 
-    void setOrientation(Section<List<Double>> section, SectPr sectionProperties) {
-        section.setOrientation(getOrientation(sectionProperties));
+    void setOrientation(Section<List<Double>> section) {
+        section.setOrientation(getOrientation());
     }
 
-    void setPageHeight(Section<List<Double>> section, SectPr sectionProperties) {
-        section.setPageHeight(getPageHeight(sectionProperties));
+    void setPageHeight(Section<List<Double>> section) {
+        section.setPageHeight(getPageHeight());
     }
 
-    void setPageWidth(Section<List<Double>> section, SectPr sectionProperties) {
-        section.setPageWidth(getPageWidth(sectionProperties));
+    void setPageWidth(Section<List<Double>> section) {
+        section.setPageWidth(getPageWidth());
     }
 
-    void setMargins(Section<List<Double>> section, SectPr sectionProperties) {
-        section.setMargins(getMargins(sectionProperties));
+    void setMargins(Section<List<Double>> section) {
+        section.setMargins(getMargins());
     }
 }

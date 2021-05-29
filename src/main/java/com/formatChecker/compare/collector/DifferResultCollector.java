@@ -11,23 +11,32 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DifferResultCollector {
-    public String getDifferenceAsString(Difference difference) {
+    Difference difference;
+
+    public DifferResultCollector(Difference difference) {
+        this.difference = difference;
+    }
+
+    public String getDifferenceAsString() {
         String result = "Comparison results:\n";
 
-        String pagesResult = getPageDifferenceAsString(difference.getPages());
-        String sectionResult = getSectionDifferenceAsString(difference.getSection());
-        StringBuilder paragraphsResult = getParagraphsDifferenceAsString(difference.getParagraphs());
+        String pagesResult = getPageDifferenceAsString();
+        String sectionResult = getSectionDifferenceAsString();
+        StringBuilder paragraphsResult = getParagraphsDifferenceAsString();
 
         result += pagesResult + sectionResult + paragraphsResult;
         return result;
     }
 
-    String getPageDifferenceAsString(String pagesDifference) {
+    String getPageDifferenceAsString() {
+        String pagesDifference = difference.getPages();
         if (pagesDifference != null) return String.format("\nNumber of pages: %s", pagesDifference +"\n");
         return "";
     }
 
-    String getSectionDifferenceAsString(Section<List<String>> sectionDifference) {
+    String getSectionDifferenceAsString() {
+        Section<List<String>> sectionDifference = difference.getSection();
+
         String result = "\nSection properties: \n\t";
         if (sectionDifference.getOrientation() != null) result += sectionDifference.getOrientation() + "\n\t";
         if (sectionDifference.getMargins() != null) result += sectionDifference.getMargins().stream()
@@ -39,7 +48,9 @@ public class DifferResultCollector {
         return result;
     }
 
-    StringBuilder getParagraphsDifferenceAsString(List<Paragraph> paragraphs) {
+    StringBuilder getParagraphsDifferenceAsString() {
+        List<Paragraph> paragraphs = difference.getParagraphs();
+
         int count = 0;
 
         StringBuilder result = new StringBuilder("\nParagraphs :\n");

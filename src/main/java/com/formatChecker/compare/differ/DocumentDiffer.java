@@ -20,13 +20,13 @@ public class DocumentDiffer {
 
     public Difference compare(String configPath, String documentPath) throws Docx4JException, IOException {
 
-        DocxDocument document = new DocxParser().getDocumentProperties(documentPath);
+        DocxDocument document = new DocxParser().parseDocument(documentPath, configPath);
 
-        Config config = ConfigParser.parseConfig(configPath);
+        Config config = new ConfigParser(configPath).parseConfig();
 
         Difference difference = new Difference(new ArrayList<>());
         difference.setPages(comparePages(document.getPages(), config.getPages()));
-        difference.setSection(new SectionDiffer().getSectionDifference(document.getSection(), config.getSection()));
+        difference.setSection(new SectionDiffer(document.getSection(), config.getSection()).getSectionDifference());
 
         List<Paragraph> paragraphs = new ArrayList<>();
 
@@ -37,8 +37,8 @@ public class DocumentDiffer {
                 List<Integer> paragraphIds = entry.getValue().getParagraphIndexes();
                 for (Integer id: paragraphIds) {
                     Style style = config.getStyles().get(entry.getKey());
-                    paragraphs.set(id - 1, new ParagraphDiffer().getParagraphDifference(
-                            document.getParagraphs().get(id - 1), style.getParagraph(), style.getRun()));
+                    paragraphs.set(id - 1, new ParagraphDiffer(document.getParagraphs().get(id - 1),
+                            style.getParagraph(), style.getRun()).getParagraphDifference());
                 }
             }
         }
@@ -46,12 +46,12 @@ public class DocumentDiffer {
             for (Paragraph p : document.getParagraphs()) {
                 if (p.getIsHeader()) {
                     Style headerStyle = config.getStyles().get(headerStyleName);
-                    paragraphs.add(new ParagraphDiffer().
-                            getParagraphDifference(p, headerStyle.getParagraph(), headerStyle.getRun()));
+                    paragraphs.add(new ParagraphDiffer(p, headerStyle.getParagraph(), headerStyle.getRun()).
+                            getParagraphDifference());
                 } else {
                     Style bodyStyle = config.getStyles().get(bodyStyleName);
-                    paragraphs.add(new ParagraphDiffer().
-                            getParagraphDifference(p, bodyStyle.getParagraph(), bodyStyle.getRun()));
+                    paragraphs.add(new ParagraphDiffer(p, bodyStyle.getParagraph(), bodyStyle.getRun()).
+                            getParagraphDifference());
                 }
             }
         }
@@ -60,10 +60,12 @@ public class DocumentDiffer {
             difference.addParagraph(p);
         }
 
+        String test = new DifferResultCollector(difference).getDifferenceAsString();
+
         return difference;
     }
 
-    String comparePages(Integer actualPages, Pages expectedPages) {
+    public String comparePages(Integer actualPages, Pages expectedPages) {
         if (actualPages >= expectedPages.getMin() && actualPages < expectedPages.getMax()) {
             return null;
         } else {

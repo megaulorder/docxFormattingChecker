@@ -9,9 +9,22 @@ import org.docx4j.wml.PPrBase.Spacing;
 import org.docx4j.wml.PPrBase.Ind;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
-public interface ParagraphParser extends Converter {
-    default String getAlignment(PPr paragraphProperties) {
+public abstract class ParagraphParser implements Converter {
+    DocDefaults docDefaults;
+
+    Paragraph paragraph;
+    PPr paragraphProperties;
+
+    public ParagraphParser(DocDefaults docDefaults) {
+        this.docDefaults = docDefaults;
+
+        this.paragraph = new Paragraph(new ArrayList<>());
+    }
+
+
+    String getAlignment(PPr paragraphProperties) {
         if (paragraphProperties == null) { return null; }
         else {
             Jc alignment = paragraphProperties.getJc();
@@ -19,12 +32,12 @@ public interface ParagraphParser extends Converter {
         }
     }
 
-    default Ind getIndent(PPr paragraphProperties) {
+    Ind getIndent(PPr paragraphProperties) {
         if (paragraphProperties == null) { return null; }
         else { return paragraphProperties.getInd(); }
     }
 
-    default String getFirstLineIndent(Ind indent) {
+    String getFirstLineIndent(Ind indent) {
         if (indent == null) { return null; }
         else {
             BigInteger firstLineIndent = indent.getFirstLine();
@@ -32,7 +45,7 @@ public interface ParagraphParser extends Converter {
         }
     }
 
-    default String getLeftIndent(Ind indent) {
+    String getLeftIndent(Ind indent) {
         if (indent == null) { return null; }
         else {
             BigInteger leftIndent = indent.getLeft();
@@ -40,7 +53,7 @@ public interface ParagraphParser extends Converter {
         }
     }
 
-    default String getRightIndent(Ind indent) {
+    String getRightIndent(Ind indent) {
         if (indent == null) { return null; }
         else {
             BigInteger rightIndent = indent.getRight();
@@ -48,12 +61,12 @@ public interface ParagraphParser extends Converter {
         }
     }
 
-    default Spacing getSpacing(PPr paragraphProperties) {
+    Spacing getSpacing(PPr paragraphProperties) {
         if (paragraphProperties == null) { return null; }
         else { return paragraphProperties.getSpacing(); }
     }
 
-    default String getLineSpacing(Spacing spacing) {
+    String getLineSpacing(Spacing spacing) {
         if (spacing == null) { return null; }
         else {
             BigInteger lineSpacing = spacing.getLine();
@@ -61,7 +74,7 @@ public interface ParagraphParser extends Converter {
         }
     }
 
-    default String getSpacingBefore(Spacing spacing) {
+    String getSpacingBefore(Spacing spacing) {
         if (spacing == null) { return null; }
         else {
             BigInteger spacingBefore = spacing.getBefore();
@@ -69,7 +82,7 @@ public interface ParagraphParser extends Converter {
         }
     }
 
-    default String getSpacingAfter(Spacing spacing) {
+    String getSpacingAfter(Spacing spacing) {
         if (spacing == null) { return null; }
         else {
             BigInteger spacingAfter = spacing.getAfter();
@@ -77,7 +90,7 @@ public interface ParagraphParser extends Converter {
         }
     }
 
-    default Paragraph getDefaultProperties(DocDefaults docDefaults) {
-        return new ParagraphDefaultsParser().parseParagraph(docDefaults);
+    Paragraph getDefaultProperties(DocDefaults docDefaults) {
+        return new ParagraphDefaultsParser(docDefaults).parseParagraph();
     }
 }

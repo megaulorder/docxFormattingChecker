@@ -8,28 +8,40 @@ import org.docx4j.wml.PPr;
 import org.docx4j.wml.Style;
 import org.docx4j.wml.Styles;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
-public class ParagraphStyleParser implements ParagraphParser, StyleHierarchy {
-    public Paragraph parseParagraph(String styleId, Styles styles, DocDefaults docDefaults) {
-        Paragraph paragraph = new Paragraph(new ArrayList<>());
-        Paragraph defaultParagraph = getDefaultProperties(docDefaults);
+public class ParagraphStyleParser extends ParagraphParser implements ParagraphSetProperties, StyleHierarchy {
+    String styleId;
+    Styles styles;
 
-        Optional<Style> style = getStyleById(styleId, styles);
-        Optional<Style> parentStyle = getParentStyle(style, styles);
+    Paragraph defaultParagraph;
 
-        PPr paragraphProperties = getParagraphProperties(style);
+    Optional<Style> style;
+    Optional<Style> parentStyle;
 
-        setAlignment(paragraph, paragraphProperties, defaultParagraph, parentStyle, styles);
+    public ParagraphStyleParser(DocDefaults docDefaults, Styles styles, String styleId) {
+        super(docDefaults);
 
-        setFirstLineIndent(paragraph, paragraphProperties, defaultParagraph, parentStyle, styles);
-        setLeftIndent(paragraph, paragraphProperties, defaultParagraph, parentStyle, styles);
-        setRightIndent(paragraph, paragraphProperties, defaultParagraph, parentStyle, styles);
+        this.styleId = styleId;
+        this.styles = styles;
+        this.style = getStyleById(styleId, styles);
+        this.parentStyle = getParentStyle(style, styles);
 
-        setLineSpacing(paragraph, paragraphProperties, defaultParagraph, parentStyle, styles);
-        setSpacingBefore(paragraph, paragraphProperties, defaultParagraph, parentStyle, styles);
-        setSpacingAfter(paragraph, paragraphProperties, defaultParagraph, parentStyle, styles);
+        this.defaultParagraph = getDefaultProperties(docDefaults);
+
+        this.paragraphProperties = getParagraphProperties(style);
+    }
+
+    public Paragraph parseParagraph() {
+        setAlignment();
+
+        setFirstLineIndent();
+        setLeftIndent();
+        setRightIndent();
+
+        setLineSpacing();
+        setSpacingBefore();
+        setSpacingAfter();
 
         return paragraph;
     }
@@ -38,8 +50,8 @@ public class ParagraphStyleParser implements ParagraphParser, StyleHierarchy {
         return style.map(Style::getPPr).orElse(null);
     }
 
-    void setAlignment(Paragraph paragraph, PPr paragraphProperties, Paragraph defaultParagraph,
-                      Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setAlignment() {
         String alignment = getAlignment(paragraphProperties);
 
         while (parentStyle != null && alignment == null) {
@@ -54,8 +66,8 @@ public class ParagraphStyleParser implements ParagraphParser, StyleHierarchy {
         paragraph.setAlignment(alignment);
     }
 
-    void setFirstLineIndent(Paragraph paragraph, PPr paragraphProperties, Paragraph defaultParagraph,
-                      Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setFirstLineIndent() {
         String firstLineIndent = getFirstLineIndent(getIndent(paragraphProperties));
 
         while (parentStyle != null && firstLineIndent == null) {
@@ -70,8 +82,8 @@ public class ParagraphStyleParser implements ParagraphParser, StyleHierarchy {
         paragraph.setFirstLineIndent(firstLineIndent);
     }
 
-    void setLeftIndent(Paragraph paragraph, PPr paragraphProperties, Paragraph defaultParagraph,
-                            Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setLeftIndent() {
 
         String leftIndent = getLeftIndent(getIndent(paragraphProperties));
 
@@ -87,8 +99,8 @@ public class ParagraphStyleParser implements ParagraphParser, StyleHierarchy {
         paragraph.setLeftIndent(leftIndent);
     }
 
-    void setRightIndent(Paragraph paragraph, PPr paragraphProperties, Paragraph defaultParagraph,
-                       Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setRightIndent() {
         String rightIndent = getRightIndent(getIndent(paragraphProperties));
 
         while (parentStyle != null && rightIndent == null) {
@@ -103,8 +115,8 @@ public class ParagraphStyleParser implements ParagraphParser, StyleHierarchy {
         paragraph.setRightIndent(rightIndent);
     }
 
-    void setLineSpacing(Paragraph paragraph, PPr paragraphProperties, Paragraph defaultParagraph,
-                        Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setLineSpacing() {
         String lineSpacing = getLineSpacing(getSpacing(paragraphProperties));
 
         while (parentStyle != null && lineSpacing == null) {
@@ -119,8 +131,8 @@ public class ParagraphStyleParser implements ParagraphParser, StyleHierarchy {
         paragraph.setLineSpacing(lineSpacing);
     }
 
-    void setSpacingBefore(Paragraph paragraph, PPr paragraphProperties, Paragraph defaultParagraph,
-                        Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setSpacingBefore() {
         String spacingBefore = getSpacingBefore(getSpacing(paragraphProperties));
 
         while (parentStyle != null && spacingBefore == null) {
@@ -135,8 +147,8 @@ public class ParagraphStyleParser implements ParagraphParser, StyleHierarchy {
         paragraph.setSpacingBefore(spacingBefore);
     }
 
-    void setSpacingAfter(Paragraph paragraph, PPr paragraphProperties, Paragraph defaultParagraph,
-                        Optional<Style> parentStyle, Styles styles) {
+    @Override
+    public void setSpacingAfter() {
         String spacingAfter = getSpacingAfter(getSpacing(paragraphProperties));
 
         while (parentStyle != null && spacingAfter == null) {

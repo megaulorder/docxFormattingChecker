@@ -8,10 +8,10 @@ public class Style {
     @SerializedName("paragraphs")
     List<Integer> paragraphIndexes;
 
-    @SerializedName("paragraph_properties")
+    @SerializedName("paragraphProperties")
     Paragraph paragraph;
 
-    @SerializedName("run_properties")
+    @SerializedName("runProperties")
     Run run;
 
     public List<Integer> getParagraphIndexes() {

@@ -2,21 +2,21 @@ package com.formatChecker.document.parser.paragraph;
 
 import com.formatChecker.config.model.participants.Paragraph;
 import org.docx4j.wml.DocDefaults;
-import org.docx4j.wml.PPr;
 
-import java.util.ArrayList;
-
-public class ParagraphDefaultsParser implements ParagraphParser {
+public class ParagraphDefaultsParser extends ParagraphParser implements ParagraphSetProperties {
     static final String DEFAULT_ALIGNMENT = "left";
     static final String DEFAULT_LINE_SPACING = "1.0";
     static final String DEFAULT_SPACING_BEFORE = "0";
     static final String DEFAULT_SPACING_AFTER = "0";
     static final String DEFAULT_INDENT = "0";
 
-    public Paragraph parseParagraph(DocDefaults docDefaults) {
-        Paragraph paragraph = new Paragraph(new ArrayList<>());
-        PPr paragraphProperties = docDefaults.getPPrDefault().getPPr();
+    public ParagraphDefaultsParser(DocDefaults docDefaults) {
+        super(docDefaults);
 
+        this.paragraphProperties = docDefaults.getPPrDefault().getPPr();
+    }
+
+    public Paragraph parseParagraph() {
         if (paragraphProperties == null) {
             paragraph.setAlignment(DEFAULT_ALIGNMENT);
 
@@ -29,52 +29,59 @@ public class ParagraphDefaultsParser implements ParagraphParser {
             paragraph.setSpacingAfter(DEFAULT_SPACING_AFTER);
         }
         else {
-            setAlignment(paragraph, paragraphProperties);
+            setAlignment();
 
-            setFirstLineIndent(paragraph, paragraphProperties);
-            setLeftIndent(paragraph, paragraphProperties);
-            setRightIndent(paragraph, paragraphProperties);
+            setFirstLineIndent();
+            setLeftIndent();
+            setRightIndent();
 
-            setLineSpacing(paragraph, paragraphProperties);
-            setSpacingBefore(paragraph, paragraphProperties);
-            setSpacingAfter(paragraph, paragraphProperties);
+            setLineSpacing();
+            setSpacingBefore();
+            setSpacingAfter();
         }
 
         return paragraph;
     }
 
-    void setAlignment(Paragraph paragraph, PPr paragraphProperties) {
+    @Override
+    public void setAlignment() {
         String alignment = getAlignment(paragraphProperties);
         paragraph.setAlignment(alignment != null ? alignment : ParagraphDefaultsParser.DEFAULT_ALIGNMENT);
     }
 
-    void setFirstLineIndent(Paragraph paragraph, PPr paragraphProperties) {
+    @Override
+    public void setFirstLineIndent() {
         String firstLineIndent = getFirstLineIndent(getIndent(paragraphProperties));
         paragraph.setFirstLineIndent(firstLineIndent != null ? firstLineIndent :
                 ParagraphDefaultsParser.DEFAULT_INDENT);
     }
 
-    void setLeftIndent(Paragraph paragraph, PPr paragraphProperties) {
+    @Override
+    public void setLeftIndent() {
         String leftIndent = getLeftIndent(getIndent(paragraphProperties));
         paragraph.setLeftIndent(leftIndent != null ? leftIndent : ParagraphDefaultsParser.DEFAULT_INDENT);
     }
 
-    void setRightIndent(Paragraph paragraph, PPr paragraphProperties) {
+    @Override
+    public void setRightIndent() {
         String rightIndent = getRightIndent(getIndent(paragraphProperties));
         paragraph.setRightIndent(rightIndent != null ? rightIndent : ParagraphDefaultsParser.DEFAULT_INDENT);
     }
 
-    void setLineSpacing(Paragraph paragraph, PPr paragraphProperties) {
+    @Override
+    public void setLineSpacing() {
         String lineSpacing = getLineSpacing(getSpacing(paragraphProperties));
         paragraph.setLineSpacing(lineSpacing != null ? lineSpacing : ParagraphDefaultsParser.DEFAULT_LINE_SPACING);
     }
 
-    void setSpacingBefore(Paragraph paragraph, PPr paragraphProperties) {
+    @Override
+    public void setSpacingBefore() {
         String lineSpacing = getSpacingBefore(getSpacing(paragraphProperties));
         paragraph.setSpacingBefore(lineSpacing != null ? lineSpacing : ParagraphDefaultsParser.DEFAULT_SPACING_AFTER);
     }
 
-    void setSpacingAfter(Paragraph paragraph, PPr paragraphProperties) {
+    @Override
+    public void setSpacingAfter() {
         String lineSpacing = getSpacingAfter(getSpacing(paragraphProperties));
         paragraph.setSpacingAfter(lineSpacing != null ? lineSpacing : ParagraphDefaultsParser.DEFAULT_SPACING_BEFORE);
     }

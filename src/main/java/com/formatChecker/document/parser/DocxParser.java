@@ -1,11 +1,19 @@
 package com.formatChecker.document.parser;
 
+import com.formatChecker.compare.collector.DifferResultCollector;
+import com.formatChecker.compare.differ.DocumentDiffer;
+import com.formatChecker.compare.differ.SectionDiffer;
+import com.formatChecker.compare.model.Difference;
+import com.formatChecker.config.model.Config;
 import com.formatChecker.config.model.participants.Paragraph;
+import com.formatChecker.config.model.participants.Style;
+import com.formatChecker.config.parser.ConfigParser;
+import com.formatChecker.controller.ParagraphController;
+import com.formatChecker.document.model.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.parser.paragraph.ParagraphDirectParser;
 import com.formatChecker.document.parser.section.SectionParser;
 import org.docx4j.Docx4J;
-import org.docx4j.docProps.extended.Properties;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.ThemePart;
@@ -13,44 +21,101 @@ import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.wml.*;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DocxParser {
-    public DocxDocument getDocumentProperties(String filePath) throws Docx4JException, FileNotFoundException {
-        FileInputStream test = new FileInputStream(filePath);
+    private static final String headerStyleName = "header";
+    private static final String bodyStyleName = "body";
 
-        WordprocessingMLPackage wordMLPackage = Docx4J.load(test);
-        MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
+    public DocxDocument parseDocument(String docxPath, String configPath) throws Docx4JException, IOException {
+        FileInputStream file = new FileInputStream(docxPath);
 
-        Document wmlDocumentEl = documentPart.getJaxbElement();
-        Body body = wmlDocumentEl.getBody();
+        WordprocessingMLPackage wordMLPackage = Docx4J.load(file);
+        DocumentData documentData = getDocumentData(wordMLPackage);
 
-        Properties documentInfo = wordMLPackage.getDocPropsExtendedPart().getJaxbElement();
+        final Styles styles = documentData.getStyles();
+        final DocDefaults docDefaults = documentData.getDocDefaults();
+        final ThemePart themePart = documentData.getThemePart();
 
-        Styles styles = documentPart.getStyleDefinitionsPart().getJaxbElement();
-        DocDefaults docDefaults = styles.getDocDefaults();
-        ThemePart themePart = documentPart.getThemePart();
-
-        SectPr sectionProperties = body.getSectPr();
-
-        List<Object> paragraphs = body.getContent();
-
+        Config config = new ConfigParser(configPath).parseConfig();
         DocxDocument document = new DocxDocument(new ArrayList<>());
+        Difference difference = new Difference(new ArrayList<>());
 
-        document.setPages(documentInfo.getPages());
-        document.setSection(new SectionParser().parseSection(sectionProperties));
+        document.setPages(documentData.getDocumentInfo().getPages());
+        difference.setPages(new DocumentDiffer().comparePages(document.getPages(), config.getPages()));
 
-        for (Object p : paragraphs) {
+        document.setSection(new SectionParser(documentData.getSectionProperties()).parseSection());
+        difference.setSection(new SectionDiffer(document.getSection(), config.getSection()).getSectionDifference());
+
+        Boolean shouldFix = config.getGenerateNewDocument();
+
+        int count = 0;
+        for (Object p : documentData.getParagraphs()) {
             if (p instanceof P) {
+                ++count;
+
                 P par = (P) p;
-                Paragraph paragraph = new ParagraphDirectParser()
-                        .parseParagraph(par, styles, docDefaults, themePart);
+                Paragraph paragraph = new ParagraphDirectParser(docDefaults, styles, themePart, par).parseParagraph();
                 document.addParagraph(paragraph);
+
+
+
+                if (!config.getFinByToc()) {
+                    for (Map.Entry<String, Style> entry : config.getStyles().entrySet()) {
+                        List<Integer> paragraphIds = entry.getValue().getParagraphIndexes();
+
+                        for (Integer id : paragraphIds) {
+                            if (id == count) {
+                                Style style = config.getStyles().get(entry.getKey());
+
+                                ParagraphController paragraphController = new ParagraphController(par, paragraph,
+                                        style.getParagraph(), style.getRun(), difference, shouldFix);
+
+                                paragraphController.compareParagraph();
+                            }
+                        }
+                    }
+                }
+                else {
+                    if (paragraph.getIsHeader()) {
+                        Style headerStyle = config.getStyles().get(headerStyleName);
+
+                        ParagraphController paragraphController = new ParagraphController(par, paragraph,
+                                headerStyle.getParagraph(), headerStyle.getRun(), difference, shouldFix);
+
+                        paragraphController.compareParagraph();
+                    } else {
+                        Style bodyStyle = config.getStyles().get(bodyStyleName);
+
+                        ParagraphController paragraphController = new ParagraphController(par, paragraph,
+                                bodyStyle.getParagraph(), bodyStyle.getRun(), difference, shouldFix);
+
+                        paragraphController.compareParagraph();
+                    }
+                }
             }
         }
 
+        String test = new DifferResultCollector(difference).getDifferenceAsString();
+
         return document;
+    }
+
+    DocumentData getDocumentData (WordprocessingMLPackage wordMLPackage) {
+        MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
+        Body body = documentPart.getJaxbElement().getBody();
+        Styles styles = documentPart.getStyleDefinitionsPart().getJaxbElement();
+
+        return new DocumentData(
+                wordMLPackage.getDocPropsExtendedPart().getJaxbElement(),
+                styles.getDocDefaults(),
+                documentPart.getThemePart(),
+                body.getSectPr(),
+                styles,
+                body.getContent()
+        );
     }
 }
