@@ -16,14 +16,14 @@ public class Difference {
     }
 
     String pages;
-    Section<List<String>> section;
+    Section<String> section;
     List<Paragraph> paragraphs;
 
     public void setPages(String pages) {
         this.pages = pages;
     }
 
-    public void setSection(Section<List<String>> section) {
+    public void setSection(Section<String> section) {
         this.section = section;
     }
 
@@ -31,7 +31,7 @@ public class Difference {
         return pages;
     }
 
-    public Section<List<String>> getSection() {
+    public Section<String> getSection() {
         return section;
     }
 

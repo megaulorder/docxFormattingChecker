@@ -2,38 +2,110 @@ package com.formatChecker.controller;
 
 import com.formatChecker.compare.differ.ParagraphDiffer;
 import com.formatChecker.compare.model.Difference;
+import com.formatChecker.config.model.Config;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
+import com.formatChecker.document.model.DocumentData;
+import com.formatChecker.document.model.DocxDocument;
+import com.formatChecker.document.parser.paragraph.ParagraphDirectParser;
 import com.formatChecker.fixer.ParagraphFixer;
-import org.docx4j.wml.P;
+import org.apache.commons.lang3.StringUtils;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.docx4j.openpackaging.parts.ThemePart;
+import org.docx4j.wml.*;
+
+import javax.xml.bind.JAXBElement;
+import java.util.Map;
 
 public class ParagraphController {
+    private static final String HEADER_STYLE_NAME = "header";
+    private static final String BODY_STYLE_NAME = "body";
+
     P documentParagraph;
     Paragraph actualParagraph;
     Paragraph expectedParagraph;
-    Run<Boolean> expectedRun;
     Difference difference;
     Boolean shouldFix;
+    Integer index;
 
-    public ParagraphController(P documentParagraph, Paragraph actualParagraph, Paragraph expectedParagraph,
-                               Run<Boolean> expectedRun, Difference difference, Boolean shouldFix) {
+    Config config;
+    DocumentData documentData;
+    DocxDocument docxDocument;
+    Map<Integer, String> configStyles;
+
+    Styles styles;
+    DocDefaults docDefaults;
+    ThemePart themePart;
+
+
+    public ParagraphController(Integer index, P documentParagraph, Difference difference, DocxDocument docxDocument,
+                               DocumentData documentData, Config config, Map<Integer, String> configStyles) throws Docx4JException {
+        this.index = index;
         this.documentParagraph = documentParagraph;
-        this.actualParagraph = actualParagraph;
-        this.expectedParagraph = expectedParagraph;
-        this.expectedRun = expectedRun;
+
         this.difference = difference;
-        this.shouldFix = shouldFix;
+        this.documentData = documentData;
+        this.docxDocument = docxDocument;
+        this.config = config;
+        this.configStyles = configStyles;
+        this.shouldFix = config.getGenerateNewDocument();
+
+        this.styles = documentData.getStyles();
+        this.docDefaults = documentData.getDocDefaults();
+        this.themePart = documentData.getThemePart();
+
+        this.actualParagraph = new ParagraphDirectParser(docDefaults, styles, themePart, documentParagraph)
+                .parseParagraph();
     }
 
-    public void compareParagraph() {
-        Paragraph paragraph = new ParagraphDiffer(this.actualParagraph, this.expectedParagraph, this.expectedRun)
+    public void parseParagraph() {
+        docxDocument.addParagraph(actualParagraph);
+
+        if (configStyles == null) {
+            if (actualParagraph.getIsHeader()) {
+                expectedParagraph = config.getStyles().get(HEADER_STYLE_NAME).getParagraph();
+            }
+            else {
+                expectedParagraph = config.getStyles().get(BODY_STYLE_NAME).getParagraph();
+            }
+        }
+        else {
+            expectedParagraph = config.getStyles().get(configStyles.get(index)).getParagraph();
+        }
+
+        compareParagraph();
+    }
+
+    void compareParagraph() {
+        Paragraph<String> differenceParagraph = new ParagraphDiffer(actualParagraph, expectedParagraph)
                 .getParagraphDifference();
+        difference.addParagraph(differenceParagraph);
 
-        difference.addParagraph(paragraph);
+        if (shouldFix) {
+            new ParagraphFixer(documentParagraph, actualParagraph, expectedParagraph, differenceParagraph)
+                    .fixParagraph();
+        }
 
-        if (shouldFix)
-            new ParagraphFixer(this.documentParagraph, this.actualParagraph, this.expectedParagraph, paragraph,
-                this.expectedRun)
-                .fixParagraph();
+        int count = 0;
+        for (Object o : documentParagraph.getContent()) {
+            if (o instanceof R) {
+                R r = (R) o;
+                if (!StringUtils.isBlank(getText(r))) {
+                    ++count;
+
+                    Run<Boolean, Double> actualRun = (Run) actualParagraph.getRuns().get(count - 1);
+                    new RunController(index, r, actualRun, differenceParagraph, configStyles,
+                            actualParagraph.getIsHeader(), config);
+                }
+            }
+        }
+    }
+
+    String getText(R r) {
+        JAXBElement obj = ((JAXBElement) r.getContent().get(0));
+        if (obj.getValue() instanceof Text)
+            return ((Text) obj.getValue()).getValue();
+        else
+            return "";
     }
 }

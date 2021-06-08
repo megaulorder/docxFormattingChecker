@@ -1,7 +1,7 @@
 package com.formatChecker.document.parser.paragraph;
 
 import com.formatChecker.config.model.participants.Paragraph;
-import com.formatChecker.document.converter.Converter;
+import com.formatChecker.document.converter.ValuesConverter;
 import org.docx4j.wml.DocDefaults;
 import org.docx4j.wml.Jc;
 import org.docx4j.wml.PPr;
@@ -11,7 +11,7 @@ import org.docx4j.wml.PPrBase.Ind;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-public abstract class ParagraphParser implements Converter {
+public abstract class ParagraphParser implements ValuesConverter {
     DocDefaults docDefaults;
 
     Paragraph paragraph;
@@ -37,7 +37,7 @@ public abstract class ParagraphParser implements Converter {
         else { return paragraphProperties.getInd(); }
     }
 
-    String getFirstLineIndent(Ind indent) {
+    Double getFirstLineIndent(Ind indent) {
         if (indent == null) { return null; }
         else {
             BigInteger firstLineIndent = indent.getFirstLine();
@@ -45,7 +45,7 @@ public abstract class ParagraphParser implements Converter {
         }
     }
 
-    String getLeftIndent(Ind indent) {
+    Double getLeftIndent(Ind indent) {
         if (indent == null) { return null; }
         else {
             BigInteger leftIndent = indent.getLeft();
@@ -53,7 +53,7 @@ public abstract class ParagraphParser implements Converter {
         }
     }
 
-    String getRightIndent(Ind indent) {
+    Double getRightIndent(Ind indent) {
         if (indent == null) { return null; }
         else {
             BigInteger rightIndent = indent.getRight();
@@ -66,7 +66,7 @@ public abstract class ParagraphParser implements Converter {
         else { return paragraphProperties.getSpacing(); }
     }
 
-    String getLineSpacing(Spacing spacing) {
+    Double getLineSpacing(Spacing spacing) {
         if (spacing == null) { return null; }
         else {
             BigInteger lineSpacing = spacing.getLine();
@@ -74,7 +74,7 @@ public abstract class ParagraphParser implements Converter {
         }
     }
 
-    String getSpacingBefore(Spacing spacing) {
+    Double getSpacingBefore(Spacing spacing) {
         if (spacing == null) { return null; }
         else {
             BigInteger spacingBefore = spacing.getBefore();
@@ -82,7 +82,7 @@ public abstract class ParagraphParser implements Converter {
         }
     }
 
-    String getSpacingAfter(Spacing spacing) {
+    Double getSpacingAfter(Spacing spacing) {
         if (spacing == null) { return null; }
         else {
             BigInteger spacingAfter = spacing.getAfter();

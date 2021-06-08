@@ -1,24 +1,36 @@
 {
-  "pages": {
-    "min" : 3,
-    "max": 5
-  },
-  "section": {
-    "orientation": "portrait",
-    "margins" : [1.5, 1.5, 2, 3],
-    "pageHeight": "29.7",
-    "pageWidth": "19.0"
-  },
-  "styles": {
-    "header": {
-      "paragraphs": [1, 2, 3],
-      "paragraphProperties": {
-        "alignment": "left"
-      },
-      "runProperties": {
-        "fontFamily": "Papyrus"
-      }
-    }
-  },
-  "generateNewDocument": true
+    "pages": {
+        "min": 3,
+        "max": 5
+    },
+    "section": {
+        "orientation": "portrait",
+        "margins": [
+            1.5,
+            1.5,
+            2,
+            3
+        ],
+        "pageHeight": 29.7,
+        "pageWidth": 19.0
+    },
+    "styles": {
+        "header": {
+            "paragraphs": [
+                1,
+                2,
+                3
+            ],
+            "paragraphProperties": {
+                "alignment": "left",
+                "firstLineIndent": 1.25,
+                "spacingBefore": 4.0
+            },
+            "runProperties": {
+                "fontFamily": "Papyrus",
+                "fontSize": 12
+            }
+        }
+    },
+    "generateNewDocument": true
 }

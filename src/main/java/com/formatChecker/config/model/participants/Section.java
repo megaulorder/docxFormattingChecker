@@ -1,24 +1,26 @@
 package com.formatChecker.config.model.participants;
 
+import java.util.List;
+
 public class Section<T> {
     String orientation;
-    protected T margins;
-    String pageHeight;
-    String pageWidth;
+    protected List<T> margins;
+    protected T pageHeight;
+    protected T pageWidth;
 
     public void setOrientation(String orientation) {
         this.orientation = orientation;
     }
 
-    public void setMargins(T margins) {
+    public void setMargins(List<T> margins) {
         this.margins = margins;
     }
 
-    public void setPageHeight(String pageHeight) {
+    public void setPageHeight(T pageHeight) {
         this.pageHeight = pageHeight;
     }
 
-    public void setPageWidth(String pageWidth) {
+    public void setPageWidth(T pageWidth) {
         this.pageWidth = pageWidth;
     }
 
@@ -26,15 +28,15 @@ public class Section<T> {
         return orientation;
     }
 
-    public T getMargins() {
+    public List<T> getMargins() {
         return margins;
     }
 
-    public String getPageHeight() {
+    public T getPageHeight() {
         return pageHeight;
     }
 
-    public String getPageWidth() {
+    public T getPageWidth() {
         return pageWidth;
     }
 }

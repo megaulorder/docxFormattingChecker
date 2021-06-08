@@ -7,7 +7,7 @@ import org.docx4j.wml.DocDefaults;
 
 public class RunDefaultsParser extends RunParser implements RunSetProperties {
     static final String DEFAULT_FONT_FAMILY = "Calibri";
-    static final String DEFAULT_FONT_SIZE = "12.0";
+    static final Double DEFAULT_FONT_SIZE = 12.0;
     static final String DEFAULT_TEXT_COLOR = "000000";
     static final String DEFAULT_UNDERLINE = "none";
     static final Boolean DEFAULT_BOOL_VALUE = false;
@@ -19,7 +19,7 @@ public class RunDefaultsParser extends RunParser implements RunSetProperties {
         this.runProperties = docDefaults.getRPrDefault().getRPr();
     }
 
-    public Run<Boolean> parseRun() throws Docx4JException {
+    public Run<Boolean, Double> parseRun() throws Docx4JException {
         if (runProperties == null) {
             run.setFontFamily(DEFAULT_FONT_FAMILY);
             run.setFontSize(DEFAULT_FONT_SIZE);
@@ -50,7 +50,7 @@ public class RunDefaultsParser extends RunParser implements RunSetProperties {
 
     @Override
     public void setFontSize() {
-        String fontSize = getFontSize(runProperties);
+        Double fontSize = getFontSize(runProperties);
         run.setFontSize(fontSize != null ? fontSize : DEFAULT_FONT_SIZE);
     }
 

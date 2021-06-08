@@ -2,7 +2,7 @@ package com.formatChecker.config.model.participants;
 
 import java.util.List;
 
-public class Paragraph {
+public class Paragraph<T> {
     public Paragraph(List<Run> runs) {
         this.runs = runs;
     }
@@ -15,13 +15,13 @@ public class Paragraph {
 
     String alignment;
 
-    String firstLineIndent;
-    String leftIndent;
-    String rightIndent;
+    T firstLineIndent;
+    T leftIndent;
+    T rightIndent;
 
-    String lineSpacing;
-    String spacingBefore;
-    String spacingAfter;
+    T lineSpacing;
+    T spacingBefore;
+    T spacingAfter;
 
     public List<Run> addRun(Run run) {
         runs.add(run);
@@ -40,27 +40,27 @@ public class Paragraph {
         this.alignment = alignment;
     }
 
-    public void setFirstLineIndent(String firstLineIndent) {
+    public void setFirstLineIndent(T firstLineIndent) {
         this.firstLineIndent = firstLineIndent;
     }
 
-    public void setLeftIndent(String leftIndent) {
+    public void setLeftIndent(T leftIndent) {
         this.leftIndent = leftIndent;
     }
 
-    public void setRightIndent(String rightIndent) {
+    public void setRightIndent(T rightIndent) {
         this.rightIndent = rightIndent;
     }
 
-    public void setLineSpacing(String lineSpacing) {
+    public void setLineSpacing(T lineSpacing) {
         this.lineSpacing = lineSpacing;
     }
 
-    public void setSpacingBefore(String spacingBefore) {
+    public void setSpacingBefore(T spacingBefore) {
         this.spacingBefore = spacingBefore;
     }
 
-    public void setSpacingAfter(String spacingAfter) {
+    public void setSpacingAfter(T spacingAfter) {
         this.spacingAfter = spacingAfter;
     }
 
@@ -68,27 +68,27 @@ public class Paragraph {
         return alignment;
     }
 
-    public String getFirstLineIndent() {
+    public T getFirstLineIndent() {
         return firstLineIndent;
     }
 
-    public String getLeftIndent() {
+    public T getLeftIndent() {
         return leftIndent;
     }
 
-    public String getRightIndent() {
+    public T getRightIndent() {
         return rightIndent;
     }
 
-    public String getLineSpacing() {
+    public T getLineSpacing() {
         return lineSpacing;
     }
 
-    public String getSpacingBefore() {
+    public T getSpacingBefore() {
         return spacingBefore;
     }
 
-    public String getSpacingAfter() {
+    public T getSpacingAfter() {
         return spacingAfter;
     }
 

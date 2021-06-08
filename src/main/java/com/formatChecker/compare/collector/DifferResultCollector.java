@@ -35,7 +35,7 @@ public class DifferResultCollector {
     }
 
     String getSectionDifferenceAsString() {
-        Section<List<String>> sectionDifference = difference.getSection();
+        Section<String> sectionDifference = difference.getSection();
 
         String result = "\nSection properties: \n\t";
         if (sectionDifference.getOrientation() != null) result += sectionDifference.getOrientation() + "\n\t";

@@ -5,10 +5,10 @@ import org.docx4j.wml.DocDefaults;
 
 public class ParagraphDefaultsParser extends ParagraphParser implements ParagraphSetProperties {
     static final String DEFAULT_ALIGNMENT = "left";
-    static final String DEFAULT_LINE_SPACING = "1.0";
-    static final String DEFAULT_SPACING_BEFORE = "0";
-    static final String DEFAULT_SPACING_AFTER = "0";
-    static final String DEFAULT_INDENT = "0";
+    static final Double DEFAULT_LINE_SPACING = 1.0;
+    static final Double DEFAULT_SPACING_BEFORE = 0.0;
+    static final Double DEFAULT_SPACING_AFTER = 0.0;
+    static final Double DEFAULT_INDENT = 0.0;
 
     public ParagraphDefaultsParser(DocDefaults docDefaults) {
         super(docDefaults);
@@ -16,7 +16,7 @@ public class ParagraphDefaultsParser extends ParagraphParser implements Paragrap
         this.paragraphProperties = docDefaults.getPPrDefault().getPPr();
     }
 
-    public Paragraph parseParagraph() {
+    public Paragraph<Double> parseParagraph() {
         if (paragraphProperties == null) {
             paragraph.setAlignment(DEFAULT_ALIGNMENT);
 
@@ -51,38 +51,38 @@ public class ParagraphDefaultsParser extends ParagraphParser implements Paragrap
 
     @Override
     public void setFirstLineIndent() {
-        String firstLineIndent = getFirstLineIndent(getIndent(paragraphProperties));
+        Double firstLineIndent = getFirstLineIndent(getIndent(paragraphProperties));
         paragraph.setFirstLineIndent(firstLineIndent != null ? firstLineIndent :
                 ParagraphDefaultsParser.DEFAULT_INDENT);
     }
 
     @Override
     public void setLeftIndent() {
-        String leftIndent = getLeftIndent(getIndent(paragraphProperties));
+        Double leftIndent = getLeftIndent(getIndent(paragraphProperties));
         paragraph.setLeftIndent(leftIndent != null ? leftIndent : ParagraphDefaultsParser.DEFAULT_INDENT);
     }
 
     @Override
     public void setRightIndent() {
-        String rightIndent = getRightIndent(getIndent(paragraphProperties));
+        Double rightIndent = getRightIndent(getIndent(paragraphProperties));
         paragraph.setRightIndent(rightIndent != null ? rightIndent : ParagraphDefaultsParser.DEFAULT_INDENT);
     }
 
     @Override
     public void setLineSpacing() {
-        String lineSpacing = getLineSpacing(getSpacing(paragraphProperties));
+        Double lineSpacing = getLineSpacing(getSpacing(paragraphProperties));
         paragraph.setLineSpacing(lineSpacing != null ? lineSpacing : ParagraphDefaultsParser.DEFAULT_LINE_SPACING);
     }
 
     @Override
     public void setSpacingBefore() {
-        String lineSpacing = getSpacingBefore(getSpacing(paragraphProperties));
+        Double lineSpacing = getSpacingBefore(getSpacing(paragraphProperties));
         paragraph.setSpacingBefore(lineSpacing != null ? lineSpacing : ParagraphDefaultsParser.DEFAULT_SPACING_AFTER);
     }
 
     @Override
     public void setSpacingAfter() {
-        String lineSpacing = getSpacingAfter(getSpacing(paragraphProperties));
+        Double lineSpacing = getSpacingAfter(getSpacing(paragraphProperties));
         paragraph.setSpacingAfter(lineSpacing != null ? lineSpacing : ParagraphDefaultsParser.DEFAULT_SPACING_BEFORE);
     }
 }

@@ -17,13 +17,13 @@ public class DocxDocument {
 
     List<Paragraph>  paragraphs;
     Integer pages;
-    Section<List<Double>> section;
+    Section<Double> section;
 
     public void setPages(Integer pages) {
         this.pages = pages;
     }
 
-    public void setSection(Section<List<Double>> section) {
+    public void setSection(Section<Double> section) {
         this.section = section;
     }
 
@@ -35,7 +35,7 @@ public class DocxDocument {
         return pages;
     }
 
-    public Section<List<Double>> getSection() {
+    public Section<Double> getSection() {
         return section;
     }
 }

@@ -9,11 +9,11 @@ public interface Differ {
         }
     }
 
-    default String checkStringParameter(String actualParameter, String expectedParameter, String parameterName,
+    default String checkDoubleParameter(Double actualParameter, Double expectedParameter, String parameterName,
                                         String measurementUnit) {
         if (expectedParameter == null) return null;
         else {
-            return actualParameter.equalsIgnoreCase(expectedParameter) ? null :
+            return actualParameter == expectedParameter ? null :
                     String.format("change %s from %s%s to %s%s", parameterName, actualParameter, measurementUnit,
                             expectedParameter, measurementUnit);
         }

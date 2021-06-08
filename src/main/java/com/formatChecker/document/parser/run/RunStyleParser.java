@@ -15,7 +15,7 @@ public class RunStyleParser extends RunParser implements RunSetProperties, Style
     String styleId;
     Styles styles;
 
-    Run<Boolean> defaultRun;
+    Run<Boolean, Double> defaultRun;
     Optional<Style> style;
     Optional<Style> parentStyle;
 
@@ -33,7 +33,7 @@ public class RunStyleParser extends RunParser implements RunSetProperties, Style
         this.defaultRun = getDefaultProperties(docDefaults, themePart);
     }
 
-    public Run<Boolean> parseRun() throws Docx4JException {
+    public Run<Boolean, Double> parseRun() throws Docx4JException {
         setFontFamily();
         setFontSize();
         setBold();
@@ -67,7 +67,7 @@ public class RunStyleParser extends RunParser implements RunSetProperties, Style
 
     @Override
     public void setFontSize() {
-        String fontSize = getFontSize(runProperties);
+        Double fontSize = getFontSize(runProperties);
 
         while (parentStyle != null && fontSize == null) {
             fontSize = getFontSize(getRunProperties(parentStyle));

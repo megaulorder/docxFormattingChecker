@@ -14,7 +14,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
     String styleId;
     Styles styles;
 
-    Paragraph defaultParagraph;
+    Paragraph<Double> defaultParagraph;
 
     Optional<Style> style;
     Optional<Style> parentStyle;
@@ -32,7 +32,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
         this.paragraphProperties = getParagraphProperties(style);
     }
 
-    public Paragraph parseParagraph() {
+    public Paragraph<Double> parseParagraph() {
         setAlignment();
 
         setFirstLineIndent();
@@ -68,7 +68,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
 
     @Override
     public void setFirstLineIndent() {
-        String firstLineIndent = getFirstLineIndent(getIndent(paragraphProperties));
+        Double firstLineIndent = getFirstLineIndent(getIndent(paragraphProperties));
 
         while (parentStyle != null && firstLineIndent == null) {
             firstLineIndent = getFirstLineIndent(getIndent(getParagraphProperties(parentStyle)));
@@ -84,8 +84,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
 
     @Override
     public void setLeftIndent() {
-
-        String leftIndent = getLeftIndent(getIndent(paragraphProperties));
+        Double leftIndent = getLeftIndent(getIndent(paragraphProperties));
 
         while (parentStyle != null && leftIndent == null) {
             leftIndent = getLeftIndent(getIndent(getParagraphProperties(parentStyle)));
@@ -101,7 +100,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
 
     @Override
     public void setRightIndent() {
-        String rightIndent = getRightIndent(getIndent(paragraphProperties));
+        Double rightIndent = getRightIndent(getIndent(paragraphProperties));
 
         while (parentStyle != null && rightIndent == null) {
             rightIndent = getRightIndent(getIndent(getParagraphProperties(parentStyle)));
@@ -117,7 +116,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
 
     @Override
     public void setLineSpacing() {
-        String lineSpacing = getLineSpacing(getSpacing(paragraphProperties));
+        Double lineSpacing = getLineSpacing(getSpacing(paragraphProperties));
 
         while (parentStyle != null && lineSpacing == null) {
             lineSpacing = getLineSpacing(getSpacing(getParagraphProperties(parentStyle)));
@@ -133,7 +132,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
 
     @Override
     public void setSpacingBefore() {
-        String spacingBefore = getSpacingBefore(getSpacing(paragraphProperties));
+        Double spacingBefore = getSpacingBefore(getSpacing(paragraphProperties));
 
         while (parentStyle != null && spacingBefore == null) {
             spacingBefore = getSpacingBefore(getSpacing(getParagraphProperties(parentStyle)));
@@ -149,7 +148,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
 
     @Override
     public void setSpacingAfter() {
-        String spacingAfter = getSpacingAfter(getSpacing(paragraphProperties));
+        Double spacingAfter = getSpacingAfter(getSpacing(paragraphProperties));
 
         while (parentStyle != null && spacingAfter == null) {
             spacingAfter = getSpacingAfter(getSpacing(getParagraphProperties(parentStyle)));

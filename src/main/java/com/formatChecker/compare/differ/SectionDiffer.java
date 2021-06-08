@@ -6,25 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SectionDiffer implements Differ {
-    Section<List<Double>> actualSection;
-    Section<List<Double>> expectedSection;
+    Section<Double> actualSection;
+    Section<Double> expectedSection;
 
-    public SectionDiffer(Section<List<Double>> actualSection, Section<List<Double>> expectedSection) {
+    public SectionDiffer(Section<Double> actualSection, Section<Double> expectedSection) {
         this.actualSection = actualSection;
         this.expectedSection = expectedSection;
     }
 
-    public Section<List<String>> getSectionDifference() {
-        Section<List<String>> sectionDifference = new Section<>();
+    public Section<String> getSectionDifference() {
+        Section<String> sectionDifference = new Section<>();
 
         sectionDifference.setOrientation(checkStringParameter(
                 actualSection.getOrientation(), expectedSection.getOrientation(), "orientation"));
 
         sectionDifference.setMargins(compareMargins());
 
-        sectionDifference.setPageHeight(checkStringParameter(
+        sectionDifference.setPageHeight(checkDoubleParameter(
                 actualSection.getPageHeight(), expectedSection.getPageHeight(), "page height", "cm"));
-        sectionDifference.setPageWidth(checkStringParameter(
+        sectionDifference.setPageWidth(checkDoubleParameter(
                 actualSection.getPageWidth(), expectedSection.getPageWidth(), "page width", "cm"));
 
         return sectionDifference;

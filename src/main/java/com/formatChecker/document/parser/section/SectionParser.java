@@ -1,7 +1,7 @@
 package com.formatChecker.document.parser.section;
 
 import com.formatChecker.config.model.participants.Section;
-import com.formatChecker.document.converter.Converter;
+import com.formatChecker.document.converter.ValuesConverter;
 import org.docx4j.wml.STPageOrientation;
 import org.docx4j.wml.SectPr;
 import org.docx4j.wml.SectPr.PgMar;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SectionParser implements Converter {
+public class SectionParser implements ValuesConverter {
     static final String DEFAULT_ORIENTATION = "portrait";
 
     private final SectPr sectionProperties;
@@ -20,8 +20,8 @@ public class SectionParser implements Converter {
         this.sectionProperties = sectionProperties;
     }
 
-    public Section<List<Double>> parseSection() {
-        Section<List<Double>> section = new Section<>();
+    public Section<Double> parseSection() {
+        Section<Double> section = new Section<>();
 
         setOrientation(section);
         setMargins(section);
@@ -36,14 +36,14 @@ public class SectionParser implements Converter {
         return orientation != null ? orientation.value().toLowerCase() : DEFAULT_ORIENTATION;
     }
 
-    String getPageHeight() {
+    Double getPageHeight() {
         BigInteger pageHeight = sectionProperties.getPgSz().getH();
-        return pageValToCm(pageHeight).toString();
+        return pageValToCm(pageHeight);
     }
 
-    String getPageWidth() {
+    Double getPageWidth() {
         BigInteger pageWidth = sectionProperties.getPgSz().getW();
-        return pageValToCm(pageWidth).toString();
+        return pageValToCm(pageWidth);
     }
 
     List<Double> getMargins() {
@@ -56,19 +56,19 @@ public class SectionParser implements Converter {
                 pageValToCm(margins.getLeft())));
     }
 
-    void setOrientation(Section<List<Double>> section) {
+    void setOrientation(Section<Double> section) {
         section.setOrientation(getOrientation());
     }
 
-    void setPageHeight(Section<List<Double>> section) {
+    void setPageHeight(Section<Double> section) {
         section.setPageHeight(getPageHeight());
     }
 
-    void setPageWidth(Section<List<Double>> section) {
+    void setPageWidth(Section<Double> section) {
         section.setPageWidth(getPageWidth());
     }
 
-    void setMargins(Section<List<Double>> section) {
+    void setMargins(Section<Double> section) {
         section.setMargins(getMargins());
     }
 }

@@ -11,7 +11,7 @@ public class Config {
 
     Boolean findHeadersByToc = false;
 
-    Section section;
+    Section<Double> section;
     HashMap<String, Style> styles;
 
     Boolean generateNewDocument = false;
@@ -24,7 +24,7 @@ public class Config {
         return findHeadersByToc;
     }
 
-    public Section getSection() {
+    public Section<Double> getSection() {
         return section;
     }
 

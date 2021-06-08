@@ -1,16 +1,16 @@
 package com.formatChecker.document.parser.run;
 
 import com.formatChecker.config.model.participants.Run;
-import com.formatChecker.document.converter.Converter;
+import com.formatChecker.document.converter.ValuesConverter;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.wml.*;
 
-public abstract class RunParser implements Converter {
+public abstract class RunParser implements ValuesConverter {
     DocDefaults docDefaults;
     ThemePart themePart;
 
-    Run<Boolean> run;
+    Run<Boolean, Double> run;
     RPr runProperties;
 
     public RunParser(DocDefaults docDefaults, ThemePart themePart) {
@@ -29,7 +29,7 @@ public abstract class RunParser implements Converter {
         }
     }
 
-    String getFontSize(RPr runProperties) {
+    Double getFontSize(RPr runProperties) {
         if (runProperties == null) { return null; }
         else {
             HpsMeasure fontSize = runProperties.getSz();

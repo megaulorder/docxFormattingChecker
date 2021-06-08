@@ -5,103 +5,67 @@ import com.formatChecker.compare.differ.DocumentDiffer;
 import com.formatChecker.compare.differ.SectionDiffer;
 import com.formatChecker.compare.model.Difference;
 import com.formatChecker.config.model.Config;
-import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Style;
 import com.formatChecker.config.parser.ConfigParser;
 import com.formatChecker.controller.ParagraphController;
 import com.formatChecker.document.model.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
-import com.formatChecker.document.parser.paragraph.ParagraphDirectParser;
 import com.formatChecker.document.parser.section.SectionParser;
 import org.docx4j.Docx4J;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.wml.*;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class DocxParser {
-    private static final String headerStyleName = "header";
-    private static final String bodyStyleName = "body";
+    String docxPath;
+    Config config;
+    Boolean shouldFix;
+    DocumentData documentData;
+    Map<Integer, String> configStyles;
 
-    public DocxDocument parseDocument(String docxPath, String configPath) throws Docx4JException, IOException {
-        FileInputStream file = new FileInputStream(docxPath);
+    WordprocessingMLPackage wordMLPackage;
+    DocxDocument docxDocument;
+    Difference difference;
 
-        WordprocessingMLPackage wordMLPackage = Docx4J.load(file);
-        DocumentData documentData = getDocumentData(wordMLPackage);
+    public DocxParser(String configPath, String docxPath) throws IOException, Docx4JException {
+        this.docxPath = docxPath;
 
-        final Styles styles = documentData.getStyles();
-        final DocDefaults docDefaults = documentData.getDocDefaults();
-        final ThemePart themePart = documentData.getThemePart();
+        this.wordMLPackage = Docx4J.load(new FileInputStream(docxPath));
+        this.documentData = getDocumentData(wordMLPackage);
 
-        Config config = new ConfigParser(configPath).parseConfig();
-        DocxDocument document = new DocxDocument(new ArrayList<>());
-        Difference difference = new Difference(new ArrayList<>());
+        this.config = new ConfigParser(configPath).parseConfig();
+        this.docxDocument = new DocxDocument(new ArrayList<>());
+        this.difference = new Difference(new ArrayList<>());
+        this.shouldFix = config.getGenerateNewDocument();
+        this.configStyles = getConfigStyles();
+    }
 
-        document.setPages(documentData.getDocumentInfo().getPages());
-        difference.setPages(new DocumentDiffer().comparePages(document.getPages(), config.getPages()));
+    public Difference parseDocument() throws Docx4JException, FileNotFoundException {
 
-        document.setSection(new SectionParser(documentData.getSectionProperties()).parseSection());
-        difference.setSection(new SectionDiffer(document.getSection(), config.getSection()).getSectionDifference());
+        docxDocument.setPages(documentData.getDocumentInfo().getPages());
+        docxDocument.setSection(new SectionParser(documentData.getSectionProperties()).parseSection());
 
-        Boolean shouldFix = config.getGenerateNewDocument();
+        difference.setPages(new DocumentDiffer(docxDocument.getPages(), config.getPages()).comparePages());
+        difference.setSection(new SectionDiffer(docxDocument.getSection(), config.getSection()).getSectionDifference());
 
-        int count = 0;
-        for (Object p : documentData.getParagraphs()) {
-            if (p instanceof P) {
-                ++count;
-
-                P par = (P) p;
-                Paragraph paragraph = new ParagraphDirectParser(docDefaults, styles, themePart, par).parseParagraph();
-                document.addParagraph(paragraph);
-
-
-
-                if (!config.getFinByToc()) {
-                    for (Map.Entry<String, Style> entry : config.getStyles().entrySet()) {
-                        List<Integer> paragraphIds = entry.getValue().getParagraphIndexes();
-
-                        for (Integer id : paragraphIds) {
-                            if (id == count) {
-                                Style style = config.getStyles().get(entry.getKey());
-
-                                ParagraphController paragraphController = new ParagraphController(par, paragraph,
-                                        style.getParagraph(), style.getRun(), difference, shouldFix);
-
-                                paragraphController.compareParagraph();
-                            }
-                        }
-                    }
-                }
-                else {
-                    if (paragraph.getIsHeader()) {
-                        Style headerStyle = config.getStyles().get(headerStyleName);
-
-                        ParagraphController paragraphController = new ParagraphController(par, paragraph,
-                                headerStyle.getParagraph(), headerStyle.getRun(), difference, shouldFix);
-
-                        paragraphController.compareParagraph();
-                    } else {
-                        Style bodyStyle = config.getStyles().get(bodyStyleName);
-
-                        ParagraphController paragraphController = new ParagraphController(par, paragraph,
-                                bodyStyle.getParagraph(), bodyStyle.getRun(), difference, shouldFix);
-
-                        paragraphController.compareParagraph();
-                    }
-                }
-            }
-        }
+        parseParagraphs();
 
         String test = new DifferResultCollector(difference).getDifferenceAsString();
 
-        return document;
+        if (shouldFix)
+            wordMLPackage.save(new File(new File(docxPath).getParent() + "/test_fixed.docx"));
+
+        return difference;
     }
 
     DocumentData getDocumentData (WordprocessingMLPackage wordMLPackage) {
@@ -117,5 +81,35 @@ public class DocxParser {
                 styles,
                 body.getContent()
         );
+    }
+
+    void parseParagraphs() throws Docx4JException {
+        int count = 0;
+        for (Object p : documentData.getParagraphs()) {
+            if (p instanceof P) {
+                ++count;
+                P par = (P) p;
+                new ParagraphController(count, par, difference, docxDocument, documentData, config, configStyles)
+                        .parseParagraph();
+            }
+        }
+    }
+
+    Map<Integer, String> getConfigStyles() {
+        if (config.getFinByToc())
+            return null;
+        else {
+            Map<Integer, String> stylesByIndexes = new HashMap<>();
+
+            for (Map.Entry<String, Style> entry : config.getStyles().entrySet()) {
+                List<Integer> paragraphIds = entry.getValue().getParagraphIndexes();
+
+                for (Integer id : paragraphIds) {
+                    stylesByIndexes.put(id, entry.getKey());
+                }
+            }
+
+            return stylesByIndexes;
+        }
     }
 }

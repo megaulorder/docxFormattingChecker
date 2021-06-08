@@ -1,10 +1,10 @@
 package com.formatChecker.config.model.participants;
 
-public class Run<T> {
+public class Run<T, D> {
     String text;
 
     String fontFamily;
-    String fontSize;
+    D fontSize;
 
     T bold;
     T italic;
@@ -21,7 +21,7 @@ public class Run<T> {
         this.fontFamily = fontFamily;
     }
 
-    public void setFontSize(String fontSize) {
+    public void setFontSize(D fontSize) {
         this.fontSize = fontSize;
     }
 
@@ -53,7 +53,7 @@ public class Run<T> {
         return fontFamily;
     }
 
-    public String getFontSize() {
+    public D getFontSize() {
         return fontSize;
     }
 

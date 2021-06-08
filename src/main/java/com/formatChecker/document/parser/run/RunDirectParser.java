@@ -16,8 +16,8 @@ public class RunDirectParser extends RunParser implements RunSetProperties {
     String styleId;
     Styles styles;
 
-    Run<Boolean> styleRun;
-    Run<Boolean> defaultRun;
+    Run<Boolean, Double> styleRun;
+    Run<Boolean, Double> defaultRun;
     String text;
 
     public RunDirectParser(DocDefaults docDefaults, ThemePart themePart, String styleId, Styles styles,  R r)
@@ -35,7 +35,7 @@ public class RunDirectParser extends RunParser implements RunSetProperties {
         this.text = getText(r);
     }
 
-    public Run<Boolean> parseRun() {
+    public Run<Boolean, Double> parseRun() {
         run.setText(text);
 
         setFontFamily();
@@ -61,7 +61,7 @@ public class RunDirectParser extends RunParser implements RunSetProperties {
         else { return runProperties.getRFonts() == null ? null : runProperties.getRFonts().getAscii(); }
     }
 
-    Run<Boolean> getStyleProperties() throws Docx4JException {
+    Run<Boolean, Double> getStyleProperties() throws Docx4JException {
         return new RunStyleParser(docDefaults, themePart, styleId, styles).parseRun();
     }
 
@@ -76,7 +76,7 @@ public class RunDirectParser extends RunParser implements RunSetProperties {
 
     @Override
     public void setFontSize() {
-        String fontSize = getFontSize(runProperties);
+        Double fontSize = getFontSize(runProperties);
         if (fontSize == null) {
             fontSize = styleRun != null ? styleRun.getFontSize() : defaultRun.getFontSize();
         }

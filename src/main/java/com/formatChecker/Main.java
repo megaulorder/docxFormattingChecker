@@ -1,11 +1,11 @@
 package com.formatChecker;
 
 import com.formatChecker.compare.collector.DifferResultCollector;
-import com.formatChecker.compare.differ.DocumentDiffer;
+import com.formatChecker.document.parser.DocxParser;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String result = new DifferResultCollector(new DocumentDiffer().compare(args[0], args[1])).getDifferenceAsString();
+        String result = new DifferResultCollector(new DocxParser(args[0], args[1]).parseDocument()).getDifferenceAsString();
         System.out.println(result);
     }
 }

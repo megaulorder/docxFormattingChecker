@@ -20,8 +20,8 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     ThemePart themePart;
 
     String styleId;
-    Paragraph styleParagraph;
-    Paragraph defaultParagraph;
+    Paragraph<Double> styleParagraph;
+    Paragraph<Double> defaultParagraph;
     String text;
 
     public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par) {
@@ -41,16 +41,6 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     }
 
     public Paragraph parseParagraph() throws Docx4JException {
-        for (Object o : par.getContent()) {
-            if (o instanceof R) {
-                R r = (R) o;
-                Run run = new RunDirectParser(docDefaults, themePart, styleId, styles, r).parseRun();
-                if (!StringUtils.isBlank(run.getText())) {
-                    paragraph.addRun(run);
-                }
-            }
-        }
-
         paragraph.setText(text);
 
         setAlignment();
@@ -65,6 +55,16 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
 
         setIsHeader();
 
+        for (Object o : par.getContent()) {
+            if (o instanceof R) {
+                R r = (R) o;
+                Run run = new RunDirectParser(docDefaults, themePart, styleId, styles, r).parseRun();
+                if (!StringUtils.isBlank(run.getText())) {
+                    paragraph.addRun(run);
+                }
+            }
+        }
+
         return paragraph;
     }
 
@@ -75,7 +75,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         else return par.getPPr().getPStyle() == null ? null : par.getPPr().getPStyle().getVal();
     }
 
-    Paragraph getStyleProperties() {
+    Paragraph<Double> getStyleProperties() {
         return new ParagraphStyleParser(docDefaults, styles, styleId).parseParagraph();
     }
 
@@ -90,7 +90,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
 
     @Override
     public void setFirstLineIndent() {
-        String firstLineIndent = getFirstLineIndent(getIndent(paragraphProperties));
+        Double firstLineIndent = getFirstLineIndent(getIndent(paragraphProperties));
         if (firstLineIndent == null) {
             firstLineIndent = styleParagraph != null ? styleParagraph.getFirstLineIndent() :
                     defaultParagraph.getFirstLineIndent();
@@ -100,7 +100,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
 
     @Override
     public void setLeftIndent() {
-        String leftIndent = getLeftIndent(getIndent(paragraphProperties));
+        Double leftIndent = getLeftIndent(getIndent(paragraphProperties));
         if (leftIndent == null) {
             leftIndent = styleParagraph != null ? styleParagraph.getLeftIndent() :
                     defaultParagraph.getLeftIndent();
@@ -110,7 +110,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
 
     @Override
     public void setRightIndent() {
-        String rightIndent = getRightIndent(getIndent(paragraphProperties));
+        Double rightIndent = getRightIndent(getIndent(paragraphProperties));
         if (rightIndent == null) {
             rightIndent = styleParagraph != null ? styleParagraph.getRightIndent() :
                     defaultParagraph.getRightIndent();
@@ -120,7 +120,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
 
     @Override
     public void setLineSpacing() {
-        String lineSpacing = getLineSpacing(getSpacing(paragraphProperties));
+        Double lineSpacing = getLineSpacing(getSpacing(paragraphProperties));
         if (lineSpacing == null) {
             lineSpacing = styleParagraph != null ? styleParagraph.getLineSpacing() :
                     defaultParagraph.getLineSpacing();
@@ -130,7 +130,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
 
     @Override
     public void setSpacingBefore() {
-        String spacingBefore = getSpacingBefore(getSpacing(paragraphProperties));
+        Double spacingBefore = getSpacingBefore(getSpacing(paragraphProperties));
         if (spacingBefore == null) {
             spacingBefore = styleParagraph != null ? styleParagraph.getSpacingBefore() :
                     defaultParagraph.getSpacingBefore();
@@ -140,7 +140,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
 
     @Override
     public void setSpacingAfter() {
-        String spacingAfter = getSpacingAfter(getSpacing(paragraphProperties));
+        Double spacingAfter = getSpacingAfter(getSpacing(paragraphProperties));
         if (spacingAfter == null) {
             spacingAfter = styleParagraph != null ? styleParagraph.getSpacingAfter() :
                     defaultParagraph.getSpacingAfter();
