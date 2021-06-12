@@ -1,17 +1,15 @@
 package com.formatChecker.document.parser.run;
 
 import com.formatChecker.config.model.participants.Run;
+import com.formatChecker.controller.RunHelper;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.wml.DocDefaults;
 import org.docx4j.wml.R;
 import org.docx4j.wml.RPr;
 import org.docx4j.wml.Styles;
-import org.docx4j.wml.Text;
 
-import javax.xml.bind.JAXBElement;
-
-public class RunDirectParser extends RunParser implements RunSetProperties {
+public class RunDirectParser extends RunParser implements RunSetProperties, RunHelper {
     R r;
     String styleId;
     Styles styles;
@@ -47,13 +45,6 @@ public class RunDirectParser extends RunParser implements RunSetProperties {
         setTextColor();
 
         return run;
-    }
-
-    String getText(R r) {
-        JAXBElement obj = ((JAXBElement) r.getContent().get(0));
-        if (obj.getValue() instanceof Text) {
-            return ((Text) obj.getValue()).getValue();
-        } else { return ""; }
     }
 
     String getFontFamily(RPr runProperties) {

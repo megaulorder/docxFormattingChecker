@@ -25,10 +25,11 @@ public class RunController {
     Boolean isHeader;
 
     public RunController(Integer index, R documentRun, Run<Boolean, Double> actualRun, Paragraph differenceParagraph,
-                         Map<Integer, String> configStyles, Boolean isHeader, Config config) {
+                         Map<Integer, String> configStyles, Boolean isHeader, Config config, Boolean shouldFix) {
         this.index = index;
         this.documentRun = documentRun;
         this.actualRun = actualRun;
+        this.shouldFix = shouldFix;
 
         this.differenceParagraph = differenceParagraph;
         this.config = config;

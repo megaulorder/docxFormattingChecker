@@ -11,25 +11,26 @@ import org.docx4j.wml.P;
 import org.docx4j.wml.R;
 import org.docx4j.wml.Styles;
 
-import javax.xml.bind.JAXBElement;
-import java.util.Optional;
+import java.util.List;
 
 public class ParagraphDirectParser extends ParagraphParser implements ParagraphSetProperties {
     P par;
     Styles styles;
     ThemePart themePart;
+    List<String> headers;
 
     String styleId;
     Paragraph<Double> styleParagraph;
     Paragraph<Double> defaultParagraph;
     String text;
 
-    public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par) {
+    public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par, List<String> headers) {
         super(docDefaults);
 
         this.par = par;
         this.styles = styles;
         this.themePart = themePart;
+        this.headers = headers;
 
         this.styleId = getStyleId(par);
         this.styleParagraph = styleId == null ? null : getStyleProperties();
@@ -149,7 +150,6 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     }
 
     void setIsHeader() {
-        Optional<Object> tocElement = par.getContent().stream().filter(i -> i instanceof JAXBElement).findFirst();
-        paragraph.setIsHeader(tocElement.isPresent());
+        paragraph.setIsHeader(headers.contains(text));
     }
 }

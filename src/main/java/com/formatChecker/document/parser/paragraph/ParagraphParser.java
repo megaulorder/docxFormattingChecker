@@ -28,7 +28,10 @@ public abstract class ParagraphParser implements ValuesConverter {
         if (paragraphProperties == null) { return null; }
         else {
             Jc alignment = paragraphProperties.getJc();
-            return alignment == null ? null : alignment.getVal().toString().toLowerCase();
+            if (alignment == null)
+                return null;
+            else
+                return convertAlignment(alignment.getVal().toString());
         }
     }
 

@@ -13,7 +13,7 @@ public interface Differ {
                                         String measurementUnit) {
         if (expectedParameter == null) return null;
         else {
-            return actualParameter == expectedParameter ? null :
+            return actualParameter.equals(expectedParameter) ? null :
                     String.format("change %s from %s%s to %s%s", parameterName, actualParameter, measurementUnit,
                             expectedParameter, measurementUnit);
         }

@@ -1,36 +1,49 @@
 {
     "pages": {
-        "min": 3,
-        "max": 5
+        "min": 40,
+        "max": 60
     },
     "section": {
         "orientation": "portrait",
         "margins": [
-            1.5,
-            1.5,
+            2,
+            1,
             2,
             3
         ],
         "pageHeight": 29.7,
-        "pageWidth": 19.0
+        "pageWidth": 21.0
     },
     "styles": {
         "header": {
             "paragraphs": [
-                1,
-                2,
-                3
+                1
             ],
             "paragraphProperties": {
-                "alignment": "left",
-                "firstLineIndent": 1.25,
-                "spacingBefore": 4.0
+                "alignment": "justify",
+                "firstLineIndent": 1.25
             },
             "runProperties": {
-                "fontFamily": "Papyrus",
-                "fontSize": 12
+                "fontFamily": "Times New Roman",
+                "fontSize": 14,
+                "bold": true
+            }
+        },
+        "body": {
+            "paragraphs": [
+                1
+            ],
+            "paragraphProperties": {
+                "alignment": "justify",
+                "firstLineIndent": 1.25,
+                "spacingBefore": 0,
+                "spacingAfter": 0
+            },
+            "runProperties": {
+                "fontFamily": "Times New Roman",
+                "fontSize": 14
             }
         }
     },
-    "generateNewDocument": true
+    "findHeadersByTOC": true
 }

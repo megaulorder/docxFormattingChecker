@@ -24,8 +24,11 @@ public abstract class RunParser implements ValuesConverter {
         if (runProperties == null) { return null; }
         else {
             RFonts fontProperties = runProperties.getRFonts();
-            return fontProperties.getAscii() != null ? fontProperties.getAscii() :
-                    themePart.getMajorLatin().getTypeface();
+            if (fontProperties == null)
+                return null;
+            else
+                return fontProperties.getAscii() != null ? fontProperties.getAscii() :
+                        themePart.getMajorLatin().getTypeface();
         }
     }
 

@@ -12,14 +12,15 @@ import com.formatChecker.document.model.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.parser.section.SectionParser;
 import org.docx4j.Docx4J;
+import org.docx4j.jaxb.XPathBinderAssociationIsPartialException;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.wml.*;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DocxParser {
+    private final static String TOC_XPATH = "//w:p[w:bookmarkStart[starts-with(@w:name,'_Toc')]]";
+
     String docxPath;
     Config config;
     Boolean shouldFix;
@@ -34,13 +37,15 @@ public class DocxParser {
     Map<Integer, String> configStyles;
 
     WordprocessingMLPackage wordMLPackage;
+    List<String> headers;
     DocxDocument docxDocument;
     Difference difference;
 
-    public DocxParser(String configPath, String docxPath) throws IOException, Docx4JException {
+    public DocxParser(String configPath, String docxPath) throws IOException, Docx4JException, JAXBException {
         this.docxPath = docxPath;
 
         this.wordMLPackage = Docx4J.load(new FileInputStream(docxPath));
+        this.headers = getHeadersByTOC(wordMLPackage);
         this.documentData = getDocumentData(wordMLPackage);
 
         this.config = new ConfigParser(configPath).parseConfig();
@@ -50,7 +55,7 @@ public class DocxParser {
         this.configStyles = getConfigStyles();
     }
 
-    public Difference parseDocument() throws Docx4JException, FileNotFoundException {
+    public Difference parseDocument() throws Docx4JException {
 
         docxDocument.setPages(documentData.getDocumentInfo().getPages());
         docxDocument.setSection(new SectionParser(documentData.getSectionProperties()).parseSection());
@@ -70,6 +75,7 @@ public class DocxParser {
 
     DocumentData getDocumentData (WordprocessingMLPackage wordMLPackage) {
         MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
+        System.out.println(documentPart.getXML());
         Body body = documentPart.getJaxbElement().getBody();
         Styles styles = documentPart.getStyleDefinitionsPart().getJaxbElement();
 
@@ -87,16 +93,19 @@ public class DocxParser {
         int count = 0;
         for (Object p : documentData.getParagraphs()) {
             if (p instanceof P) {
-                ++count;
                 P par = (P) p;
-                new ParagraphController(count, par, difference, docxDocument, documentData, config, configStyles)
-                        .parseParagraph();
+                if (!par.toString().equals("")) {
+                    ++count;
+                    new ParagraphController(count, par, difference, docxDocument, documentData, config, configStyles, headers)
+                            .parseParagraph();
+//                    System.out.println(docxDocument.getParagraphs().get(count-1).getText());
+                }
             }
         }
     }
 
     Map<Integer, String> getConfigStyles() {
-        if (config.getFinByToc())
+        if (config.getFindHeadersByToc())
             return null;
         else {
             Map<Integer, String> stylesByIndexes = new HashMap<>();
@@ -111,5 +120,17 @@ public class DocxParser {
 
             return stylesByIndexes;
         }
+    }
+
+    List<String> getHeadersByTOC(WordprocessingMLPackage wordMLPackage) throws JAXBException, XPathBinderAssociationIsPartialException {
+        List<String> headers = new ArrayList<>();
+        List<Object> TOCObjects = wordMLPackage.getMainDocumentPart().getJAXBNodesViaXPath(
+                TOC_XPATH, false);
+
+        for (Object o : TOCObjects) {
+            headers.add(o.toString());
+        }
+
+        return headers;
     }
 }

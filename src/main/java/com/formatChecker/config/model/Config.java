@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class Config {
     Pages pages;
 
-    Boolean findHeadersByToc = false;
+    Boolean findHeadersByTOC = false;
 
     Section<Double> section;
     HashMap<String, Style> styles;
@@ -20,8 +20,8 @@ public class Config {
         return pages;
     }
 
-    public Boolean getFinByToc() {
-        return findHeadersByToc;
+    public Boolean getFindHeadersByToc() {
+        return findHeadersByTOC;
     }
 
     public Section<Double> getSection() {

@@ -14,10 +14,10 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.wml.*;
 
-import javax.xml.bind.JAXBElement;
+import java.util.List;
 import java.util.Map;
 
-public class ParagraphController {
+public class ParagraphController implements RunHelper {
     private static final String HEADER_STYLE_NAME = "header";
     private static final String BODY_STYLE_NAME = "body";
 
@@ -30,6 +30,7 @@ public class ParagraphController {
 
     Config config;
     DocumentData documentData;
+    List<String> headers;
     DocxDocument docxDocument;
     Map<Integer, String> configStyles;
 
@@ -39,12 +40,14 @@ public class ParagraphController {
 
 
     public ParagraphController(Integer index, P documentParagraph, Difference difference, DocxDocument docxDocument,
-                               DocumentData documentData, Config config, Map<Integer, String> configStyles) throws Docx4JException {
+                               DocumentData documentData, Config config, Map<Integer, String> configStyles, List<String> headers)
+            throws Docx4JException {
         this.index = index;
         this.documentParagraph = documentParagraph;
 
         this.difference = difference;
         this.documentData = documentData;
+        this.headers = headers;
         this.docxDocument = docxDocument;
         this.config = config;
         this.configStyles = configStyles;
@@ -54,7 +57,7 @@ public class ParagraphController {
         this.docDefaults = documentData.getDocDefaults();
         this.themePart = documentData.getThemePart();
 
-        this.actualParagraph = new ParagraphDirectParser(docDefaults, styles, themePart, documentParagraph)
+        this.actualParagraph = new ParagraphDirectParser(docDefaults, styles, themePart, documentParagraph, headers)
                 .parseParagraph();
     }
 
@@ -62,7 +65,7 @@ public class ParagraphController {
         docxDocument.addParagraph(actualParagraph);
 
         if (configStyles == null) {
-            if (actualParagraph.getIsHeader()) {
+            if (actualParagraph.getIsHeader() != null) {
                 expectedParagraph = config.getStyles().get(HEADER_STYLE_NAME).getParagraph();
             }
             else {
@@ -93,19 +96,11 @@ public class ParagraphController {
                 if (!StringUtils.isBlank(getText(r))) {
                     ++count;
 
-                    Run<Boolean, Double> actualRun = (Run) actualParagraph.getRuns().get(count - 1);
+                    Run actualRun = (Run) actualParagraph.getRuns().get(count - 1);
                     new RunController(index, r, actualRun, differenceParagraph, configStyles,
-                            actualParagraph.getIsHeader(), config);
+                            actualParagraph.getIsHeader(), config, shouldFix).parseRun();
                 }
             }
         }
-    }
-
-    String getText(R r) {
-        JAXBElement obj = ((JAXBElement) r.getContent().get(0));
-        if (obj.getValue() instanceof Text)
-            return ((Text) obj.getValue()).getValue();
-        else
-            return "";
     }
 }
