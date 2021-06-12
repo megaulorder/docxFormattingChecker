@@ -2,7 +2,7 @@ package com.formatChecker.fixer;
 
 import com.formatChecker.config.converter.ConfigConverter;
 import com.formatChecker.config.model.participants.Run;
-import org.docx4j.wml.R;
+import org.docx4j.wml.*;
 
 public class RunFixer implements ConfigConverter {
     R run;
@@ -25,17 +25,47 @@ public class RunFixer implements ConfigConverter {
             fixItalic();
         if (differenceRun.getStrikethrough() != null)
             fixStrikethrough();
+        if (differenceRun.getFontSize() != null)
+            fixFontSize();
+        if (differenceRun.getFontFamily() != null)
+            fixFontFamily();
+        if (differenceRun.getUnderline() != null)
+            fixUnderline();
     }
 
     void fixBold() {
-        run.getRPr().getB().setVal(expectedRun.getBold());
+        BooleanDefaultTrue bold = new BooleanDefaultTrue();
+        bold.setVal(expectedRun.getBold());
+        run.getRPr().setB(bold);
     }
 
     void fixItalic() {
-        run.getRPr().getI().setVal(expectedRun.getItalic());
+        BooleanDefaultTrue italic = new BooleanDefaultTrue();
+        italic.setVal(expectedRun.getItalic());
+        run.getRPr().setI(italic);
     }
 
     void fixStrikethrough() {
-        run.getRPr().getStrike().setVal(expectedRun.getStrikethrough());
+        BooleanDefaultTrue strikethrough = new BooleanDefaultTrue();
+        strikethrough.setVal(expectedRun.getStrikethrough());
+        run.getRPr().setI(strikethrough);
+    }
+
+    void fixFontSize() {
+        HpsMeasure fontSize = new HpsMeasure();
+        fontSize.setVal(ptToHalfPt(expectedRun.getFontSize()));
+        run.getRPr().setSz(fontSize);
+    }
+
+    void fixFontFamily() {
+        RFonts fontFamily = new RFonts();
+        fontFamily.setAscii(expectedRun.getFontFamily());
+        run.getRPr().setRFonts(fontFamily);
+    }
+
+    void fixUnderline() {
+        U underline = new U();
+        underline.setVal(convertUnderline(expectedRun.getUnderline()));
+        run.getRPr().setU(underline);
     }
 }

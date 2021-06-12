@@ -46,11 +46,11 @@ public class RunController {
             else {
                 expectedRun = config.getStyles().get(BODY_STYLE_NAME).getRun();
             }
-            compareRun();
         }
         else {
             expectedRun = config.getStyles().get(configStyles.get(index)).getRun();
         }
+        compareRun();
     }
 
     void compareRun() {

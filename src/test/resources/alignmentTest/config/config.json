@@ -17,33 +17,19 @@
     "styles": {
         "header": {
             "paragraphs": [
-                1
+                1, 2, 3
             ],
             "paragraphProperties": {
-                "alignment": "justify",
-                "firstLineIndent": 1.25
+                "alignment": "left",
+                "firstLineIndent": 1.25,
+                "spacingBefore": 0
             },
             "runProperties": {
                 "fontFamily": "Times New Roman",
                 "fontSize": 14,
                 "bold": true
             }
-        },
-        "body": {
-            "paragraphs": [
-                1
-            ],
-            "paragraphProperties": {
-                "alignment": "justify",
-                "firstLineIndent": 1.25,
-                "spacingBefore": 0,
-                "spacingAfter": 0
-            },
-            "runProperties": {
-                "fontFamily": "Times New Roman",
-                "fontSize": 14
-            }
         }
     },
-    "findHeadersByTOC": true
+    "generateNewDocument": true
 }
