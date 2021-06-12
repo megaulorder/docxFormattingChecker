@@ -65,7 +65,7 @@ public class DocxParser {
 
         parseParagraphs();
 
-        String test = new DifferResultCollector(difference).getDifferenceAsString();
+//        String test = new DifferResultCollector(difference).getDifferenceAsString();
 
         if (shouldFix)
             wordMLPackage.save(new File(new File(docxPath).getParent() + "/test_fixed.docx"));
@@ -75,7 +75,7 @@ public class DocxParser {
 
     DocumentData getDocumentData (WordprocessingMLPackage wordMLPackage) {
         MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
-        System.out.println(documentPart.getXML());
+//        System.out.println(documentPart.getXML());
         Body body = documentPart.getJaxbElement().getBody();
         Styles styles = documentPart.getStyleDefinitionsPart().getJaxbElement();
 

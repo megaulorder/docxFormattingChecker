@@ -17,19 +17,38 @@
     "styles": {
         "header": {
             "paragraphs": [
-                1, 2, 3
+                1
             ],
             "paragraphProperties": {
-                "alignment": "left",
+                "alignment": "justify",
                 "firstLineIndent": 1.25,
-                "spacingBefore": 0
+                "lineSpacing": 1.5,
+                "spacingBefore": 0,
+                "spacingAfter": 0
             },
             "runProperties": {
                 "fontFamily": "Times New Roman",
                 "fontSize": 14,
                 "bold": true
             }
+        },
+        "body": {
+            "paragraphs": [
+                1
+            ],
+            "paragraphProperties": {
+                "alignment": "justify",
+                "firstLineIndent": 1.25,
+                "lineSpacing": 1.5,
+                "spacingBefore": 0,
+                "spacingAfter": 0
+            },
+            "runProperties": {
+                "fontFamily": "Times New Roman",
+                "fontSize": 14
+            }
         }
     },
-    "generateNewDocument": true
+    "generateNewDocument": true,
+    "findHeadersByTOC": true
 }
