@@ -19,53 +19,59 @@ public class RunFixer implements ConfigConverter {
     }
 
     public void fixRun() {
-        if (differenceRun.getBold() != null)
-            fixBold();
-        if (differenceRun.getItalic() != null)
-            fixItalic();
-        if (differenceRun.getStrikethrough() != null)
-            fixStrikethrough();
-        if (differenceRun.getFontSize() != null)
-            fixFontSize();
-        if (differenceRun.getFontFamily() != null)
-            fixFontFamily();
-        if (differenceRun.getUnderline() != null)
-            fixUnderline();
+        fixBold();
+        fixItalic();
+        fixStrikethrough();
+        fixFontSize();
+        fixFontFamily();
+        fixUnderline();
     }
 
     void fixBold() {
-        BooleanDefaultTrue bold = new BooleanDefaultTrue();
-        bold.setVal(expectedRun.getBold());
-        run.getRPr().setB(bold);
+        if (differenceRun.getBold() != null) {
+            BooleanDefaultTrue bold = new BooleanDefaultTrue();
+            bold.setVal(expectedRun.getBold());
+            run.getRPr().setB(bold);
+        }
     }
 
     void fixItalic() {
-        BooleanDefaultTrue italic = new BooleanDefaultTrue();
-        italic.setVal(expectedRun.getItalic());
-        run.getRPr().setI(italic);
+        if (differenceRun.getItalic() != null) {
+            BooleanDefaultTrue italic = new BooleanDefaultTrue();
+            italic.setVal(expectedRun.getItalic());
+            run.getRPr().setI(italic);
+        }
     }
 
     void fixStrikethrough() {
-        BooleanDefaultTrue strikethrough = new BooleanDefaultTrue();
-        strikethrough.setVal(expectedRun.getStrikethrough());
-        run.getRPr().setI(strikethrough);
+        if (differenceRun.getStrikethrough() != null) {
+            BooleanDefaultTrue strikethrough = new BooleanDefaultTrue();
+            strikethrough.setVal(expectedRun.getStrikethrough());
+            run.getRPr().setI(strikethrough);
+        }
     }
 
     void fixFontSize() {
-        HpsMeasure fontSize = new HpsMeasure();
-        fontSize.setVal(ptToHalfPt(expectedRun.getFontSize()));
-        run.getRPr().setSz(fontSize);
+        if (differenceRun.getFontSize() != null) {
+            HpsMeasure fontSize = new HpsMeasure();
+            fontSize.setVal(ptToHalfPt(expectedRun.getFontSize()));
+            run.getRPr().setSz(fontSize);
+        }
     }
 
     void fixFontFamily() {
-        RFonts fontFamily = new RFonts();
-        fontFamily.setAscii(expectedRun.getFontFamily());
-        run.getRPr().setRFonts(fontFamily);
+        if (differenceRun.getFontFamily() != null) {
+            RFonts fontFamily = new RFonts();
+            fontFamily.setAscii(expectedRun.getFontFamily());
+            run.getRPr().setRFonts(fontFamily);
+        }
     }
 
     void fixUnderline() {
-        U underline = new U();
-        underline.setVal(convertUnderline(expectedRun.getUnderline()));
-        run.getRPr().setU(underline);
+        if (differenceRun.getUnderline() != null) {
+            U underline = new U();
+            underline.setVal(convertUnderline(expectedRun.getUnderline()));
+            run.getRPr().setU(underline);
+        }
     }
 }

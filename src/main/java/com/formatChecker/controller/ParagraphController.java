@@ -1,7 +1,7 @@
 package com.formatChecker.controller;
 
-import com.formatChecker.compare.differ.ParagraphDiffer;
-import com.formatChecker.compare.model.Difference;
+import com.formatChecker.comparer.differ.ParagraphDiffer;
+import com.formatChecker.comparer.model.Difference;
 import com.formatChecker.config.model.Config;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;

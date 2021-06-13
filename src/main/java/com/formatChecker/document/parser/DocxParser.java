@@ -1,16 +1,17 @@
 package com.formatChecker.document.parser;
 
-import com.formatChecker.compare.collector.DifferResultCollector;
-import com.formatChecker.compare.differ.DocumentDiffer;
-import com.formatChecker.compare.differ.SectionDiffer;
-import com.formatChecker.compare.model.Difference;
+import com.formatChecker.comparer.differ.DocumentDiffer;
+import com.formatChecker.comparer.differ.SectionDiffer;
+import com.formatChecker.comparer.model.Difference;
 import com.formatChecker.config.model.Config;
+import com.formatChecker.config.model.participants.Section;
 import com.formatChecker.config.model.participants.Style;
 import com.formatChecker.config.parser.ConfigParser;
 import com.formatChecker.controller.ParagraphController;
 import com.formatChecker.document.model.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.parser.section.SectionParser;
+import com.formatChecker.fixer.SectionFixer;
 import org.docx4j.Docx4J;
 import org.docx4j.jaxb.XPathBinderAssociationIsPartialException;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -38,6 +39,7 @@ public class DocxParser {
 
     WordprocessingMLPackage wordMLPackage;
     List<String> headers;
+    Section<Double> section;
     DocxDocument docxDocument;
     Difference difference;
 
@@ -47,6 +49,7 @@ public class DocxParser {
         this.wordMLPackage = Docx4J.load(new FileInputStream(docxPath));
         this.headers = getHeadersByTOC(wordMLPackage);
         this.documentData = getDocumentData(wordMLPackage);
+        this.section = new SectionParser(documentData.getSectionProperties()).parseSection();
 
         this.config = new ConfigParser(configPath).parseConfig();
         this.docxDocument = new DocxDocument(new ArrayList<>());
@@ -58,7 +61,7 @@ public class DocxParser {
     public Difference parseDocument() throws Docx4JException {
 
         docxDocument.setPages(documentData.getDocumentInfo().getPages());
-        docxDocument.setSection(new SectionParser(documentData.getSectionProperties()).parseSection());
+        docxDocument.setSection(section);
 
         difference.setPages(new DocumentDiffer(docxDocument.getPages(), config.getPages()).comparePages());
         difference.setSection(new SectionDiffer(docxDocument.getSection(), config.getSection()).getSectionDifference());
@@ -67,8 +70,11 @@ public class DocxParser {
 
 //        String test = new DifferResultCollector(difference).getDifferenceAsString();
 
-        if (shouldFix)
+        if (shouldFix) {
+            new SectionFixer(documentData.getSectionProperties(), section, config.getSection(), difference.getSection()).fixSection();
+
             wordMLPackage.save(new File(new File(docxPath).getParent() + "/test_fixed.docx"));
+        }
 
         return difference;
     }

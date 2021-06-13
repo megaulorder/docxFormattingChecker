@@ -1,4 +1,4 @@
-package com.formatChecker.compare.model;
+package com.formatChecker.comparer.model;
 
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Section;

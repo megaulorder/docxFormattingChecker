@@ -1,6 +1,7 @@
 package com.formatChecker.config.converter;
 
 import org.docx4j.wml.JcEnumeration;
+import org.docx4j.wml.STPageOrientation;
 import org.docx4j.wml.UnderlineEnumeration;
 
 import java.math.BigDecimal;
@@ -37,7 +38,14 @@ public interface ConfigConverter {
     }
 
     default BigInteger cmToPageVal(Double value) {
-        return BigDecimal.valueOf(value * 0.0017638889).toBigInteger();
+        return BigDecimal.valueOf(value / 0.0017638889).toBigInteger();
+    }
+
+    default STPageOrientation convertOrientation (String orientation) {
+        if (orientation.equals("landscape"))
+            return STPageOrientation.LANDSCAPE;
+        else
+            return STPageOrientation.PORTRAIT;
     }
 
     default UnderlineEnumeration convertUnderline(String underline) {

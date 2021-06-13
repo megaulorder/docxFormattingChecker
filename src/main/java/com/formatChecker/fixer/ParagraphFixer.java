@@ -22,37 +22,20 @@ public class ParagraphFixer implements ConfigConverter {
     }
 
     public void fixParagraph() {
-        if (differenceParagraph.getAlignment() != null)
-            fixAlignment();
-
-        if (differenceParagraph.getFirstLineIndent() != null ||
-                differenceParagraph.getLeftIndent() != null ||
-                differenceParagraph.getRightIndent() != null)
-            fixIndent();
-
-        if (differenceParagraph.getLineSpacing() != null ||
-                differenceParagraph.getSpacingBefore() != null ||
-                differenceParagraph.getSpacingAfter() != null)
-            fixSpacing();
+        fixAlignment();
+        fixIndent();
+        fixSpacing();
     }
 
     void fixAlignment() {
-        Jc alignment = new Jc();
-        alignment.setVal(convertAlignment(expectedParagraph.getAlignment()));
-        paragraph.getPPr().setJc(alignment);
+        if (differenceParagraph.getAlignment() != null) {
+            Jc alignment = new Jc();
+            alignment.setVal(convertAlignment(expectedParagraph.getAlignment()));
+            paragraph.getPPr().setJc(alignment);
+        }
     }
 
     void fixIndent() {
-        Ind expectedIndent = collectIndent();
-        paragraph.getPPr().setInd(expectedIndent);
-    }
-
-    void fixSpacing() {
-        Spacing expectedSpacing = collectSpacing();
-        paragraph.getPPr().setSpacing(expectedSpacing);
-    }
-
-    Ind collectIndent() {
         Ind indent = new Ind();
 
         if (differenceParagraph.getRightIndent() != null)
@@ -70,10 +53,10 @@ public class ParagraphFixer implements ConfigConverter {
         else
             indent.setFirstLine(cmToTwips(actualParagraph.getFirstLineIndent()));
 
-        return indent;
+        paragraph.getPPr().setInd(indent);
     }
 
-    Spacing collectSpacing() {
+    void fixSpacing() {
         Spacing spacing = new Spacing();
 
         if (differenceParagraph.getLineSpacing() != null)
@@ -91,6 +74,6 @@ public class ParagraphFixer implements ConfigConverter {
         else
             spacing.setBefore(cmToAbsUnits(actualParagraph.getSpacingAfter()));
 
-        return spacing;
+        paragraph.getPPr().setSpacing(spacing);
     }
 }

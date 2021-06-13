@@ -1,4 +1,4 @@
-package com.formatChecker.compare.differ;
+package com.formatChecker.comparer.differ;
 
 import com.formatChecker.config.model.participants.Paragraph;
 

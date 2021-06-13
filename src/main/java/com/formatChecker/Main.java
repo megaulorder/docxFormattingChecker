@@ -1,6 +1,6 @@
 package com.formatChecker;
 
-import com.formatChecker.compare.collector.DifferResultCollector;
+import com.formatChecker.comparer.collector.DifferResultCollector;
 import com.formatChecker.document.parser.DocxParser;
 
 public class Main {

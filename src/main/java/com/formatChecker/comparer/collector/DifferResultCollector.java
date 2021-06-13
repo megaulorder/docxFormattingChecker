@@ -1,6 +1,6 @@
-package com.formatChecker.compare.collector;
+package com.formatChecker.comparer.collector;
 
-import com.formatChecker.compare.model.Difference;
+import com.formatChecker.comparer.model.Difference;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.config.model.participants.Section;

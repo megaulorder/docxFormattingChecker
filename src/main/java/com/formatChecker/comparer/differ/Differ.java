@@ -1,4 +1,4 @@
-package com.formatChecker.compare.differ;
+package com.formatChecker.comparer.differ;
 
 public interface Differ {
     default String checkStringParameter(String actualParameter, String expectedParameter, String parameterName) {

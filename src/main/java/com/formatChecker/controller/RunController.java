@@ -1,6 +1,6 @@
 package com.formatChecker.controller;
 
-import com.formatChecker.compare.differ.RunDiffer;
+import com.formatChecker.comparer.differ.RunDiffer;
 import com.formatChecker.config.model.Config;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
