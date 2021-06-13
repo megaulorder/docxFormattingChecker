@@ -2,7 +2,6 @@ package com.formatChecker.comparer.differ;
 
 import com.formatChecker.config.model.participants.Section;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

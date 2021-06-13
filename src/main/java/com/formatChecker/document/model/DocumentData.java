@@ -1,9 +1,9 @@
 package com.formatChecker.document.model;
 
 import org.docx4j.docProps.extended.Properties;
+import org.docx4j.model.structure.SectionWrapper;
 import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.wml.DocDefaults;
-import org.docx4j.wml.SectPr;
 import org.docx4j.wml.Styles;
 
 import java.util.List;
@@ -12,15 +12,16 @@ public class DocumentData {
     Properties documentInfo;
     DocDefaults docDefaults;
     ThemePart themePart;
-    SectPr sectionProperties;
+    List<SectionWrapper> sections;
     Styles styles;
     List<Object> paragraphs;
 
-    public DocumentData(Properties documentInfo, DocDefaults docDefaults, ThemePart themePart, SectPr sectionProperties, Styles styles, List<Object> paragraphs) {
+    public DocumentData(Properties documentInfo, DocDefaults docDefaults, ThemePart themePart,
+                        List<SectionWrapper> sections, Styles styles, List<Object> paragraphs) {
         this.documentInfo = documentInfo;
         this.docDefaults = docDefaults;
         this.themePart = themePart;
-        this.sectionProperties = sectionProperties;
+        this.sections = sections;
         this.styles = styles;
         this.paragraphs = paragraphs;
     }
@@ -37,8 +38,8 @@ public class DocumentData {
         return themePart;
     }
 
-    public SectPr getSectionProperties() {
-        return sectionProperties;
+    public List<SectionWrapper> getSections() {
+        return sections;
     }
 
     public List<Object> getParagraphs() {

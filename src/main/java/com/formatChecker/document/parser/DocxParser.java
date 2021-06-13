@@ -1,19 +1,17 @@
 package com.formatChecker.document.parser;
 
 import com.formatChecker.comparer.differ.DocumentDiffer;
-import com.formatChecker.comparer.differ.SectionDiffer;
 import com.formatChecker.comparer.model.Difference;
 import com.formatChecker.config.model.Config;
-import com.formatChecker.config.model.participants.Section;
 import com.formatChecker.config.model.participants.Style;
 import com.formatChecker.config.parser.ConfigParser;
 import com.formatChecker.controller.ParagraphController;
+import com.formatChecker.controller.SectionController;
 import com.formatChecker.document.model.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
-import com.formatChecker.document.parser.section.SectionParser;
-import com.formatChecker.fixer.SectionFixer;
 import org.docx4j.Docx4J;
 import org.docx4j.jaxb.XPathBinderAssociationIsPartialException;
+import org.docx4j.model.structure.SectionWrapper;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
@@ -39,7 +37,7 @@ public class DocxParser {
 
     WordprocessingMLPackage wordMLPackage;
     List<String> headers;
-    Section<Double> section;
+    List<SectPr> sectionsProperties;
     DocxDocument docxDocument;
     Difference difference;
 
@@ -49,11 +47,11 @@ public class DocxParser {
         this.wordMLPackage = Docx4J.load(new FileInputStream(docxPath));
         this.headers = getHeadersByTOC(wordMLPackage);
         this.documentData = getDocumentData(wordMLPackage);
-        this.section = new SectionParser(documentData.getSectionProperties()).parseSection();
+        this.sectionsProperties = getSectionsProperties();
 
         this.config = new ConfigParser(configPath).parseConfig();
-        this.docxDocument = new DocxDocument(new ArrayList<>());
-        this.difference = new Difference(new ArrayList<>());
+        this.docxDocument = new DocxDocument(new ArrayList<>(), new ArrayList<>());
+        this.difference = new Difference(new ArrayList<>(), new ArrayList<>());
         this.shouldFix = config.getGenerateNewDocument();
         this.configStyles = getConfigStyles();
     }
@@ -61,20 +59,18 @@ public class DocxParser {
     public Difference parseDocument() throws Docx4JException {
 
         docxDocument.setPages(documentData.getDocumentInfo().getPages());
-        docxDocument.setSection(section);
-
         difference.setPages(new DocumentDiffer(docxDocument.getPages(), config.getPages()).comparePages());
-        difference.setSection(new SectionDiffer(docxDocument.getSection(), config.getSection()).getSectionDifference());
+
+        for (SectPr sectPr : sectionsProperties) {
+            new SectionController(sectPr, docxDocument, difference, config, shouldFix).parseSection();
+        }
 
         parseParagraphs();
 
 //        String test = new DifferResultCollector(difference).getDifferenceAsString();
 
-        if (shouldFix) {
-            new SectionFixer(documentData.getSectionProperties(), section, config.getSection(), difference.getSection()).fixSection();
-
+        if (shouldFix)
             wordMLPackage.save(new File(new File(docxPath).getParent() + "/test_fixed.docx"));
-        }
 
         return difference;
     }
@@ -89,7 +85,7 @@ public class DocxParser {
                 wordMLPackage.getDocPropsExtendedPart().getJaxbElement(),
                 styles.getDocDefaults(),
                 documentPart.getThemePart(),
-                body.getSectPr(),
+                wordMLPackage.getDocumentModel().getSections(),
                 styles,
                 body.getContent()
         );
@@ -130,13 +126,24 @@ public class DocxParser {
 
     List<String> getHeadersByTOC(WordprocessingMLPackage wordMLPackage) throws JAXBException, XPathBinderAssociationIsPartialException {
         List<String> headers = new ArrayList<>();
-        List<Object> TOCObjects = wordMLPackage.getMainDocumentPart().getJAXBNodesViaXPath(
-                TOC_XPATH, false);
+        List<Object> TOCObjects = wordMLPackage.getMainDocumentPart().getJAXBNodesViaXPath(TOC_XPATH, false);
 
         for (Object o : TOCObjects) {
             headers.add(o.toString());
         }
 
         return headers;
+    }
+
+    List<SectPr> getSectionsProperties() {
+        List<SectionWrapper> sections = documentData.getSections();
+
+        List<SectPr> sectionsProperties = new ArrayList<>();
+
+        for (SectionWrapper sw : sections) {
+            sectionsProperties.add(sw.getSectPr());
+        }
+
+        return sectionsProperties;
     }
 }

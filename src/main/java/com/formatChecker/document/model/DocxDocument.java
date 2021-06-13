@@ -6,25 +6,17 @@ import com.formatChecker.config.model.participants.Section;
 import java.util.List;
 
 public class DocxDocument {
-    public DocxDocument(List<Paragraph> paragraphs) {
+    public DocxDocument(List<Paragraph> paragraphs, List<Section<Double>> sections) {
         this.paragraphs = paragraphs;
-    }
-
-    public List<Paragraph> addParagraph(Paragraph paragraph) {
-        paragraphs.add(paragraph);
-        return paragraphs;
+        this.sections = sections;
     }
 
     List<Paragraph>  paragraphs;
     Integer pages;
-    Section<Double> section;
+    List<Section<Double>> sections;
 
     public void setPages(Integer pages) {
         this.pages = pages;
-    }
-
-    public void setSection(Section<Double> section) {
-        this.section = section;
     }
 
     public List<Paragraph> getParagraphs() {
@@ -35,7 +27,17 @@ public class DocxDocument {
         return pages;
     }
 
-    public Section<Double> getSection() {
-        return section;
+    public List<Section<Double>> getSections() {
+        return sections;
+    }
+
+    public List<Paragraph> addParagraph(Paragraph paragraph) {
+        paragraphs.add(paragraph);
+        return paragraphs;
+    }
+
+    public List<Section<Double>> addSection(Section<Double> section) {
+        sections.add(section);
+        return sections;
     }
 }

@@ -7,6 +7,7 @@ import com.formatChecker.config.model.participants.Section;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,17 +36,28 @@ public class DifferResultCollector {
     }
 
     String getSectionDifferenceAsString() {
-        Section<String> sectionDifference = difference.getSection();
+        List<Section<String>> sectionsDifference = difference.getSections();
 
-        String result = "\nSection properties: \n\t";
-        if (sectionDifference.getOrientation() != null) result += sectionDifference.getOrientation() + "\n\t";
-        if (sectionDifference.getMargins() != null) result += sectionDifference.getMargins().stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining("\n\t")) + "\n\t";
-        if (sectionDifference.getPageHeight() != null) result += sectionDifference.getPageHeight() + "\n\t";
-        if (sectionDifference.getPageWidth() != null) result += sectionDifference.getPageWidth() + "\n\t";
+        StringBuilder result = new StringBuilder("\nSection properties: \n\t");
 
-        return result;
+        int count = 0;
+        for (Section<String> sectionDifference : sectionsDifference) {
+            ++count;
+
+            String sectionResult = String.format("\nSection #%d: \n\t", count);
+
+            if (sectionDifference.getOrientation() != null) sectionResult += sectionDifference.getOrientation() + "\n\t";
+            if (sectionDifference.getMargins() != null) sectionResult += sectionDifference.getMargins().stream()
+                    .filter(Objects::nonNull)
+                    .map(String::valueOf)
+                    .collect(Collectors.joining("\n\t")) + "\n\t";
+            if (sectionDifference.getPageHeight() != null) sectionResult += sectionDifference.getPageHeight() + "\n\t";
+            if (sectionDifference.getPageWidth() != null) sectionResult += sectionDifference.getPageWidth() + "\n\t";
+
+            result.append(sectionResult);
+        }
+
+        return result.toString();
     }
 
     StringBuilder getParagraphsDifferenceAsString() {

@@ -6,8 +6,30 @@ import com.formatChecker.config.model.participants.Section;
 import java.util.List;
 
 public class Difference {
-    public Difference(List<Paragraph> paragraphs) {
+    public Difference(List<Paragraph> paragraphs, List<Section<String>> sections) {
         this.paragraphs = paragraphs;
+        this.sections = sections;
+    }
+
+    String pages;
+
+    List<Section<String>> sections;
+    List<Paragraph> paragraphs;
+
+    public void setPages(String pages) {
+        this.pages = pages;
+    }
+
+    public String getPages() {
+        return pages;
+    }
+
+    public List<Section<String>> getSections() {
+        return sections;
+    }
+
+    public List<Paragraph> getParagraphs() {
+        return paragraphs;
     }
 
     public List<Paragraph> addParagraph(Paragraph paragraph) {
@@ -15,27 +37,8 @@ public class Difference {
         return paragraphs;
     }
 
-    String pages;
-    Section<String> section;
-    List<Paragraph> paragraphs;
-
-    public void setPages(String pages) {
-        this.pages = pages;
-    }
-
-    public void setSection(Section<String> section) {
-        this.section = section;
-    }
-
-    public String getPages() {
-        return pages;
-    }
-
-    public Section<String> getSection() {
-        return section;
-    }
-
-    public List<Paragraph> getParagraphs() {
-        return paragraphs;
+    public List<Section<String>> addSection(Section<String> section) {
+        sections.add(section);
+        return sections;
     }
 }
