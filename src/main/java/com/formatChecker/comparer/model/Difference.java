@@ -3,13 +3,15 @@ package com.formatChecker.comparer.model;
 import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Section;
+import com.formatChecker.document.model.Heading;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Difference {
-    public Difference(List<Paragraph> paragraphs, List<Section<String>> sections) {
-        this.paragraphs = paragraphs;
-        this.sections = sections;
+    public Difference() {
+        this.paragraphs = new ArrayList<>();
+        this.sections = new ArrayList<>();
     }
 
     String pages;
@@ -17,6 +19,7 @@ public class Difference {
     List<Section<String>> sections;
     List<Paragraph> paragraphs;
     Footer footer;
+    List<Heading> headings;
 
     public void setPages(String pages) {
         this.pages = pages;
@@ -42,6 +45,14 @@ public class Difference {
         this.footer = footer;
     }
 
+    public List<Heading> getHeadings() {
+        return headings;
+    }
+
+    public void setHeadings(List<Heading> headings) {
+        this.headings = headings;
+    }
+
     public List<Paragraph> addParagraph(Paragraph paragraph) {
         paragraphs.add(paragraph);
         return paragraphs;
@@ -51,4 +62,5 @@ public class Difference {
         sections.add(section);
         return sections;
     }
+
 }

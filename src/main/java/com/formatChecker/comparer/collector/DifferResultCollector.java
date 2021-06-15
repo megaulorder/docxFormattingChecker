@@ -5,6 +5,7 @@ import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.config.model.participants.Section;
+import com.formatChecker.document.model.Heading;
 
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class DifferResultCollector {
     Difference difference;
-    String result, pagesResult, sectionResult, footerResult;
+    String result, pagesResult, sectionResult, footerResult, headingResult;
     StringBuilder paragraphsResult;
 
     public DifferResultCollector(Difference difference) {
@@ -25,9 +26,10 @@ public class DifferResultCollector {
         pagesResult = getPageDifferenceAsString();
         sectionResult = getSectionDifferenceAsString();
         footerResult = getFooterDifferenceAsString();
+        headingResult = getHeadingDifferenceAsString();
         paragraphsResult = getParagraphsDifferenceAsString();
 
-        result = "Comparison results:\n" + pagesResult + sectionResult + footerResult + paragraphsResult;
+        result = "Comparison results:\n" + pagesResult + sectionResult + footerResult + headingResult + paragraphsResult;
 
         return result;
     }
@@ -71,10 +73,10 @@ public class DifferResultCollector {
             String type = differenceFooter.getType();
             String alignment = differenceFooter.getAlignment();
 
-            if (!differenceFooter.getIsPresent())
-                return "\nNo footer found\n";
+            if (!differenceFooter.getErrorMessage().equals(""))
+                return String.format("\nNo footer found: %s\n", differenceFooter.getErrorMessage());
 
-            if (differenceFooter.getIsPresent() && type == null && alignment == null)
+            if (differenceFooter.getErrorMessage().equals("") && type == null && alignment == null)
                 return "";
 
             String result = "\nFooter:\n\t";
@@ -88,6 +90,18 @@ public class DifferResultCollector {
         }
 
         return "";
+    }
+
+    String getHeadingDifferenceAsString() {
+        List<Heading> headings = difference.getHeadings();
+        if (headings == null)
+            return "";
+        else
+            return "\nHeadings:\n\t" + headings
+                    .stream()
+                    .map(Heading::getText)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.joining("\n\t")) + "\n";
     }
 
     StringBuilder getParagraphsDifferenceAsString() {

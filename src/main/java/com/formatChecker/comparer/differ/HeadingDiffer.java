@@ -1,17 +1,49 @@
 package com.formatChecker.comparer.differ;
 
-import com.formatChecker.comparer.model.Difference;
 import com.formatChecker.document.model.Heading;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HeadingDiffer {
-    List<Heading> requiredHeadings, actualHeadings;
-    Difference difference;
+    List<Heading> expectedHeadings;
+    List<Heading> actualHeadings;
+    List<Heading> headingsDifference;
 
-    public HeadingDiffer(List<Heading> requiredHeadings, List<Heading> actualHeadings, Difference difference) {
-        this.requiredHeadings = requiredHeadings;
+
+    public HeadingDiffer(List<Heading> expectedHeadings, List<Heading> actualHeadings) {
+        this.expectedHeadings = expectedHeadings;
         this.actualHeadings = actualHeadings;
-        this.difference = difference;
+        this.headingsDifference = getDifference();
+    }
+
+    List<Heading> getDifference() {
+        if (expectedHeadings == null)
+            return null;
+
+        List<Heading> headings = new ArrayList<>();
+
+        for (Heading expectedHeading: expectedHeadings) {
+            Heading heading = new Heading();
+
+            boolean hasHeading = actualHeadings
+                    .stream()
+                    .anyMatch(
+                            h -> h.getLevel().equals(expectedHeading.getLevel())
+                                    && h.getText().equalsIgnoreCase(expectedHeading.getText()));
+            if (!hasHeading)
+                heading.setText(String.format(
+                        "no heading %s found on level %d",
+                        expectedHeading.getText(),
+                        expectedHeading.getLevel()));
+
+            headings.add(heading);
+        }
+
+        return headings;
+    }
+
+    public List<Heading> getHeadingsDifference() {
+        return headingsDifference;
     }
 }

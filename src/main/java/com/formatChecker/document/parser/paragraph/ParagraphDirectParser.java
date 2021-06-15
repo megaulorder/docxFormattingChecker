@@ -153,7 +153,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     void setIsHeading() {
         if (headings == null)
             paragraph.setIsHeading(false);
-
-        paragraph.setIsHeading(headings.stream().anyMatch(h -> h.getText().equals(text)));
+        else
+            paragraph.setIsHeading(headings.stream().anyMatch(h -> h.getText().equals(text)));
     }
 }

@@ -43,7 +43,7 @@ public class DocxParser {
     }
 
     DocxDocument parseDocument() {
-        DocxDocument docxDocument = new DocxDocument(new ArrayList<>(), new ArrayList<>());
+        DocxDocument docxDocument = new DocxDocument();
         docxDocument.setPages(documentData.getDocumentInfo().getPages());
 
         return docxDocument;

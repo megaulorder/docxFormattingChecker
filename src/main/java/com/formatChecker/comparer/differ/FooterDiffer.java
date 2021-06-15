@@ -13,10 +13,14 @@ public class FooterDiffer implements Differ {
 
     public Footer getFooterDifference() {
         if (actualFooter == null && expectedFooter != null) {
-            differenceFooter.setIsPresent(false);
+            differenceFooter.setErrorMessage(
+                    String.format(
+                            "add footer with %s content aligned by %s",
+                            expectedFooter.getType(),
+                            expectedFooter.getAlignment()));
         }
         else if (actualFooter != null && expectedFooter != null) {
-            differenceFooter.setIsPresent(true);
+            differenceFooter.setErrorMessage("");
 
             differenceFooter.setType(checkStringParameter(
                     actualFooter.getType(), expectedFooter.getType(), "footer type"));

@@ -1,7 +1,7 @@
 package com.formatChecker.document.parser.run;
 
 import com.formatChecker.config.model.participants.Run;
-import com.formatChecker.controller.RunHelper;
+import com.formatChecker.controller.helper.RunHelper;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.wml.DocDefaults;

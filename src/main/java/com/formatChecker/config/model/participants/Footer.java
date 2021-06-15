@@ -4,7 +4,7 @@ public class Footer {
     String type;
     String alignment;
 
-    Boolean isPresent;
+    String errorMessage;
 
     public String getType() {
         return type;
@@ -22,11 +22,11 @@ public class Footer {
         this.alignment = alignment;
     }
 
-    public Boolean getIsPresent() {
-        return isPresent;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public void setIsPresent(Boolean present) {
-        isPresent = present;
+    public void setErrorMessage(String message) {
+        errorMessage = message;
     }
 }

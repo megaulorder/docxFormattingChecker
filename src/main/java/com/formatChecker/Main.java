@@ -5,7 +5,10 @@ import com.formatChecker.controller.DocumentController;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String result = new DifferResultCollector(new DocumentController(args[0], args[1]).getDifference()).getDifferenceAsString();
+        String result = new DifferResultCollector(
+                new DocumentController(args[0], args[1]).getDifference())
+                        .getDifferenceAsString();
+
         System.out.println(result);
     }
 }

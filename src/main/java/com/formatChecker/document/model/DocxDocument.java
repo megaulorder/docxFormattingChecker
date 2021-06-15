@@ -4,12 +4,13 @@ import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Section;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DocxDocument {
-    public DocxDocument(List<Paragraph> paragraphs, List<Section<Double>> sections) {
-        this.paragraphs = paragraphs;
-        this.sections = sections;
+    public DocxDocument() {
+        this.paragraphs = new ArrayList<>();
+        this.sections = new ArrayList<>();
     }
 
     List<Paragraph>  paragraphs;

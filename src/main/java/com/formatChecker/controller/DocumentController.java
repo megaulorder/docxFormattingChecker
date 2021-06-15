@@ -9,6 +9,7 @@ import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.model.Heading;
 import com.formatChecker.document.parser.DocxParser;
 import org.docx4j.Docx4J;
+import org.docx4j.jaxb.XPathBinderAssociationIsPartialException;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.wml.P;
@@ -42,7 +43,8 @@ public class DocumentController {
 
     List<Heading> headings;
 
-    public DocumentController(String configPath, String docxPath) throws IOException, Docx4JException, ParserConfigurationException, SAXException, JAXBException {
+    public DocumentController(String configPath, String docxPath)
+            throws IOException, Docx4JException, ParserConfigurationException, SAXException, JAXBException {
         this.docxPath = docxPath;
 
         this.configParser = new ConfigParser(configPath);
@@ -57,20 +59,17 @@ public class DocumentController {
         this.docxDocument = docxParser.getDocument();
         this.sectionsProperties = docxParser.getSectionsProperties();
 
-        this.headings = configParser.getFindHeadingsByTOC() ?
-                new HeadingController(wordMLPackage, config.getRequiredHeadings(), difference, docxDocument)
-                        .getHeadings() :
-                null;
         this.difference = getDocumentDifference();
     }
 
-    Difference getDocumentDifference() throws Docx4JException, ParserConfigurationException, IOException, SAXException {
-        Difference difference = new Difference(new ArrayList<>(), new ArrayList<>());
+    Difference getDocumentDifference() throws Docx4JException, ParserConfigurationException, IOException, SAXException, JAXBException {
+        Difference difference = new Difference();
 
         difference.setPages(new DocumentDiffer(docxDocument.getPages(), config.getPages()).comparePages());
 
         runSectionController(difference);
         runFooterController(difference);
+        runHeadingsController(difference);
         runParagraphController(difference);
 
         if (shouldFix)
@@ -88,6 +87,17 @@ public class DocumentController {
     void runFooterController(Difference difference) throws ParserConfigurationException, IOException, SAXException {
         new FooterController(documentData.getHeadersAndFooters(), config.getFooter(), docxDocument, difference)
                 .parseFooter();
+    }
+
+    void runHeadingsController(Difference difference) throws JAXBException, XPathBinderAssociationIsPartialException {
+        if (configParser.getFindHeadingsByTOC()) {
+            HeadingController headingController = new HeadingController(wordMLPackage, config.getRequiredHeadings(), difference, docxDocument);
+            headingController.compareHeadings();
+
+            headings = headingController.getHeadings();
+        }
+        else
+            headings = null;
     }
 
     void runParagraphController(Difference difference) throws Docx4JException {

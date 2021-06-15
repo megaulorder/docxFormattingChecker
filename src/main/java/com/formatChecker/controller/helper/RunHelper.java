@@ -1,4 +1,4 @@
-package com.formatChecker.controller;
+package com.formatChecker.controller.helper;
 
 import org.docx4j.wml.R;
 import org.docx4j.wml.Text;
