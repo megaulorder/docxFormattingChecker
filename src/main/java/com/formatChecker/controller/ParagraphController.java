@@ -7,6 +7,7 @@ import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.document.model.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
+import com.formatChecker.document.model.Heading;
 import com.formatChecker.document.parser.paragraph.ParagraphDirectParser;
 import com.formatChecker.fixer.ParagraphFixer;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,7 @@ public class ParagraphController implements RunHelper {
 
     Config config;
     DocumentData documentData;
-    List<String> headings;
+    List<Heading> headings;
     DocxDocument docxDocument;
     Map<Integer, String> configStyles;
 
@@ -40,7 +41,7 @@ public class ParagraphController implements RunHelper {
 
 
     public ParagraphController(Integer index, P documentParagraph, Difference difference, DocxDocument docxDocument,
-                               DocumentData documentData, Config config, Map<Integer, String> configStyles, List<String> headings)
+                               DocumentData documentData, Config config, Map<Integer, String> configStyles, List<Heading> headings)
             throws Docx4JException {
         this.index = index;
         this.documentParagraph = documentParagraph;

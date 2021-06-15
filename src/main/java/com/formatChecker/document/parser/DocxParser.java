@@ -10,6 +10,7 @@ import com.formatChecker.controller.ParagraphController;
 import com.formatChecker.controller.SectionController;
 import com.formatChecker.document.model.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
+import com.formatChecker.document.model.Heading;
 import org.docx4j.Docx4J;
 import org.docx4j.jaxb.XPathBinderAssociationIsPartialException;
 import org.docx4j.model.structure.SectionWrapper;
@@ -30,7 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DocxParser {
-    private final static String TOC_XPATH = "//w:p[w:bookmarkStart[starts-with(@w:name,'_Toc')]]";
+    private final static String TOC_XPATH = "//w:sdtContent/w:p[w:hyperlink[starts-with(@w:anchor, '_Toc')]]";
+    private final static String TOC_ELEMENT_XPATH = "//w:p[w:bookmarkStart[starts-with(@w:name,'_Toc')]]";
 
     String docxPath;
     Config config;
@@ -39,7 +41,7 @@ public class DocxParser {
     Map<Integer, String> configStyles;
 
     WordprocessingMLPackage wordMLPackage;
-    List<String> headings;
+    List<Heading> headings;
     List<SectPr> sectionsProperties;
     DocxDocument docxDocument;
     Difference difference;
@@ -84,6 +86,7 @@ public class DocxParser {
     DocumentData getDocumentData (WordprocessingMLPackage wordMLPackage) {
         MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
         Body body = documentPart.getJaxbElement().getBody();
+        System.out.println(wordMLPackage.getMainDocumentPart().getXML());
         Styles styles = documentPart.getStyleDefinitionsPart().getJaxbElement();
         List<SectionWrapper> sections = wordMLPackage.getDocumentModel().getSections();
 
@@ -130,12 +133,17 @@ public class DocxParser {
         }
     }
 
-    List<String> getHeadingsByTOC(WordprocessingMLPackage wordMLPackage) throws JAXBException, XPathBinderAssociationIsPartialException {
-        List<String> headings = new ArrayList<>();
-        List<Object> TOCObjects = wordMLPackage.getMainDocumentPart().getJAXBNodesViaXPath(TOC_XPATH, false);
+    List<Heading> getHeadingsByTOC(WordprocessingMLPackage wordMLPackage) throws JAXBException, XPathBinderAssociationIsPartialException {
+        List<Heading> headings = new ArrayList<>();
 
-        for (Object o : TOCObjects) {
-            headings.add(o.toString());
+        List<Object> TOCObjects = wordMLPackage.getMainDocumentPart().getJAXBNodesViaXPath(TOC_XPATH, false);
+        List<Object> TOCElementObjects = wordMLPackage.getMainDocumentPart().getJAXBNodesViaXPath(TOC_ELEMENT_XPATH, false);
+
+        for (int i = 0; i < TOCObjects.size(); ++i) {
+            Heading heading = new Heading();
+            heading.setLevel(Integer.parseInt(((P) TOCObjects.get(i)).getPPr().getPStyle().getVal()) / 10);
+            heading.setText(TOCElementObjects.get(i).toString());
+            headings.add(heading);
         }
 
         return headings;

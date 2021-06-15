@@ -2,6 +2,7 @@ package com.formatChecker.document.parser.paragraph;
 
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
+import com.formatChecker.document.model.Heading;
 import com.formatChecker.document.parser.run.RunDirectParser;
 import org.apache.commons.lang3.StringUtils;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -17,14 +18,14 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     P par;
     Styles styles;
     ThemePart themePart;
-    List<String> headings;
+    List<Heading> headings;
 
     String styleId;
     Paragraph<Double> styleParagraph;
     Paragraph<Double> defaultParagraph;
     String text;
 
-    public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par, List<String> headings) {
+    public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par, List<Heading> headings) {
         super(docDefaults);
 
         this.par = par;
@@ -150,6 +151,6 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     }
 
     void setIsHeading() {
-        paragraph.setIsHeading(headings.contains(text));
+        paragraph.setIsHeading(headings.stream().anyMatch(h -> h.getText().equals(text)));
     }
 }
