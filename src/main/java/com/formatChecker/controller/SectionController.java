@@ -11,6 +11,7 @@ import org.docx4j.wml.SectPr;
 
 public class SectionController {
     SectPr sectionProperties;
+    Section<Double> section;
 
     DocxDocument docxDocument;
     Difference difference;
@@ -21,6 +22,7 @@ public class SectionController {
     public SectionController(SectPr sectionProperties, DocxDocument docxDocument, Difference difference,
                              Config config, Boolean shouldFix) {
         this.sectionProperties = sectionProperties;
+        this.section = new SectionParser(sectionProperties).parseSection();
         this.docxDocument = docxDocument;
         this.difference = difference;
         this.config = config;
@@ -28,7 +30,6 @@ public class SectionController {
     }
 
     public void parseSection() {
-        Section<Double> section = new SectionParser(sectionProperties).parseSection();
         docxDocument.addSection(section);
 
         Section<String> differenceSection = new SectionDiffer(section, config.getSection()).getSectionDifference();

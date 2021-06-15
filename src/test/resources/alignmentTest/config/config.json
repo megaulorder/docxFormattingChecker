@@ -53,5 +53,19 @@
         "type": "page",
         "alignment": "right"
     },
+    "requiredHeadings": [
+        {
+            "level": 1,
+            "text": "Введение"
+        },
+        {
+            "level": 1,
+            "text": "Аннотация"
+        },
+        {
+            "level": 1,
+            "text": "Заключение"
+        }
+    ],
     "findHeadingsByTOC": true
 }

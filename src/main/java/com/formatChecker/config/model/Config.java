@@ -4,8 +4,10 @@ import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Pages;
 import com.formatChecker.config.model.participants.Section;
 import com.formatChecker.config.model.participants.Style;
+import com.formatChecker.document.model.Heading;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Config {
     Pages pages;
@@ -14,6 +16,8 @@ public class Config {
     HashMap<String, Style> styles;
 
     Footer footer;
+
+    List<Heading> requiredHeadings;
 
     Boolean findHeadingsByTOC = false;
     Boolean generateNewDocument = false;
@@ -36,6 +40,10 @@ public class Config {
 
     public Footer getFooter() {
         return footer;
+    }
+
+    public List<Heading> getRequiredHeadings() {
+        return requiredHeadings;
     }
 
     public Boolean getGenerateNewDocument() {
