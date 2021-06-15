@@ -11,7 +11,7 @@ public class Paragraph<T> {
 
     String text;
 
-    Boolean isHeader;
+    Boolean isHeading;
 
     String alignment;
 
@@ -32,8 +32,8 @@ public class Paragraph<T> {
         this.text = text;
     }
 
-    public void setIsHeader(Boolean isHeader) {
-        this.isHeader = isHeader;
+    public void setIsHeading(Boolean isHeading) {
+        this.isHeading = isHeading;
     }
 
     public void setAlignment(String alignment) {
@@ -100,7 +100,7 @@ public class Paragraph<T> {
         return text;
     }
 
-    public Boolean getIsHeader() {
-        return isHeader;
+    public Boolean getIsHeading() {
+        return isHeading;
     }
 }

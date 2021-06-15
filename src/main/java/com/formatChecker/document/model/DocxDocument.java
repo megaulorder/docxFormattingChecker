@@ -1,5 +1,6 @@
 package com.formatChecker.document.model;
 
+import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Section;
 
@@ -14,6 +15,7 @@ public class DocxDocument {
     List<Paragraph>  paragraphs;
     Integer pages;
     List<Section<Double>> sections;
+    Footer footer;
 
     public void setPages(Integer pages) {
         this.pages = pages;
@@ -27,8 +29,12 @@ public class DocxDocument {
         return pages;
     }
 
-    public List<Section<Double>> getSections() {
-        return sections;
+    public Footer getFooter() {
+        return footer;
+    }
+
+    public void setFooter(Footer footer) {
+        this.footer = footer;
     }
 
     public List<Paragraph> addParagraph(Paragraph paragraph) {

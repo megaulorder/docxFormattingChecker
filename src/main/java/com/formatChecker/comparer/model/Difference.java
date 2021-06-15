@@ -1,5 +1,6 @@
 package com.formatChecker.comparer.model;
 
+import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Section;
 
@@ -15,6 +16,7 @@ public class Difference {
 
     List<Section<String>> sections;
     List<Paragraph> paragraphs;
+    Footer footer;
 
     public void setPages(String pages) {
         this.pages = pages;
@@ -30,6 +32,14 @@ public class Difference {
 
     public List<Paragraph> getParagraphs() {
         return paragraphs;
+    }
+
+    public Footer getFooter() {
+        return footer;
+    }
+
+    public void setFooter(Footer footer) {
+        this.footer = footer;
     }
 
     public List<Paragraph> addParagraph(Paragraph paragraph) {

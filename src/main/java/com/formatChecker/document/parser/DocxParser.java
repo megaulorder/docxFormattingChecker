@@ -5,6 +5,7 @@ import com.formatChecker.comparer.model.Difference;
 import com.formatChecker.config.model.Config;
 import com.formatChecker.config.model.participants.Style;
 import com.formatChecker.config.parser.ConfigParser;
+import com.formatChecker.controller.FooterController;
 import com.formatChecker.controller.ParagraphController;
 import com.formatChecker.controller.SectionController;
 import com.formatChecker.document.model.DocumentData;
@@ -16,8 +17,10 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.wml.*;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,7 +39,7 @@ public class DocxParser {
     Map<Integer, String> configStyles;
 
     WordprocessingMLPackage wordMLPackage;
-    List<String> headers;
+    List<String> headings;
     List<SectPr> sectionsProperties;
     DocxDocument docxDocument;
     Difference difference;
@@ -45,7 +48,7 @@ public class DocxParser {
         this.docxPath = docxPath;
 
         this.wordMLPackage = Docx4J.load(new FileInputStream(docxPath));
-        this.headers = getHeadersByTOC(wordMLPackage);
+        this.headings = getHeadingsByTOC(wordMLPackage);
         this.documentData = getDocumentData(wordMLPackage);
         this.sectionsProperties = getSectionsProperties();
 
@@ -56,7 +59,7 @@ public class DocxParser {
         this.configStyles = getConfigStyles();
     }
 
-    public Difference parseDocument() throws Docx4JException {
+    public Difference parseDocument() throws Docx4JException, ParserConfigurationException, IOException, SAXException {
 
         docxDocument.setPages(documentData.getDocumentInfo().getPages());
         difference.setPages(new DocumentDiffer(docxDocument.getPages(), config.getPages()).comparePages());
@@ -65,29 +68,33 @@ public class DocxParser {
             new SectionController(sectPr, docxDocument, difference, config, shouldFix).parseSection();
         }
 
+        new FooterController(documentData.getHeadersAndFooters(), config.getFooter(), docxDocument, difference)
+                .parseFooter();
+
         parseParagraphs();
 
 //        String test = new DifferResultCollector(difference).getDifferenceAsString();
 
         if (shouldFix)
-            wordMLPackage.save(new File(new File(docxPath).getParent() + "/test_fixed.docx"));
+            wordMLPackage.save(new File(new File(docxPath).getParent() + "/fixed.docx"));
 
         return difference;
     }
 
     DocumentData getDocumentData (WordprocessingMLPackage wordMLPackage) {
         MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
-//        System.out.println(documentPart.getXML());
         Body body = documentPart.getJaxbElement().getBody();
         Styles styles = documentPart.getStyleDefinitionsPart().getJaxbElement();
+        List<SectionWrapper> sections = wordMLPackage.getDocumentModel().getSections();
 
         return new DocumentData(
                 wordMLPackage.getDocPropsExtendedPart().getJaxbElement(),
                 styles.getDocDefaults(),
                 documentPart.getThemePart(),
-                wordMLPackage.getDocumentModel().getSections(),
+                sections,
                 styles,
-                body.getContent()
+                body.getContent(),
+                sections.get(0).getHeaderFooterPolicy()
         );
     }
 
@@ -98,16 +105,15 @@ public class DocxParser {
                 P par = (P) p;
                 if (!par.toString().equals("")) {
                     ++count;
-                    new ParagraphController(count, par, difference, docxDocument, documentData, config, configStyles, headers)
+                    new ParagraphController(count, par, difference, docxDocument, documentData, config, configStyles, headings)
                             .parseParagraph();
-//                    System.out.println(docxDocument.getParagraphs().get(count-1).getText());
                 }
             }
         }
     }
 
     Map<Integer, String> getConfigStyles() {
-        if (config.getFindHeadersByToc())
+        if (config.getFindHeadingsByTOC())
             return null;
         else {
             Map<Integer, String> stylesByIndexes = new HashMap<>();
@@ -124,15 +130,15 @@ public class DocxParser {
         }
     }
 
-    List<String> getHeadersByTOC(WordprocessingMLPackage wordMLPackage) throws JAXBException, XPathBinderAssociationIsPartialException {
-        List<String> headers = new ArrayList<>();
+    List<String> getHeadingsByTOC(WordprocessingMLPackage wordMLPackage) throws JAXBException, XPathBinderAssociationIsPartialException {
+        List<String> headings = new ArrayList<>();
         List<Object> TOCObjects = wordMLPackage.getMainDocumentPart().getJAXBNodesViaXPath(TOC_XPATH, false);
 
         for (Object o : TOCObjects) {
-            headers.add(o.toString());
+            headings.add(o.toString());
         }
 
-        return headers;
+        return headings;
     }
 
     List<SectPr> getSectionsProperties() {

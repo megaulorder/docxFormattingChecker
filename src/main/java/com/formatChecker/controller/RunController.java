@@ -10,7 +10,7 @@ import org.docx4j.wml.R;
 import java.util.Map;
 
 public class RunController {
-    private static final String HEADER_STYLE_NAME = "header";
+    private static final String HEADING_STYLE_NAME = "heading";
     private static final String BODY_STYLE_NAME = "body";
 
     Integer index;
@@ -22,10 +22,10 @@ public class RunController {
     Paragraph differenceParagraph;
     Map<Integer, String> configStyles;
     Config config;
-    Boolean isHeader;
+    Boolean isHeading;
 
     public RunController(Integer index, R documentRun, Run<Boolean, Double> actualRun, Paragraph differenceParagraph,
-                         Map<Integer, String> configStyles, Boolean isHeader, Config config, Boolean shouldFix) {
+                         Map<Integer, String> configStyles, Boolean isHeading, Config config, Boolean shouldFix) {
         this.index = index;
         this.documentRun = documentRun;
         this.actualRun = actualRun;
@@ -34,14 +34,14 @@ public class RunController {
         this.differenceParagraph = differenceParagraph;
         this.config = config;
         this.configStyles = configStyles;
-        this.isHeader = isHeader;
+        this.isHeading = isHeading;
     }
 
     public void parseRun() {
 
         if (configStyles == null) {
-            if (isHeader) {
-                expectedRun = config.getStyles().get(HEADER_STYLE_NAME).getRun();
+            if (isHeading) {
+                expectedRun = config.getStyles().get(HEADING_STYLE_NAME).getRun();
             }
             else {
                 expectedRun = config.getStyles().get(BODY_STYLE_NAME).getRun();

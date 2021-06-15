@@ -15,7 +15,7 @@
         "pageWidth": 21.0
     },
     "styles": {
-        "header": {
+        "heading": {
             "paragraphs": [
                 1
             ],
@@ -49,6 +49,9 @@
             }
         }
     },
-    "generateNewDocument": true,
-    "findHeadersByTOC": true
+    "footer": {
+        "type": "page",
+        "alignment": "right"
+    },
+    "findHeadingsByTOC": true
 }

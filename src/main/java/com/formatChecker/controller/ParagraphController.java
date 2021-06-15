@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ParagraphController implements RunHelper {
-    private static final String HEADER_STYLE_NAME = "header";
+    private static final String HEADING_STYLE_NAME = "heading";
     private static final String BODY_STYLE_NAME = "body";
 
     P documentParagraph;
@@ -30,7 +30,7 @@ public class ParagraphController implements RunHelper {
 
     Config config;
     DocumentData documentData;
-    List<String> headers;
+    List<String> headings;
     DocxDocument docxDocument;
     Map<Integer, String> configStyles;
 
@@ -40,14 +40,14 @@ public class ParagraphController implements RunHelper {
 
 
     public ParagraphController(Integer index, P documentParagraph, Difference difference, DocxDocument docxDocument,
-                               DocumentData documentData, Config config, Map<Integer, String> configStyles, List<String> headers)
+                               DocumentData documentData, Config config, Map<Integer, String> configStyles, List<String> headings)
             throws Docx4JException {
         this.index = index;
         this.documentParagraph = documentParagraph;
 
         this.difference = difference;
         this.documentData = documentData;
-        this.headers = headers;
+        this.headings = headings;
         this.docxDocument = docxDocument;
         this.config = config;
         this.configStyles = configStyles;
@@ -57,7 +57,7 @@ public class ParagraphController implements RunHelper {
         this.docDefaults = documentData.getDocDefaults();
         this.themePart = documentData.getThemePart();
 
-        this.actualParagraph = new ParagraphDirectParser(docDefaults, styles, themePart, documentParagraph, headers)
+        this.actualParagraph = new ParagraphDirectParser(docDefaults, styles, themePart, documentParagraph, headings)
                 .parseParagraph();
     }
 
@@ -65,8 +65,8 @@ public class ParagraphController implements RunHelper {
         docxDocument.addParagraph(actualParagraph);
 
         if (configStyles == null) {
-            if (actualParagraph.getIsHeader() != null) {
-                expectedParagraph = config.getStyles().get(HEADER_STYLE_NAME).getParagraph();
+            if (actualParagraph.getIsHeading() != null) {
+                expectedParagraph = config.getStyles().get(HEADING_STYLE_NAME).getParagraph();
             }
             else {
                 expectedParagraph = config.getStyles().get(BODY_STYLE_NAME).getParagraph();
@@ -98,7 +98,7 @@ public class ParagraphController implements RunHelper {
 
                     Run actualRun = (Run) actualParagraph.getRuns().get(count - 1);
                     new RunController(index, r, actualRun, differenceParagraph, configStyles,
-                            actualParagraph.getIsHeader(), config, shouldFix).parseRun();
+                            actualParagraph.getIsHeading(), config, shouldFix).parseRun();
                 }
             }
         }

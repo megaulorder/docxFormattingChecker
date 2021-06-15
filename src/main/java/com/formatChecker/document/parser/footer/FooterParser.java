@@ -1,0 +1,92 @@
+package com.formatChecker.document.parser.footer;
+
+import com.formatChecker.config.model.participants.Footer;
+import org.docx4j.model.structure.HeaderFooterPolicy;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+public class FooterParser {
+    private static final String DEFAULT_ALIGNMENT = "left";
+
+    String type, alignment;
+    HeaderFooterPolicy headersAndFooters;
+    Document defaultFooter;
+
+    Footer footer;
+
+    public FooterParser(HeaderFooterPolicy headersAndFooters) throws ParserConfigurationException, IOException, SAXException {
+        this.headersAndFooters = headersAndFooters;
+        this.defaultFooter = convertStringToXMLDocument(headersAndFooters.getDefaultFooter().getXML());
+
+        this.alignment = getAlignment();
+        this.type = getType();
+
+        this.footer = new Footer();
+    }
+
+    public Footer parseFooter() {
+        if (alignment == null && type == null)
+            return null;
+
+        footer.setAlignment(alignment);
+        footer.setType(type);
+
+        return footer;
+    }
+
+    String getAlignment() {
+        if (defaultFooter != null) {
+            String alignment = "";
+
+            NodeList elements = defaultFooter.getElementsByTagName("w:framePr");
+            Element element = (Element) defaultFooter.adoptNode(elements.item(0));
+
+            if (element == null) {
+                elements = defaultFooter.getElementsByTagName("w:ptab");
+                element = (Element) defaultFooter.adoptNode(elements.item(0));
+
+                if (element == null)
+                    return null;
+
+                alignment = element.getAttribute("w:alignment");
+            } else
+                alignment = element.getAttribute("w:xAlign");
+
+            return alignment != null ? alignment : DEFAULT_ALIGNMENT;
+        }
+        return null;
+    }
+
+    String getType() {
+        if (defaultFooter != null) {
+            NodeList elements = defaultFooter.getElementsByTagName("w:t");
+            Element element = (Element) defaultFooter.adoptNode(elements.item(0));
+
+            if (element == null)
+                return null;
+
+            String value = element.getTextContent().toLowerCase().replaceAll("\\s+", "");
+
+            if (value.matches("[0-9]+"))
+                return "page";
+            else
+                return "text";
+        }
+        return null;
+    }
+
+    Document convertStringToXMLDocument(String xmlString) throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = factory.newDocumentBuilder();
+        return db.parse(new ByteArrayInputStream(xmlString.getBytes(StandardCharsets.UTF_8)));
+    }
+}

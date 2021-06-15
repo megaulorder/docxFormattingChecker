@@ -1,6 +1,7 @@
 package com.formatChecker.comparer.collector;
 
 import com.formatChecker.comparer.model.Difference;
+import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.config.model.participants.Section;
@@ -13,25 +14,28 @@ import java.util.stream.Collectors;
 
 public class DifferResultCollector {
     Difference difference;
+    String result, pagesResult, sectionResult, footerResult;
+    StringBuilder paragraphsResult;
 
     public DifferResultCollector(Difference difference) {
         this.difference = difference;
     }
 
     public String getDifferenceAsString() {
-        String result = "Comparison results:\n";
+        pagesResult = getPageDifferenceAsString();
+        sectionResult = getSectionDifferenceAsString();
+        footerResult = getFooterDifferenceAsString();
+        paragraphsResult = getParagraphsDifferenceAsString();
 
-        String pagesResult = getPageDifferenceAsString();
-        String sectionResult = getSectionDifferenceAsString();
-        StringBuilder paragraphsResult = getParagraphsDifferenceAsString();
+        result = "Comparison results:\n" + pagesResult + sectionResult + footerResult + paragraphsResult;
 
-        result += pagesResult + sectionResult + paragraphsResult;
         return result;
     }
 
     String getPageDifferenceAsString() {
-        String pagesDifference = difference.getPages();
-        if (pagesDifference != null) return String.format("\nNumber of pages: %s", pagesDifference +"\n");
+        if (difference.getPages() != null)
+            return String.format("\nNumber of pages: %s", difference.getPages() +"\n");
+
         return "";
     }
 
@@ -60,12 +64,38 @@ public class DifferResultCollector {
         return result.toString();
     }
 
+    String getFooterDifferenceAsString() {
+        Footer differenceFooter = difference.getFooter();
+
+        if (differenceFooter != null) {
+            String type = differenceFooter.getType();
+            String alignment = differenceFooter.getAlignment();
+
+            if (!differenceFooter.getIsPresent())
+                return "\nNo footer found\n";
+
+            if (differenceFooter.getIsPresent() && type == null && alignment == null)
+                return "";
+
+            String result = "\nFooter:\n\t";
+
+            if (type != null)
+                result += type + "\n\t";
+            if (alignment != null)
+                result += alignment + "\n\t";
+
+            return result;
+        }
+
+        return "";
+    }
+
     StringBuilder getParagraphsDifferenceAsString() {
         List<Paragraph> paragraphs = difference.getParagraphs();
 
         int count = 0;
 
-        StringBuilder result = new StringBuilder("\nParagraphs :\n");
+        StringBuilder result = new StringBuilder("\nParagraphs:\n");
 
         for (Paragraph p : paragraphs) {
             ++count;

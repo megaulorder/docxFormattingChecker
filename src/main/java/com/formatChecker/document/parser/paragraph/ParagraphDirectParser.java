@@ -17,20 +17,20 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     P par;
     Styles styles;
     ThemePart themePart;
-    List<String> headers;
+    List<String> headings;
 
     String styleId;
     Paragraph<Double> styleParagraph;
     Paragraph<Double> defaultParagraph;
     String text;
 
-    public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par, List<String> headers) {
+    public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par, List<String> headings) {
         super(docDefaults);
 
         this.par = par;
         this.styles = styles;
         this.themePart = themePart;
-        this.headers = headers;
+        this.headings = headings;
 
         this.styleId = getStyleId(par);
         this.styleParagraph = styleId == null ? null : getStyleProperties();
@@ -54,7 +54,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         setSpacingBefore();
         setSpacingAfter();
 
-        setIsHeader();
+        setIsHeading();
 
         for (Object o : par.getContent()) {
             if (o instanceof R) {
@@ -149,7 +149,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         paragraph.setSpacingAfter(spacingAfter);
     }
 
-    void setIsHeader() {
-        paragraph.setIsHeader(headers.contains(text));
+    void setIsHeading() {
+        paragraph.setIsHeading(headings.contains(text));
     }
 }
