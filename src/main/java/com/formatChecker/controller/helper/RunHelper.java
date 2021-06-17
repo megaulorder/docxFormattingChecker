@@ -9,6 +9,7 @@ import java.util.List;
 public interface RunHelper {
     default String getText(R r) {
         List<Object> contents = r.getContent();
+
         if (contents.size() == 0)
             return "";
         else {

@@ -29,14 +29,19 @@ public class DifferResultCollector {
         headingResult = getHeadingDifferenceAsString();
         paragraphsResult = getParagraphsDifferenceAsString();
 
-        result = "Comparison results:\n" + pagesResult + sectionResult + footerResult + headingResult + paragraphsResult;
+        result = "Comparison results:\n" +
+                pagesResult +
+                sectionResult +
+                footerResult +
+                headingResult +
+                paragraphsResult;
 
         return result;
     }
 
     String getPageDifferenceAsString() {
         if (difference.getPages() != null)
-            return String.format("\nNumber of pages: %s", difference.getPages() +"\n");
+            return String.format("\nNumber of pages: %s", difference.getPages() + "\n");
 
         return "";
     }
@@ -52,7 +57,8 @@ public class DifferResultCollector {
 
             String sectionResult = String.format("\nSection #%d: \n\t", count);
 
-            if (sectionDifference.getOrientation() != null) sectionResult += sectionDifference.getOrientation() + "\n\t";
+            if (sectionDifference.getOrientation() != null)
+                sectionResult += sectionDifference.getOrientation() + "\n\t";
             if (sectionDifference.getMargins() != null) sectionResult += sectionDifference.getMargins().stream()
                     .filter(Objects::nonNull)
                     .map(String::valueOf)
@@ -105,7 +111,7 @@ public class DifferResultCollector {
     }
 
     StringBuilder getParagraphsDifferenceAsString() {
-        List<Paragraph> paragraphs = difference.getParagraphs();
+        List<Paragraph<String, String>> paragraphs = difference.getParagraphs();
 
         int count = 0;
 
@@ -124,6 +130,7 @@ public class DifferResultCollector {
             if (p.getLineSpacing() != null) paragraphResult += p.getLineSpacing() + "\n\t";
             if (p.getSpacingBefore() != null) paragraphResult += p.getSpacingBefore() + "\n\t";
             if (p.getSpacingAfter() != null) paragraphResult += p.getSpacingAfter() + "\n\t";
+            if (p.getPageBreakBefore() != null) paragraphResult += p.getPageBreakBefore() + "\n\t";
 
             result.append(paragraphResult);
 

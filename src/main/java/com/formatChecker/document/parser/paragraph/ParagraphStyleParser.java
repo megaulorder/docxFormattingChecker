@@ -14,7 +14,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
     String styleId;
     Styles styles;
 
-    Paragraph<Double> defaultParagraph;
+    Paragraph<Double, Boolean> defaultParagraph;
 
     Optional<Style> style;
     Optional<Style> parentStyle;
@@ -32,7 +32,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
         this.paragraphProperties = getParagraphProperties(style);
     }
 
-    public Paragraph<Double> parseParagraph() {
+    public Paragraph<Double, Boolean> parseParagraph() {
         setAlignment();
 
         setFirstLineIndent();

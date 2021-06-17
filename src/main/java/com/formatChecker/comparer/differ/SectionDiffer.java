@@ -6,27 +6,37 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SectionDiffer implements Differ {
-    Section<Double> actualSection, expectedSection;
+    Section<Double> actualSection;
+    Section<Double> expectedSection;
     Section<String> differenceSection;
 
     public SectionDiffer(Section<Double> actualSection, Section<Double> expectedSection) {
         this.actualSection = actualSection;
         this.expectedSection = expectedSection;
-        this.differenceSection = new Section<>();
+        this.differenceSection = getDifference();
     }
 
-    public Section<String> getSectionDifference() {
-        differenceSection.setOrientation(checkStringParameter(
-                actualSection.getOrientation(), expectedSection.getOrientation(), "orientation"));
+    Section<String> getDifference() {
+        Section<String> section = new Section<>();
 
-        differenceSection.setMargins(compareMargins());
+        section.setOrientation(checkStringParameter(
+                actualSection.getOrientation(),
+                expectedSection.getOrientation(),
+                "orientation"));
 
-        differenceSection.setPageHeight(checkDoubleParameter(
-                actualSection.getPageHeight(), expectedSection.getPageHeight(), "page height", "cm"));
-        differenceSection.setPageWidth(checkDoubleParameter(
-                actualSection.getPageWidth(), expectedSection.getPageWidth(), "page width", "cm"));
+        section.setMargins(compareMargins());
 
-        return differenceSection;
+        section.setPageHeight(checkDoubleParameter(
+                actualSection.getPageHeight(),
+                expectedSection.getPageHeight(),
+                "page height", "cm"));
+
+        section.setPageWidth(checkDoubleParameter(
+                actualSection.getPageWidth(),
+                expectedSection.getPageWidth(),
+                "page width", "cm"));
+
+        return section;
     }
 
     List<String> compareMargins() {
@@ -58,5 +68,9 @@ public class SectionDiffer implements Differ {
 
             return result;
         }
+    }
+
+    public Section<String> getDifferenceSection() {
+        return differenceSection;
     }
 }

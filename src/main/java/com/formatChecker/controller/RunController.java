@@ -22,10 +22,10 @@ public class RunController {
     Paragraph differenceParagraph;
     Map<Integer, String> configStyles;
     Config config;
-    Boolean isHeading;
+    Integer headingLevel;
 
     public RunController(Integer index, R documentRun, Run<Boolean, Double> actualRun, Paragraph differenceParagraph,
-                         Map<Integer, String> configStyles, Boolean isHeading, Config config, Boolean shouldFix) {
+                         Map<Integer, String> configStyles, Integer headingLevel, Config config, Boolean shouldFix) {
         this.index = index;
         this.documentRun = documentRun;
         this.actualRun = actualRun;
@@ -34,14 +34,14 @@ public class RunController {
         this.differenceParagraph = differenceParagraph;
         this.config = config;
         this.configStyles = configStyles;
-        this.isHeading = isHeading;
+        this.headingLevel = headingLevel;
     }
 
     public void parseRun() {
 
         if (configStyles == null) {
-            if (isHeading) {
-                expectedRun = config.getStyles().get(HEADING_STYLE_NAME).getRun();
+            if (headingLevel > 0) {
+                expectedRun = config.getStyles().get(HEADING_STYLE_NAME + headingLevel).getRun();
             }
             else {
                 expectedRun = config.getStyles().get(BODY_STYLE_NAME).getRun();

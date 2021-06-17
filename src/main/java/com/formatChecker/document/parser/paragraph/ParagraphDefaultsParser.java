@@ -16,7 +16,7 @@ public class ParagraphDefaultsParser extends ParagraphParser implements Paragrap
         this.paragraphProperties = docDefaults.getPPrDefault().getPPr();
     }
 
-    public Paragraph<Double> parseParagraph() {
+    public Paragraph<Double, Boolean> parseParagraph() {
         if (paragraphProperties == null) {
             paragraph.setAlignment(DEFAULT_ALIGNMENT);
 

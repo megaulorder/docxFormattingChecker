@@ -3,33 +3,44 @@ package com.formatChecker.comparer.differ;
 import com.formatChecker.config.model.participants.Footer;
 
 public class FooterDiffer implements Differ {
-    Footer actualFooter, expectedFooter, differenceFooter;
+    Footer actualFooter;
+    Footer expectedFooter;
+    Footer differenceFooter;
 
     public FooterDiffer(Footer actualFooter, Footer expectedFooter) {
         this.actualFooter = actualFooter;
         this.expectedFooter = expectedFooter;
-        this.differenceFooter = new Footer();
+        this.differenceFooter = getDifference();
     }
 
-    public Footer getFooterDifference() {
+    Footer getDifference() {
+        Footer footer = new Footer();
+
         if (actualFooter == null && expectedFooter != null) {
-            differenceFooter.setErrorMessage(
+            footer.setErrorMessage(
                     String.format(
                             "add footer with %s content aligned by %s",
                             expectedFooter.getType(),
                             expectedFooter.getAlignment()));
-        }
-        else if (actualFooter != null && expectedFooter != null) {
-            differenceFooter.setErrorMessage("");
+        } else if (actualFooter != null && expectedFooter != null) {
+            footer.setErrorMessage("");
 
-            differenceFooter.setType(checkStringParameter(
-                    actualFooter.getType(), expectedFooter.getType(), "footer type"));
-            differenceFooter.setAlignment(checkStringParameter(
-                    actualFooter.getAlignment(), expectedFooter.getAlignment(), "footer alignment"));
-        }
-        else
+            footer.setType(checkStringParameter(
+                    actualFooter.getType(),
+                    expectedFooter.getType(),
+                    "footer type"));
+
+            footer.setAlignment(checkStringParameter(
+                    actualFooter.getAlignment(),
+                    expectedFooter.getAlignment(),
+                    "footer alignment"));
+        } else
             return null;
 
+        return footer;
+    }
+
+    public Footer getDifferenceFooter() {
         return differenceFooter;
     }
 }

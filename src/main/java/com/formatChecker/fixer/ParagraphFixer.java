@@ -9,12 +9,12 @@ import org.docx4j.wml.PPrBase.Spacing;
 
 public class ParagraphFixer implements ConfigConverter {
     P paragraph;
-    Paragraph<Double> actualParagraph;
-    Paragraph<Double> expectedParagraph;
-    Paragraph<String> differenceParagraph;
+    Paragraph<Double, Boolean> actualParagraph;
+    Paragraph<Double, Boolean> expectedParagraph;
+    Paragraph<String, String> differenceParagraph;
 
-    public ParagraphFixer(P paragraph, Paragraph<Double> actualParagraph, Paragraph<Double> expectedParagraph,
-                          Paragraph<String> differenceParagraph) {
+    public ParagraphFixer(P paragraph, Paragraph<Double, Boolean> actualParagraph, Paragraph<Double, Boolean> expectedParagraph,
+                          Paragraph<String, String> differenceParagraph) {
         this.paragraph = paragraph;
         this.actualParagraph = actualParagraph;
         this.expectedParagraph = expectedParagraph;

@@ -11,7 +11,7 @@ public class HeadingDiffer {
     List<Heading> headingsDifference;
 
 
-    public HeadingDiffer(List<Heading> expectedHeadings, List<Heading> actualHeadings) {
+    public HeadingDiffer(List<Heading> actualHeadings, List<Heading> expectedHeadings) {
         this.expectedHeadings = expectedHeadings;
         this.actualHeadings = actualHeadings;
         this.headingsDifference = getDifference();

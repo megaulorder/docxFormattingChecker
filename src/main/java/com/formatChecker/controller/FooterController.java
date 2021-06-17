@@ -30,6 +30,6 @@ public class FooterController {
         actualFooter = new FooterParser(headersAndFooters).parseFooter();
         docxDocument.setFooter(actualFooter);
 
-        difference.setFooter(new FooterDiffer(actualFooter, expectedFooter).getFooterDifference());
+        difference.setFooter(new FooterDiffer(actualFooter, expectedFooter).getDifferenceFooter());
     }
 }

@@ -2,16 +2,18 @@ package com.formatChecker.config.model.participants;
 
 import java.util.List;
 
-public class Paragraph<T> {
+public class Paragraph<T, D> {
     public Paragraph(List<Run> runs) {
         this.runs = runs;
     }
 
+    String id;
     List<Run> runs;
 
     String text;
 
-    Boolean isHeading;
+    Integer headingLevel;
+    D pageBreakBefore;
 
     String alignment;
 
@@ -32,8 +34,8 @@ public class Paragraph<T> {
         this.text = text;
     }
 
-    public void setIsHeading(Boolean isHeading) {
-        this.isHeading = isHeading;
+    public void setHeadingLevel(Integer headingLevel) {
+        this.headingLevel = headingLevel;
     }
 
     public void setAlignment(String alignment) {
@@ -100,7 +102,23 @@ public class Paragraph<T> {
         return text;
     }
 
-    public Boolean getIsHeading() {
-        return isHeading;
+    public Integer getHeadingLevel() {
+        return headingLevel;
+    }
+
+    public D getPageBreakBefore() {
+        return pageBreakBefore;
+    }
+
+    public void setPageBreakBefore(D pageBreakBefore) {
+        this.pageBreakBefore = pageBreakBefore;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -1,6 +1,7 @@
 package com.formatChecker.controller;
 
 import com.formatChecker.comparer.differ.DocumentDiffer;
+import com.formatChecker.comparer.differ.HeadingDiffer;
 import com.formatChecker.comparer.model.Difference;
 import com.formatChecker.config.model.Config;
 import com.formatChecker.config.parser.ConfigParser;
@@ -8,7 +9,6 @@ import com.formatChecker.document.model.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.model.Heading;
 import com.formatChecker.document.parser.DocxParser;
-import com.formatChecker.document.parser.headings.HeadingsParser;
 import org.docx4j.Docx4J;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
@@ -39,6 +39,7 @@ public class DocumentController {
     DocxParser docxParser;
     DocumentData documentData;
     List<SectPr> sectionsProperties;
+    List<String> paragraphsOnNewPage;
 
     List<Heading> headings;
 
@@ -53,13 +54,13 @@ public class DocumentController {
 
         this.wordMLPackage = Docx4J.load(new FileInputStream(docxPath));
 
-        this.headings = configParser.getFindHeadingsByTOC() != null ?
-                new HeadingsParser(wordMLPackage).getHeadings() : null;
-
         this.docxParser = new DocxParser(wordMLPackage);
+        this.headings = configParser.getFindHeadingsByTOC() != null ? docxParser.getHeadings() : null;
         this.documentData = docxParser.getDocumentData();
         this.docxDocument = docxParser.getDocument();
         this.sectionsProperties = docxParser.getSectionsProperties();
+        this.paragraphsOnNewPage = docxParser.getParagraphsOnNewPage();
+
 
         this.difference = getDocumentDifference();
     }
@@ -67,7 +68,8 @@ public class DocumentController {
     Difference getDocumentDifference() throws Docx4JException, ParserConfigurationException, IOException, SAXException, JAXBException {
         Difference difference = new Difference();
 
-        difference.setPages(new DocumentDiffer(docxDocument.getPages(), config.getPages()).comparePages());
+        difference.setPages(new DocumentDiffer(docxDocument.getPages(), config.getPages()).getDifference());
+        difference.setHeadings(new HeadingDiffer(headings, config.getRequiredHeadings()).getHeadingsDifference());
 
         runSectionController(difference);
         runFooterController(difference);
@@ -97,7 +99,7 @@ public class DocumentController {
                 P par = (P) p;
                 if (!par.toString().equals("")) {
                     ++count;
-                    new ParagraphController(count, par, difference, docxDocument, documentData, config, configStyles, headings)
+                    new ParagraphController(count, par, difference, docxDocument, documentData, config, configStyles, headings, paragraphsOnNewPage)
                             .parseParagraph();
                 }
             }

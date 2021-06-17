@@ -32,7 +32,7 @@ public class SectionController {
     public void parseSection() {
         docxDocument.addSection(section);
 
-        Section<String> differenceSection = new SectionDiffer(section, config.getSection()).getSectionDifference();
+        Section<String> differenceSection = new SectionDiffer(section, config.getSection()).getDifferenceSection();
         difference.addSection(differenceSection);
         if (shouldFix) {
             new SectionFixer(sectionProperties, section, config.getSection(), differenceSection).fixSection();

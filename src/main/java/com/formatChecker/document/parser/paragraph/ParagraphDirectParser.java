@@ -19,19 +19,23 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     Styles styles;
     ThemePart themePart;
     List<Heading> headings;
+    List<String> paragraphsOnNewPages;
 
     String styleId;
-    Paragraph<Double> styleParagraph;
-    Paragraph<Double> defaultParagraph;
+    Paragraph<Double, Boolean> styleParagraph;
+    Paragraph<Double, Boolean> defaultParagraph;
     String text;
+    String id;
 
-    public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par, List<Heading> headings) {
+    public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par,
+                                 List<Heading> headings, List<String> paragraphsOnNewPages) {
         super(docDefaults);
 
         this.par = par;
         this.styles = styles;
         this.themePart = themePart;
         this.headings = headings;
+        this.paragraphsOnNewPages = paragraphsOnNewPages;
 
         this.styleId = getStyleId(par);
         this.styleParagraph = styleId == null ? null : getStyleProperties();
@@ -40,10 +44,12 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         this.paragraphProperties = par.getPPr();
 
         this.text = getText();
+        this.id = getId();
     }
 
     public Paragraph parseParagraph() throws Docx4JException {
         paragraph.setText(text);
+        paragraph.setId(id);
 
         setAlignment();
 
@@ -56,6 +62,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         setSpacingAfter();
 
         setIsHeading();
+        setPageBreakBefore();
 
         for (Object o : par.getContent()) {
             if (o instanceof R) {
@@ -72,12 +79,16 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
 
     String getText() { return par.toString(); }
 
+    String getId() {
+        return par.getParaId();
+    }
+
     String getStyleId(P par) {
         if (par.getPPr() == null) return null;
         else return par.getPPr().getPStyle() == null ? null : par.getPPr().getPStyle().getVal();
     }
 
-    Paragraph<Double> getStyleProperties() {
+    Paragraph<Double, Boolean> getStyleProperties() {
         return new ParagraphStyleParser(docDefaults, styles, styleId).parseParagraph();
     }
 
@@ -151,9 +162,19 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     }
 
     void setIsHeading() {
-        if (headings == null)
-            paragraph.setIsHeading(false);
-        else
-            paragraph.setIsHeading(headings.stream().anyMatch(h -> h.getText().equals(text)));
+        paragraph.setHeadingLevel(0);
+
+        if (headings != null) {
+            for (Heading heading : headings) {
+                if (heading.getText().equals(text)) {
+                    paragraph.setHeadingLevel(heading.getLevel());
+                    break;
+                }
+            }
+        }
+    }
+
+    void setPageBreakBefore(){
+        paragraph.setPageBreakBefore(paragraphsOnNewPages.stream().anyMatch(p -> p.equals(id)));
     }
 }

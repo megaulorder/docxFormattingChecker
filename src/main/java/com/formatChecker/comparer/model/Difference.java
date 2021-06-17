@@ -17,7 +17,7 @@ public class Difference {
     String pages;
 
     List<Section<String>> sections;
-    List<Paragraph> paragraphs;
+    List<Paragraph<String, String>> paragraphs;
     Footer footer;
     List<Heading> headings;
 
@@ -33,7 +33,7 @@ public class Difference {
         return sections;
     }
 
-    public List<Paragraph> getParagraphs() {
+    public List<Paragraph<String, String>> getParagraphs() {
         return paragraphs;
     }
 
@@ -53,14 +53,12 @@ public class Difference {
         this.headings = headings;
     }
 
-    public List<Paragraph> addParagraph(Paragraph paragraph) {
+    public void addParagraph(Paragraph<String, String> paragraph) {
         paragraphs.add(paragraph);
-        return paragraphs;
     }
 
-    public List<Section<String>> addSection(Section<String> section) {
+    public void addSection(Section<String> section) {
         sections.add(section);
-        return sections;
     }
 
 }

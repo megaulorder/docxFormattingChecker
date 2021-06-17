@@ -28,10 +28,10 @@ public interface Differ {
             if (actualParameter.equals(expectedParameter))
                 return null;
             else {
-                if (actualParameter)
-                    return String.format("change parameter %s to true", parameterName);
+                if (!actualParameter)
+                    return String.format("add %s", parameterName);
                 else
-                    return String.format("change parameter %s to false", parameterName);
+                    return String.format("remove %s", parameterName);
             }
         }
     }

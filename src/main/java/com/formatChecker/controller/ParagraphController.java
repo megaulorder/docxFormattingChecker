@@ -33,6 +33,7 @@ public class ParagraphController implements RunHelper {
     Config config;
     DocumentData documentData;
     List<Heading> headings;
+    List<String> paragraphsOnNewPages;
     DocxDocument docxDocument;
     Map<Integer, String> configStyles;
 
@@ -42,7 +43,8 @@ public class ParagraphController implements RunHelper {
 
 
     public ParagraphController(Integer index, P documentParagraph, Difference difference, DocxDocument docxDocument,
-                               DocumentData documentData, Config config, Map<Integer, String> configStyles, List<Heading> headings)
+                               DocumentData documentData, Config config, Map<Integer, String> configStyles,
+                               List<Heading> headings, List<String> paragraphsOnNewPages)
             throws Docx4JException {
         this.index = index;
         this.documentParagraph = documentParagraph;
@@ -50,6 +52,7 @@ public class ParagraphController implements RunHelper {
         this.difference = difference;
         this.documentData = documentData;
         this.headings = headings;
+        this.paragraphsOnNewPages = paragraphsOnNewPages;
         this.docxDocument = docxDocument;
         this.config = config;
         this.configStyles = configStyles;
@@ -59,7 +62,7 @@ public class ParagraphController implements RunHelper {
         this.docDefaults = documentData.getDocDefaults();
         this.themePart = documentData.getThemePart();
 
-        this.actualParagraph = new ParagraphDirectParser(docDefaults, styles, themePart, documentParagraph, headings)
+        this.actualParagraph = new ParagraphDirectParser(docDefaults, styles, themePart, documentParagraph, headings, paragraphsOnNewPages)
                 .parseParagraph();
     }
 
@@ -67,8 +70,9 @@ public class ParagraphController implements RunHelper {
         docxDocument.addParagraph(actualParagraph);
 
         if (configStyles == null) {
-            if (actualParagraph.getIsHeading() != null) {
-                expectedParagraph = config.getStyles().get(HEADING_STYLE_NAME).getParagraph();
+            if (actualParagraph.getHeadingLevel() > 0) {
+                expectedParagraph = config.getStyles().get(HEADING_STYLE_NAME + actualParagraph.getHeadingLevel())
+                        .getParagraph();
             }
             else {
                 expectedParagraph = config.getStyles().get(BODY_STYLE_NAME).getParagraph();
@@ -82,7 +86,7 @@ public class ParagraphController implements RunHelper {
     }
 
     void compareParagraph() {
-        Paragraph<String> differenceParagraph = new ParagraphDiffer(actualParagraph, expectedParagraph)
+        Paragraph<String, String> differenceParagraph = new ParagraphDiffer(actualParagraph, expectedParagraph)
                 .getParagraphDifference();
         difference.addParagraph(differenceParagraph);
 
@@ -100,7 +104,7 @@ public class ParagraphController implements RunHelper {
 
                     Run actualRun = (Run) actualParagraph.getRuns().get(count - 1);
                     new RunController(index, r, actualRun, differenceParagraph, configStyles,
-                            actualParagraph.getIsHeading(), config, shouldFix).parseRun();
+                            actualParagraph.getHeadingLevel(), config, shouldFix).parseRun();
                 }
             }
         }

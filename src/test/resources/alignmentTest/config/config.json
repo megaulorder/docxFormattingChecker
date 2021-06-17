@@ -4,38 +4,53 @@
         "max": 60
     },
     "section": {
-        "orientation": "portrait",
+        "orientation": "landscape",
         "margins": [
             2,
-            1,
+            5,
             2,
-            3
+            5
         ],
         "pageHeight": 29.7,
         "pageWidth": 21.0
     },
     "styles": {
-        "heading": {
-            "paragraphs": [
-                1
-            ],
+        "heading1": {
             "paragraphProperties": {
-                "alignment": "justify",
-                "firstLineIndent": 1.25,
-                "lineSpacing": 1.5,
-                "spacingBefore": 0,
-                "spacingAfter": 0
+                "pageBreakBefore": true,
+                "alignment": "right",
+                "firstLineIndent": 1.25
             },
             "runProperties": {
-                "fontFamily": "Times New Roman",
+                "fontFamily": "Arial",
+                "fontSize": 18,
+                "bold": true
+            }
+        },
+        "heading2": {
+            "paragraphProperties": {
+                "pageBreakBefore": false,
+                "alignment": "right",
+                "firstLineIndent": 1.25
+            },
+            "runProperties": {
+                "fontFamily": "Papyrus",
                 "fontSize": 14,
                 "bold": true
             }
         },
+        "heading3": {
+            "paragraphProperties": {
+                "alignment": "right",
+                "firstLineIndent": 1.25
+            },
+            "runProperties": {
+                "fontFamily": "Comic Sans MS",
+                "fontSize": 11,
+                "bold": true
+            }
+        },
         "body": {
-            "paragraphs": [
-                1
-            ],
             "paragraphProperties": {
                 "alignment": "justify",
                 "firstLineIndent": 1.25,
@@ -60,12 +75,14 @@
         },
         {
             "level": 1,
-            "text": "Заголовок третий"
+            "text": "Заголовок третий",
+            "pageBreakBefore": true
         },
         {
             "level": 1,
             "text": "Заключение"
         }
     ],
+    "generateNewDocument": true,
     "findHeadingsByTOC": true
 }
