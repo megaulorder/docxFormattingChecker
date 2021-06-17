@@ -13,7 +13,9 @@ public class ParagraphFixer implements ConfigConverter {
     Paragraph<Double, Boolean> expectedParagraph;
     Paragraph<String, String> differenceParagraph;
 
-    public ParagraphFixer(P paragraph, Paragraph<Double, Boolean> actualParagraph, Paragraph<Double, Boolean> expectedParagraph,
+    public ParagraphFixer(P paragraph,
+                          Paragraph<Double, Boolean> actualParagraph,
+                          Paragraph<Double, Boolean> expectedParagraph,
                           Paragraph<String, String> differenceParagraph) {
         this.paragraph = paragraph;
         this.actualParagraph = actualParagraph;

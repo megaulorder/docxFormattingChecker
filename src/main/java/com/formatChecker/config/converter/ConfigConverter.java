@@ -9,7 +9,7 @@ import java.math.BigInteger;
 
 public interface ConfigConverter {
     default JcEnumeration convertAlignment(String alignment) {
-        switch(alignment) {
+        switch (alignment) {
             case "center":
                 return JcEnumeration.CENTER;
             case "right":
@@ -41,7 +41,7 @@ public interface ConfigConverter {
         return BigDecimal.valueOf(value / 0.0017638889).toBigInteger();
     }
 
-    default STPageOrientation convertOrientation (String orientation) {
+    default STPageOrientation convertOrientation(String orientation) {
         if (orientation.equals("landscape"))
             return STPageOrientation.LANDSCAPE;
         else

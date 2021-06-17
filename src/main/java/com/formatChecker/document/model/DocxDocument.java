@@ -13,7 +13,7 @@ public class DocxDocument {
         this.sections = new ArrayList<>();
     }
 
-    List<Paragraph>  paragraphs;
+    List<Paragraph<Double, Boolean>> paragraphs;
     Integer pages;
     List<Section<Double>> sections;
     Footer footer;
@@ -22,29 +22,19 @@ public class DocxDocument {
         this.pages = pages;
     }
 
-    public List<Paragraph> getParagraphs() {
-        return paragraphs;
-    }
-
     public Integer getPages() {
         return pages;
-    }
-
-    public Footer getFooter() {
-        return footer;
     }
 
     public void setFooter(Footer footer) {
         this.footer = footer;
     }
 
-    public List<Paragraph> addParagraph(Paragraph paragraph) {
+    public void addParagraph(Paragraph<Double, Boolean> paragraph) {
         paragraphs.add(paragraph);
-        return paragraphs;
     }
 
-    public List<Section<Double>> addSection(Section<Double> section) {
+    public void addSection(Section<Double> section) {
         sections.add(section);
-        return sections;
     }
 }

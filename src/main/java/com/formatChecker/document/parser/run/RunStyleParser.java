@@ -19,8 +19,10 @@ public class RunStyleParser extends RunParser implements RunSetProperties, Style
     Optional<Style> style;
     Optional<Style> parentStyle;
 
-    public RunStyleParser(DocDefaults docDefaults, ThemePart themePart, String styleId, Styles styles)
-            throws Docx4JException {
+    public RunStyleParser(DocDefaults docDefaults,
+                          ThemePart themePart,
+                          String styleId,
+                          Styles styles) throws Docx4JException {
         super(docDefaults, themePart);
 
         this.style = getStyleById(styleId, styles);

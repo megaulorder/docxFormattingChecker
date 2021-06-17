@@ -12,7 +12,9 @@ public class SectionFixer implements ConfigConverter {
     Section<Double> expectedSection;
     Section<String> differenceSection;
 
-    public SectionFixer(SectPr sectionProperties, Section<Double> actualSection, Section<Double> expectedSection,
+    public SectionFixer(SectPr sectionProperties,
+                        Section<Double> actualSection,
+                        Section<Double> expectedSection,
                         Section<String> differenceSection) {
         this.sectionProperties = sectionProperties;
         this.actualSection = actualSection;

@@ -19,10 +19,13 @@ public class SectionController {
 
     Boolean shouldFix;
 
-    public SectionController(SectPr sectionProperties, DocxDocument docxDocument, Difference difference,
-                             Config config, Boolean shouldFix) {
+    public SectionController(SectPr sectionProperties,
+                             DocxDocument docxDocument,
+                             Difference difference,
+                             Config config,
+                             Boolean shouldFix) {
         this.sectionProperties = sectionProperties;
-        this.section = new SectionParser(sectionProperties).parseSection();
+        this.section = new SectionParser(sectionProperties).getSection();
         this.docxDocument = docxDocument;
         this.difference = difference;
         this.config = config;
@@ -34,6 +37,7 @@ public class SectionController {
 
         Section<String> differenceSection = new SectionDiffer(section, config.getSection()).getDifferenceSection();
         difference.addSection(differenceSection);
+
         if (shouldFix) {
             new SectionFixer(sectionProperties, section, config.getSection(), differenceSection).fixSection();
         }

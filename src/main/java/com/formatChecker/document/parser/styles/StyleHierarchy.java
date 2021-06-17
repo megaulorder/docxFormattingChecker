@@ -12,7 +12,8 @@ public interface StyleHierarchy {
     }
 
     default Optional<Style> getParentStyle(Optional<Style> style, Styles styles) {
-        if (!style.isPresent()) { return null; }
+        if (!style.isPresent())
+            return null;
         else {
             BasedOn parentStyle = style.get().getBasedOn();
             return parentStyle == null ? Optional.empty() :

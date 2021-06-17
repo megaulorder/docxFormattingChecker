@@ -28,8 +28,7 @@ public class RunDefaultsParser extends RunParser implements RunSetProperties {
             run.setStrikethrough(DEFAULT_BOOL_VALUE);
             run.setUnderline(DEFAULT_UNDERLINE);
             run.setTextColor(DEFAULT_TEXT_COLOR);
-        }
-        else {
+        } else {
             setFontFamily();
             setFontSize();
             setItalic();

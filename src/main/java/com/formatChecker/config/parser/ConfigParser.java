@@ -22,7 +22,7 @@ public class ConfigParser {
         this.styles = getConfigStyles();
     }
 
-     Config parseConfig() throws IOException {
+    Config parseConfig() throws IOException {
 
         Gson gson = new Gson();
         FileReader fileReader = new FileReader(filePath);

@@ -5,10 +5,16 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 
 public interface RunSetProperties extends ValuesConverter {
     void setFontFamily() throws Docx4JException;
+
     void setFontSize();
+
     void setBold();
+
     void setItalic();
+
     void setStrikethrough();
+
     void setUnderline();
+
     void setTextColor();
 }

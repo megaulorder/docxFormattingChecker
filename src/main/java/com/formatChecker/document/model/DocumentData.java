@@ -18,8 +18,12 @@ public class DocumentData {
     List<Object> paragraphs;
     HeaderFooterPolicy headersAndFooters;
 
-    public DocumentData(Properties documentInfo, DocDefaults docDefaults, ThemePart themePart,
-                        List<SectionWrapper> sections, Styles styles, List<Object> paragraphs,
+    public DocumentData(Properties documentInfo,
+                        DocDefaults docDefaults,
+                        ThemePart themePart,
+                        List<SectionWrapper> sections,
+                        Styles styles,
+                        List<Object> paragraphs,
                         HeaderFooterPolicy headersAndFooters) {
         this.documentInfo = documentInfo;
         this.docDefaults = docDefaults;

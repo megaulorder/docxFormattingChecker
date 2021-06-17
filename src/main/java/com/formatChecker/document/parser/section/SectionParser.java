@@ -14,13 +14,15 @@ import java.util.List;
 public class SectionParser implements ValuesConverter {
     static final String DEFAULT_ORIENTATION = "portrait";
 
-    private final SectPr sectionProperties;
+    SectPr sectionProperties;
+    Section<Double> section;
 
     public SectionParser(SectPr sectionProperties) {
         this.sectionProperties = sectionProperties;
+        this.section = parseSection();
     }
 
-    public Section<Double> parseSection() {
+    Section<Double> parseSection() {
         Section<Double> section = new Section<>();
 
         setOrientation(section);
@@ -70,5 +72,9 @@ public class SectionParser implements ValuesConverter {
 
     void setMargins(Section<Double> section) {
         section.setMargins(getMargins());
+    }
+
+    public Section<Double> getSection() {
+        return section;
     }
 }

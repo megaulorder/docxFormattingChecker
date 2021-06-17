@@ -5,27 +5,27 @@ import com.formatChecker.document.converter.ValuesConverter;
 import org.docx4j.wml.DocDefaults;
 import org.docx4j.wml.Jc;
 import org.docx4j.wml.PPr;
-import org.docx4j.wml.PPrBase.Spacing;
 import org.docx4j.wml.PPrBase.Ind;
+import org.docx4j.wml.PPrBase.Spacing;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 
 public abstract class ParagraphParser implements ValuesConverter {
     DocDefaults docDefaults;
 
-    Paragraph paragraph;
+    Paragraph<Double, Boolean> paragraph;
     PPr paragraphProperties;
 
     public ParagraphParser(DocDefaults docDefaults) {
         this.docDefaults = docDefaults;
 
-        this.paragraph = new Paragraph(new ArrayList<>());
+        this.paragraph = new Paragraph<>();
     }
 
 
     String getAlignment(PPr paragraphProperties) {
-        if (paragraphProperties == null) { return null; }
+        if (paragraphProperties == null)
+            return null;
         else {
             Jc alignment = paragraphProperties.getJc();
             if (alignment == null)
@@ -36,12 +36,15 @@ public abstract class ParagraphParser implements ValuesConverter {
     }
 
     Ind getIndent(PPr paragraphProperties) {
-        if (paragraphProperties == null) { return null; }
-        else { return paragraphProperties.getInd(); }
+        if (paragraphProperties == null)
+            return null;
+        else
+            return paragraphProperties.getInd();
     }
 
     Double getFirstLineIndent(Ind indent) {
-        if (indent == null) { return null; }
+        if (indent == null)
+            return null;
         else {
             BigInteger firstLineIndent = indent.getFirstLine();
             return firstLineIndent == null ? null : twipsToCm(firstLineIndent);
@@ -49,7 +52,8 @@ public abstract class ParagraphParser implements ValuesConverter {
     }
 
     Double getLeftIndent(Ind indent) {
-        if (indent == null) { return null; }
+        if (indent == null)
+            return null;
         else {
             BigInteger leftIndent = indent.getLeft();
             return leftIndent == null ? null : twipsToCm(leftIndent);
@@ -57,7 +61,8 @@ public abstract class ParagraphParser implements ValuesConverter {
     }
 
     Double getRightIndent(Ind indent) {
-        if (indent == null) { return null; }
+        if (indent == null)
+            return null;
         else {
             BigInteger rightIndent = indent.getRight();
             return rightIndent == null ? null : twipsToCm(rightIndent);
@@ -65,12 +70,15 @@ public abstract class ParagraphParser implements ValuesConverter {
     }
 
     Spacing getSpacing(PPr paragraphProperties) {
-        if (paragraphProperties == null) { return null; }
-        else { return paragraphProperties.getSpacing(); }
+        if (paragraphProperties == null)
+            return null;
+        else
+            return paragraphProperties.getSpacing();
     }
 
     Double getLineSpacing(Spacing spacing) {
-        if (spacing == null) { return null; }
+        if (spacing == null)
+            return null;
         else {
             BigInteger lineSpacing = spacing.getLine();
             return lineSpacing == null ? null : lineSpacingValToCm(lineSpacing);
@@ -78,7 +86,8 @@ public abstract class ParagraphParser implements ValuesConverter {
     }
 
     Double getSpacingBefore(Spacing spacing) {
-        if (spacing == null) { return null; }
+        if (spacing == null)
+            return null;
         else {
             BigInteger spacingBefore = spacing.getBefore();
             return spacingBefore == null ? null : absUnitsToCm(spacingBefore);
@@ -86,14 +95,15 @@ public abstract class ParagraphParser implements ValuesConverter {
     }
 
     Double getSpacingAfter(Spacing spacing) {
-        if (spacing == null) { return null; }
+        if (spacing == null)
+            return null;
         else {
             BigInteger spacingAfter = spacing.getAfter();
             return spacingAfter == null ? null : absUnitsToCm(spacingAfter);
         }
     }
 
-    Paragraph getDefaultProperties(DocDefaults docDefaults) {
+    Paragraph<Double, Boolean> getDefaultProperties(DocDefaults docDefaults) {
         return new ParagraphDefaultsParser(docDefaults).parseParagraph();
     }
 }

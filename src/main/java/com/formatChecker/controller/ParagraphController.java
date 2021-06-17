@@ -24,8 +24,8 @@ public class ParagraphController implements RunHelper {
     private static final String BODY_STYLE_NAME = "body";
 
     P documentParagraph;
-    Paragraph actualParagraph;
-    Paragraph expectedParagraph;
+    Paragraph<Double, Boolean> actualParagraph;
+    Paragraph<Double, Boolean> expectedParagraph;
     Difference difference;
     Boolean shouldFix;
     Integer index;
@@ -42,10 +42,15 @@ public class ParagraphController implements RunHelper {
     ThemePart themePart;
 
 
-    public ParagraphController(Integer index, P documentParagraph, Difference difference, DocxDocument docxDocument,
-                               DocumentData documentData, Config config, Map<Integer, String> configStyles,
-                               List<Heading> headings, List<String> paragraphsOnNewPages)
-            throws Docx4JException {
+    public ParagraphController(Integer index,
+                               P documentParagraph,
+                               Difference difference,
+                               DocxDocument docxDocument,
+                               DocumentData documentData,
+                               Config config,
+                               Map<Integer, String> configStyles,
+                               List<Heading> headings,
+                               List<String> paragraphsOnNewPages) throws Docx4JException {
         this.index = index;
         this.documentParagraph = documentParagraph;
 
@@ -73,12 +78,10 @@ public class ParagraphController implements RunHelper {
             if (actualParagraph.getHeadingLevel() > 0) {
                 expectedParagraph = config.getStyles().get(HEADING_STYLE_NAME + actualParagraph.getHeadingLevel())
                         .getParagraph();
-            }
-            else {
+            } else {
                 expectedParagraph = config.getStyles().get(BODY_STYLE_NAME).getParagraph();
             }
-        }
-        else {
+        } else {
             expectedParagraph = config.getStyles().get(configStyles.get(index)).getParagraph();
         }
 
@@ -102,7 +105,7 @@ public class ParagraphController implements RunHelper {
                 if (!StringUtils.isBlank(getText(r))) {
                     ++count;
 
-                    Run actualRun = (Run) actualParagraph.getRuns().get(count - 1);
+                    Run<Boolean, Double> actualRun = (Run<Boolean, Double>) actualParagraph.getRuns().get(count - 1);
                     new RunController(index, r, actualRun, differenceParagraph, configStyles,
                             actualParagraph.getHeadingLevel(), config, shouldFix).parseRun();
                 }

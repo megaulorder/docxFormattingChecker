@@ -27,8 +27,7 @@ public class ParagraphDefaultsParser extends ParagraphParser implements Paragrap
             paragraph.setLineSpacing(DEFAULT_LINE_SPACING);
             paragraph.setSpacingBefore(DEFAULT_SPACING_BEFORE);
             paragraph.setSpacingAfter(DEFAULT_SPACING_AFTER);
-        }
-        else {
+        } else {
             setAlignment();
 
             setFirstLineIndent();

@@ -65,11 +65,11 @@ public class DocumentController {
         this.difference = getDocumentDifference();
     }
 
-    Difference getDocumentDifference() throws Docx4JException, ParserConfigurationException, IOException, SAXException, JAXBException {
+    Difference getDocumentDifference() throws Docx4JException, ParserConfigurationException, IOException, SAXException {
         Difference difference = new Difference();
 
         difference.setPages(new DocumentDiffer(docxDocument.getPages(), config.getPages()).getDifference());
-        difference.setHeadings(new HeadingDiffer(headings, config.getRequiredHeadings()).getHeadingsDifference());
+        difference.setHeadings(new HeadingDiffer(headings, configParser.getRequiredHeadings()).getHeadingsDifference());
 
         runSectionController(difference);
         runFooterController(difference);
@@ -99,7 +99,15 @@ public class DocumentController {
                 P par = (P) p;
                 if (!par.toString().equals("")) {
                     ++count;
-                    new ParagraphController(count, par, difference, docxDocument, documentData, config, configStyles, headings, paragraphsOnNewPage)
+                    new ParagraphController(count,
+                            par,
+                            difference,
+                            docxDocument,
+                            documentData,
+                            config,
+                            configStyles,
+                            headings,
+                            paragraphsOnNewPage)
                             .parseParagraph();
                 }
             }

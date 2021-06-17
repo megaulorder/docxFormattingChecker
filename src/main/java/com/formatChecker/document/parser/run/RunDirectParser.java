@@ -18,8 +18,11 @@ public class RunDirectParser extends RunParser implements RunSetProperties, RunH
     Run<Boolean, Double> defaultRun;
     String text;
 
-    public RunDirectParser(DocDefaults docDefaults, ThemePart themePart, String styleId, Styles styles,  R r)
-            throws Docx4JException {
+    public RunDirectParser(DocDefaults docDefaults,
+                           ThemePart themePart,
+                           String styleId,
+                           Styles styles,
+                           R r) throws Docx4JException {
         super(docDefaults, themePart);
 
         this.runProperties = r.getRPr();
@@ -48,8 +51,11 @@ public class RunDirectParser extends RunParser implements RunSetProperties, RunH
     }
 
     String getFontFamily(RPr runProperties) {
-        if (runProperties == null) { return null; }
-        else { return runProperties.getRFonts() == null ? null : runProperties.getRFonts().getAscii(); }
+        if (runProperties == null) {
+            return null;
+        } else {
+            return runProperties.getRFonts() == null ? null : runProperties.getRFonts().getAscii();
+        }
     }
 
     Run<Boolean, Double> getStyleProperties() throws Docx4JException {

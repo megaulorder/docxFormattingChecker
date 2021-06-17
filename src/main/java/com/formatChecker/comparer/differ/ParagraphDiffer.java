@@ -2,21 +2,19 @@ package com.formatChecker.comparer.differ;
 
 import com.formatChecker.config.model.participants.Paragraph;
 
-import java.util.ArrayList;
-
 public class ParagraphDiffer implements Differ {
     Paragraph<Double, Boolean> actualParagraph;
     Paragraph<Double, Boolean> expectedParagraph;
     Paragraph<String, String> paragraphDifference;
 
-    public ParagraphDiffer(Paragraph<Double, Boolean> actualParagraph, Paragraph<Double, Boolean> expectedParagraph) {
+    public ParagraphDiffer(Paragraph<Double, Boolean>actualParagraph,Paragraph<Double, Boolean> expectedParagraph) {
         this.actualParagraph = actualParagraph;
         this.expectedParagraph = expectedParagraph;
         this.paragraphDifference = getDifference();
     }
 
     Paragraph<String, String> getDifference() {
-        Paragraph<String, String> paragraphDifference = new Paragraph<>(new ArrayList<>());
+        Paragraph<String, String> paragraphDifference = new Paragraph<>();
 
         paragraphDifference.setText(actualParagraph.getText());
 

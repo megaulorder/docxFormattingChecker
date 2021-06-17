@@ -1,10 +1,11 @@
 package com.formatChecker.config.model.participants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Paragraph<T, D> {
-    public Paragraph(List<Run> runs) {
-        this.runs = runs;
+    public Paragraph() {
+        this.runs = new ArrayList<>();
     }
 
     String id;
@@ -25,9 +26,8 @@ public class Paragraph<T, D> {
     T spacingBefore;
     T spacingAfter;
 
-    public List<Run> addRun(Run run) {
+    public void addRun(Run run) {
         runs.add(run);
-        return runs;
     }
 
     public void setText(String text) {

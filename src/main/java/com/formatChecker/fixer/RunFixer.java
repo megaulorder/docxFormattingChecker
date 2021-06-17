@@ -10,7 +10,9 @@ public class RunFixer implements ConfigConverter {
     Run<Boolean, Double> expectedRun;
     Run<String, String> differenceRun;
 
-    public RunFixer(R run, Run<Boolean, Double> actualRun, Run<Boolean, Double> expectedRun,
+    public RunFixer(R run,
+                    Run<Boolean, Double> actualRun,
+                    Run<Boolean, Double> expectedRun,
                     Run<String, String> differenceRun) {
         this.run = run;
         this.actualRun = actualRun;

@@ -21,7 +21,8 @@ public abstract class RunParser implements ValuesConverter {
     }
 
     String getFontFamily(RPr runProperties, ThemePart themePart) throws Docx4JException {
-        if (runProperties == null) { return null; }
+        if (runProperties == null)
+            return null;
         else {
             RFonts fontProperties = runProperties.getRFonts();
             if (fontProperties == null)
@@ -33,7 +34,8 @@ public abstract class RunParser implements ValuesConverter {
     }
 
     Double getFontSize(RPr runProperties) {
-        if (runProperties == null) { return null; }
+        if (runProperties == null)
+            return null;
         else {
             HpsMeasure fontSize = runProperties.getSz();
             return fontSize == null ? null : halfPtToPt(fontSize.getVal());
@@ -41,7 +43,8 @@ public abstract class RunParser implements ValuesConverter {
     }
 
     Boolean getBold(RPr runProperties) {
-        if (runProperties == null) { return null; }
+        if (runProperties == null)
+            return null;
         else {
             BooleanDefaultTrue isBold = runProperties.getB();
             return isBold == null ? null : isBold.isVal();
@@ -49,7 +52,8 @@ public abstract class RunParser implements ValuesConverter {
     }
 
     Boolean getItalic(RPr runProperties) {
-        if (runProperties == null) { return null; }
+        if (runProperties == null)
+            return null;
         else {
             BooleanDefaultTrue isItalic = runProperties.getI();
             return isItalic == null ? null : isItalic.isVal();
@@ -57,7 +61,8 @@ public abstract class RunParser implements ValuesConverter {
     }
 
     Boolean getStrikethrough(RPr runProperties) {
-        if (runProperties == null) { return null; }
+        if (runProperties == null)
+            return null;
         else {
             BooleanDefaultTrue isStrikethrough = runProperties.getStrike();
             return isStrikethrough == null ? null : isStrikethrough.isVal();
@@ -65,7 +70,8 @@ public abstract class RunParser implements ValuesConverter {
     }
 
     String getUnderline(RPr runProperties) {
-        if (runProperties == null) { return null; }
+        if (runProperties == null)
+            return null;
         else {
             U underline = runProperties.getU();
             return underline == null ? null : underline.getVal().value();
@@ -73,14 +79,15 @@ public abstract class RunParser implements ValuesConverter {
     }
 
     String getTextColor(RPr runProperties) {
-        if (runProperties == null) { return null; }
+        if (runProperties == null)
+            return null;
         else {
             Color textColor = runProperties.getColor();
             return textColor == null ? null : textColor.getVal();
         }
     }
 
-    Run getDefaultProperties(DocDefaults docDefaults, ThemePart themePart) throws Docx4JException {
+    Run<Boolean, Double> getDefaultProperties(DocDefaults docDefaults, ThemePart themePart) throws Docx4JException {
         return new RunDefaultsParser(docDefaults, themePart).parseRun();
     }
 }

@@ -16,16 +16,22 @@ public class RunController {
     Integer index;
     R documentRun;
     Run<Boolean, Double> actualRun;
-    Run expectedRun;
+    Run<Boolean, Double> expectedRun;
     Boolean shouldFix;
 
-    Paragraph differenceParagraph;
+    Paragraph<String, String> differenceParagraph;
     Map<Integer, String> configStyles;
     Config config;
     Integer headingLevel;
 
-    public RunController(Integer index, R documentRun, Run<Boolean, Double> actualRun, Paragraph differenceParagraph,
-                         Map<Integer, String> configStyles, Integer headingLevel, Config config, Boolean shouldFix) {
+    public RunController(Integer index,
+                         R documentRun,
+                         Run<Boolean, Double> actualRun,
+                         Paragraph<String, String> differenceParagraph,
+                         Map<Integer, String> configStyles,
+                         Integer headingLevel,
+                         Config config,
+                         Boolean shouldFix) {
         this.index = index;
         this.documentRun = documentRun;
         this.actualRun = actualRun;
@@ -42,19 +48,17 @@ public class RunController {
         if (configStyles == null) {
             if (headingLevel > 0) {
                 expectedRun = config.getStyles().get(HEADING_STYLE_NAME + headingLevel).getRun();
-            }
-            else {
+            } else {
                 expectedRun = config.getStyles().get(BODY_STYLE_NAME).getRun();
             }
-        }
-        else {
+        } else {
             expectedRun = config.getStyles().get(configStyles.get(index)).getRun();
         }
         compareRun();
     }
 
     void compareRun() {
-        Run differenceRun = new RunDiffer(actualRun, expectedRun).getRunDifference();
+        Run<String, String> differenceRun = new RunDiffer(actualRun, expectedRun).getRunDifference();
         differenceParagraph.addRun(differenceRun);
 
         if (shouldFix) {

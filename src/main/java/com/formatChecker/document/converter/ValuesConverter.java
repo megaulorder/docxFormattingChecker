@@ -25,13 +25,14 @@ public interface ValuesConverter {
 
     default String convertAlignment(String alignment) {
         alignment = alignment.toLowerCase();
+
         if (alignment.equals("both"))
             return "justify";
         else
             return alignment;
     }
 
-    default Double round (double value, int precision) {
+    default Double round(double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
     }

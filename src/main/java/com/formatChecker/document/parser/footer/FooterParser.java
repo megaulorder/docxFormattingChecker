@@ -16,24 +16,27 @@ import java.nio.charset.StandardCharsets;
 
 public class FooterParser {
     private static final String DEFAULT_ALIGNMENT = "left";
+    private static final String PAGE_REGEXP = "\\s+";
 
     String type, alignment;
     HeaderFooterPolicy headersAndFooters;
     Document defaultFooter;
-
     Footer footer;
 
-    public FooterParser(HeaderFooterPolicy headersAndFooters) throws ParserConfigurationException, IOException, SAXException {
+    public FooterParser(HeaderFooterPolicy headersAndFooters)
+            throws ParserConfigurationException, IOException, SAXException {
         this.headersAndFooters = headersAndFooters;
         this.defaultFooter = convertStringToXMLDocument(headersAndFooters.getDefaultFooter().getXML());
 
         this.alignment = getAlignment();
         this.type = getType();
 
-        this.footer = new Footer();
+        this.footer = parseFooter();
     }
 
-    public Footer parseFooter() {
+    Footer parseFooter() {
+        Footer footer = new Footer();
+
         if (alignment == null && type == null)
             return null;
 
@@ -45,21 +48,16 @@ public class FooterParser {
 
     String getAlignment() {
         if (defaultFooter != null) {
-            String alignment = "";
+            String alignment = null;
+            Element element;
 
-            NodeList elements = defaultFooter.getElementsByTagName("w:framePr");
-            Element element = (Element) defaultFooter.adoptNode(elements.item(0));
-
-            if (element == null) {
-                elements = defaultFooter.getElementsByTagName("w:ptab");
-                element = (Element) defaultFooter.adoptNode(elements.item(0));
-
-                if (element == null)
-                    return null;
-
-                alignment = element.getAttribute("w:alignment");
-            } else
+            element = getElement("w:framePr");
+            if (element != null)
                 alignment = element.getAttribute("w:xAlign");
+
+            element = getElement("w:ptab");
+            if (element != null)
+                alignment = element.getAttribute("w:alignment");
 
             return alignment != null ? alignment : DEFAULT_ALIGNMENT;
         }
@@ -74,7 +72,7 @@ public class FooterParser {
             if (element == null)
                 return null;
 
-            String value = element.getTextContent().toLowerCase().replaceAll("\\s+", "");
+            String value = element.getTextContent().toLowerCase().replaceAll(PAGE_REGEXP, "");
 
             if (value.matches("[0-9]+"))
                 return "page";
@@ -84,9 +82,18 @@ public class FooterParser {
         return null;
     }
 
-    Document convertStringToXMLDocument(String xmlString) throws ParserConfigurationException, IOException, SAXException {
+    Document convertStringToXMLDocument(String xmlString)
+            throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = factory.newDocumentBuilder();
         return db.parse(new ByteArrayInputStream(xmlString.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    Element getElement(String tag) {
+        return (Element) defaultFooter.adoptNode(defaultFooter.getElementsByTagName(tag).item(0));
+    }
+
+    public Footer getFooter() {
+        return footer;
     }
 }

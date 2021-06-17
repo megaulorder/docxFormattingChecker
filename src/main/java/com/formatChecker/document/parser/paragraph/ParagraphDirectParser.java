@@ -27,8 +27,12 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     String text;
     String id;
 
-    public ParagraphDirectParser(DocDefaults docDefaults, Styles styles, ThemePart themePart, P par,
-                                 List<Heading> headings, List<String> paragraphsOnNewPages) {
+    public ParagraphDirectParser(DocDefaults docDefaults,
+                                 Styles styles,
+                                 ThemePart themePart,
+                                 P par,
+                                 List<Heading> headings,
+                                 List<String> paragraphsOnNewPages) {
         super(docDefaults);
 
         this.par = par;
@@ -47,7 +51,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         this.id = getId();
     }
 
-    public Paragraph parseParagraph() throws Docx4JException {
+    public Paragraph<Double, Boolean> parseParagraph() throws Docx4JException {
         paragraph.setText(text);
         paragraph.setId(id);
 
@@ -67,7 +71,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         for (Object o : par.getContent()) {
             if (o instanceof R) {
                 R r = (R) o;
-                Run run = new RunDirectParser(docDefaults, themePart, styleId, styles, r).parseRun();
+                Run<Boolean, Double> run = new RunDirectParser(docDefaults, themePart, styleId, styles, r).parseRun();
                 if (!StringUtils.isBlank(run.getText())) {
                     paragraph.addRun(run);
                 }
@@ -77,7 +81,9 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         return paragraph;
     }
 
-    String getText() { return par.toString(); }
+    String getText() {
+        return par.toString();
+    }
 
     String getId() {
         return par.getParaId();
@@ -174,7 +180,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         }
     }
 
-    void setPageBreakBefore(){
+    void setPageBreakBefore() {
         paragraph.setPageBreakBefore(paragraphsOnNewPages.stream().anyMatch(p -> p.equals(id)));
     }
 }
