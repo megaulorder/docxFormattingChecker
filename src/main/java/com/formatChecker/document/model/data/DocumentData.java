@@ -1,4 +1,4 @@
-package com.formatChecker.document.model;
+package com.formatChecker.document.model.data;
 
 import org.docx4j.docProps.extended.Properties;
 import org.docx4j.model.structure.HeaderFooterPolicy;

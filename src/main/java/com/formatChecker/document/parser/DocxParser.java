@@ -1,8 +1,9 @@
 package com.formatChecker.document.parser;
 
-import com.formatChecker.document.model.DocumentData;
+import com.formatChecker.document.model.data.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
-import com.formatChecker.document.model.Heading;
+import com.formatChecker.document.model.participants.raw.DrawingRaw;
+import com.formatChecker.document.model.participants.Heading;
 import org.docx4j.jaxb.XPathBinderAssociationIsPartialException;
 import org.docx4j.model.structure.SectionWrapper;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
@@ -20,13 +21,16 @@ public class DocxParser {
     private static final String PARAGRAPHS_ON_NEW_PAGE_XPATH = "//w:p[w:r[w:br[@w:type='page']]]/following-sibling::w:p[1]";
     private final static String TOC_XPATH = "//w:sdtContent/w:p[w:hyperlink[starts-with(@w:anchor, '_Toc')]]";
     private final static String TOC_ELEMENT_XPATH = "//w:p[w:bookmarkStart[starts-with(@w:name,'_Toc')]]";
+    private final static String DRAWING_PARAGRAPH_XPATH = "//w:p[w:r[w:drawing]]";
+    private final static String DESCRIPTION_PARAGRAPH_XPATH = DRAWING_PARAGRAPH_XPATH + "/following-sibling::w:p[1]";
 
     WordprocessingMLPackage wordprocessingMLPackage;
     DocxDocument document;
     DocumentData documentData;
     List<SectPr> sectionsProperties;
-    List<String> paragraphsOnNewPage;
+    List<String> paragraphOnNewPageIds;
     List<Heading> headings;
+    List<DrawingRaw> drawingsAndDescriptions;
 
     public DocxParser(WordprocessingMLPackage wordprocessingMLPackage)
             throws JAXBException, XPathBinderAssociationIsPartialException {
@@ -35,7 +39,8 @@ public class DocxParser {
         this.documentData = parseDocumentData();
         this.document = parseDocument();
         this.sectionsProperties = parseSectionsProperties();
-        this.paragraphsOnNewPage = parseParagraphsOnNewPage();
+        this.paragraphOnNewPageIds = parseParagraphsOnNewPage();
+        this.drawingsAndDescriptions = parseDrawingsAndDescriptions();
     }
 
     DocumentData parseDocumentData() {
@@ -106,6 +111,26 @@ public class DocxParser {
         return headings;
     }
 
+    List<DrawingRaw> parseDrawingsAndDescriptions() throws JAXBException, XPathBinderAssociationIsPartialException {
+        List<DrawingRaw> drawingsAndDescriptions = new ArrayList<>();
+        List<Object> drawingTOCObjects = wordprocessingMLPackage.getMainDocumentPart()
+                .getJAXBNodesViaXPath(DRAWING_PARAGRAPH_XPATH, false);
+        List<Object> descriptionTOCObjects = wordprocessingMLPackage.getMainDocumentPart()
+                .getJAXBNodesViaXPath(DESCRIPTION_PARAGRAPH_XPATH, false);
+
+        for (int i = 0; i < drawingTOCObjects.size(); ++i) {
+            DrawingRaw drawingRaw = new DrawingRaw();
+            drawingRaw.setDrawing(((P) drawingTOCObjects.get(i)));
+
+            if (i < descriptionTOCObjects.size())
+                drawingRaw.setDescription(((P) descriptionTOCObjects.get(i)));
+
+            drawingsAndDescriptions.add(drawingRaw);
+        }
+
+        return drawingsAndDescriptions;
+    }
+
     public DocxDocument getDocument() {
         return document;
     }
@@ -118,11 +143,15 @@ public class DocxParser {
         return sectionsProperties;
     }
 
-    public List<String> getParagraphsOnNewPage() {
-        return paragraphsOnNewPage;
+    public List<String> getParagraphOnNewPageIds() {
+        return paragraphOnNewPageIds;
     }
 
     public List<Heading> getHeadings() {
         return headings;
+    }
+
+    public List<DrawingRaw> getDrawingsAndDescriptions() {
+        return drawingsAndDescriptions;
     }
 }

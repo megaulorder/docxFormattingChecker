@@ -44,7 +44,6 @@ public class RunController {
     }
 
     public void parseRun() {
-
         if (configStyles == null) {
             if (headingLevel > 0) {
                 expectedRun = config.getStyles().get(HEADING_STYLE_NAME + headingLevel).getRun();

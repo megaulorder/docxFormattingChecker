@@ -1,7 +1,7 @@
 package com.formatChecker.config.parser;
 
 import com.formatChecker.config.model.participants.Style;
-import com.formatChecker.document.model.Heading;
+import com.formatChecker.document.model.participants.Heading;
 import com.google.gson.Gson;
 import com.formatChecker.config.model.Config;
 

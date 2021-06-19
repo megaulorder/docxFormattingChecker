@@ -7,7 +7,7 @@ public class ParagraphDiffer implements Differ {
     Paragraph<Double, Boolean> expectedParagraph;
     Paragraph<String, String> paragraphDifference;
 
-    public ParagraphDiffer(Paragraph<Double, Boolean>actualParagraph,Paragraph<Double, Boolean> expectedParagraph) {
+    public ParagraphDiffer(Paragraph<Double, Boolean> actualParagraph, Paragraph<Double, Boolean> expectedParagraph) {
         this.actualParagraph = actualParagraph;
         this.expectedParagraph = expectedParagraph;
         this.paragraphDifference = getDifference();

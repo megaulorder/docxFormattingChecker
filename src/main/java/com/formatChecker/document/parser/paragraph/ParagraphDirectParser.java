@@ -2,7 +2,7 @@ package com.formatChecker.document.parser.paragraph;
 
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
-import com.formatChecker.document.model.Heading;
+import com.formatChecker.document.model.participants.Heading;
 import com.formatChecker.document.parser.run.RunDirectParser;
 import org.apache.commons.lang3.StringUtils;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -40,6 +40,26 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         this.themePart = themePart;
         this.headings = headings;
         this.paragraphsOnNewPages = paragraphsOnNewPages;
+
+        this.styleId = getStyleId(par);
+        this.styleParagraph = styleId == null ? null : getStyleProperties();
+        this.defaultParagraph = getDefaultProperties(docDefaults);
+
+        this.paragraphProperties = par.getPPr();
+
+        this.text = getText();
+        this.id = getId();
+    }
+
+    public ParagraphDirectParser(DocDefaults docDefaults,
+                                 Styles styles,
+                                 ThemePart themePart,
+                                 P par) {
+        super(docDefaults);
+
+        this.par = par;
+        this.styles = styles;
+        this.themePart = themePart;
 
         this.styleId = getStyleId(par);
         this.styleParagraph = styleId == null ? null : getStyleProperties();
@@ -181,6 +201,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     }
 
     void setPageBreakBefore() {
-        paragraph.setPageBreakBefore(paragraphsOnNewPages.stream().anyMatch(p -> p.equals(id)));
+        if (paragraphsOnNewPages != null)
+            paragraph.setPageBreakBefore(paragraphsOnNewPages.stream().anyMatch(p -> p.equals(id)));
     }
 }

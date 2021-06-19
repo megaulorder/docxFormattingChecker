@@ -5,9 +5,10 @@ import com.formatChecker.comparer.differ.HeadingDiffer;
 import com.formatChecker.comparer.model.Difference;
 import com.formatChecker.config.model.Config;
 import com.formatChecker.config.parser.ConfigParser;
-import com.formatChecker.document.model.DocumentData;
+import com.formatChecker.document.model.data.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
-import com.formatChecker.document.model.Heading;
+import com.formatChecker.document.model.participants.raw.DrawingRaw;
+import com.formatChecker.document.model.participants.Heading;
 import com.formatChecker.document.parser.DocxParser;
 import org.docx4j.Docx4J;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -39,7 +40,8 @@ public class DocumentController {
     DocxParser docxParser;
     DocumentData documentData;
     List<SectPr> sectionsProperties;
-    List<String> paragraphsOnNewPage;
+    List<String> paragraphOnNewPageIds;
+    List<DrawingRaw> paragraphsWithDrawings;
 
     List<Heading> headings;
 
@@ -59,8 +61,8 @@ public class DocumentController {
         this.documentData = docxParser.getDocumentData();
         this.docxDocument = docxParser.getDocument();
         this.sectionsProperties = docxParser.getSectionsProperties();
-        this.paragraphsOnNewPage = docxParser.getParagraphsOnNewPage();
-
+        this.paragraphOnNewPageIds = docxParser.getParagraphOnNewPageIds();
+        this.paragraphsWithDrawings = docxParser.getDrawingsAndDescriptions();
 
         this.difference = getDocumentDifference();
     }
@@ -72,6 +74,7 @@ public class DocumentController {
         difference.setHeadings(new HeadingDiffer(headings, configParser.getRequiredHeadings()).getHeadingsDifference());
 
         runSectionController(difference);
+        runDrawingController(difference);
         runFooterController(difference);
         runParagraphController(difference);
 
@@ -83,13 +86,19 @@ public class DocumentController {
 
     void runSectionController(Difference difference) {
         for (SectPr sectPr : sectionsProperties) {
-            new SectionController(sectPr, docxDocument, difference, config, shouldFix).parseSection();
+            new SectionController(sectPr, docxDocument, difference, config.getSection(), shouldFix).parseSection();
         }
     }
 
     void runFooterController(Difference difference) throws ParserConfigurationException, IOException, SAXException {
         new FooterController(documentData.getHeadersAndFooters(), config.getFooter(), docxDocument, difference)
                 .parseFooter();
+    }
+
+    void runDrawingController(Difference difference) throws Docx4JException {
+        for (DrawingRaw d : paragraphsWithDrawings) {
+            new DrawingController(d, config.getPicture(), difference, docxDocument, documentData).parseDrawing();
+        }
     }
 
     void runParagraphController(Difference difference) throws Docx4JException {
@@ -107,7 +116,7 @@ public class DocumentController {
                             config,
                             configStyles,
                             headings,
-                            paragraphsOnNewPage)
+                            paragraphOnNewPageIds)
                             .parseParagraph();
                 }
             }

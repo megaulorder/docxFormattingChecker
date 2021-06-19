@@ -1,5 +1,6 @@
 package com.formatChecker.document.model;
 
+import com.formatChecker.config.model.participants.ConfigDrawing;
 import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Section;
@@ -11,12 +12,14 @@ public class DocxDocument {
     public DocxDocument() {
         this.paragraphs = new ArrayList<>();
         this.sections = new ArrayList<>();
+        this.drawings = new ArrayList<>();
     }
 
     List<Paragraph<Double, Boolean>> paragraphs;
     Integer pages;
     List<Section<Double>> sections;
     Footer footer;
+    List<ConfigDrawing> drawings;
 
     public void setPages(Integer pages) {
         this.pages = pages;
@@ -36,5 +39,9 @@ public class DocxDocument {
 
     public void addSection(Section<Double> section) {
         sections.add(section);
+    }
+
+    public void addDrawing(ConfigDrawing drawing) {
+        drawings.add(drawing);
     }
 }

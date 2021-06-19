@@ -5,38 +5,43 @@ import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.config.model.participants.Section;
-import com.formatChecker.document.model.Heading;
+import com.formatChecker.document.model.participants.Drawing;
+import com.formatChecker.document.model.participants.Heading;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DifferResultCollector {
     Difference difference;
-    String result, pagesResult, sectionResult, footerResult, headingResult;
+    String pagesResult;
+    String sectionResult;
+    String footerResult;
+    String headingResult;
+    StringBuilder drawingsResult;
     StringBuilder paragraphsResult;
+
+    String differenceAsString;
 
     public DifferResultCollector(Difference difference) {
         this.difference = difference;
+        this.differenceAsString = collectDifferenceAsString();
     }
 
-    public String getDifferenceAsString() {
+    public String collectDifferenceAsString() {
         pagesResult = getPageDifferenceAsString();
         sectionResult = getSectionDifferenceAsString();
         footerResult = getFooterDifferenceAsString();
         headingResult = getHeadingDifferenceAsString();
         paragraphsResult = getParagraphsDifferenceAsString();
+        drawingsResult = getDrawingsDifferenceAsString();
 
-        result = "Comparison results:\n" +
+        return "Comparison results:\n" +
                 pagesResult +
                 sectionResult +
                 footerResult +
                 headingResult +
-                paragraphsResult;
-
-        return result;
+                paragraphsResult +
+                drawingsResult;
     }
 
     String getPageDifferenceAsString() {
@@ -110,41 +115,71 @@ public class DifferResultCollector {
                     .collect(Collectors.joining("\n\t")) + "\n";
     }
 
+    StringBuilder getDrawingsDifferenceAsString() {
+        List<Drawing<String, String>> drawings = difference.getDrawings();
+
+        StringBuilder result = new StringBuilder("\nDrawings:\n");
+
+        int count = 0;
+        for (Drawing<String, String> drawing : drawings) {
+            if (drawing == null)
+                return new StringBuilder();
+
+            ++count;
+
+            String text = drawing.getText();
+            String drawingResult = String.format("\nDrawing #%d: \n\t", count);
+
+            result
+                    .append(drawingResult)
+                    .append(text != null ? text + "\n\t" : "")
+                    .append(getParagraphDifferenceAsString(drawing.getDrawing()))
+                    .append(getParagraphDifferenceAsString(drawing.getDescription()));
+        }
+
+        return result;
+    }
+
     StringBuilder getParagraphsDifferenceAsString() {
         List<Paragraph<String, String>> paragraphs = difference.getParagraphs();
 
-        int count = 0;
-
         StringBuilder result = new StringBuilder("\nParagraphs:\n");
 
+        int count = 0;
         for (Paragraph p : paragraphs) {
             ++count;
             String text = p.getText();
             String paragraphResult = String.format("\nParagraph #%d (%s...): \n\t",
                     count, text.substring(0, Math.min(text.length(), 100)));
 
-            if (p.getAlignment() != null) paragraphResult += p.getAlignment() + "\n\t";
-            if (p.getFirstLineIndent() != null) paragraphResult += p.getFirstLineIndent() + "\n\t";
-            if (p.getLeftIndent() != null) paragraphResult += p.getLeftIndent() + "\n\t";
-            if (p.getRightIndent() != null) paragraphResult += p.getRightIndent() + "\n\t";
-            if (p.getLineSpacing() != null) paragraphResult += p.getLineSpacing() + "\n\t";
-            if (p.getSpacingBefore() != null) paragraphResult += p.getSpacingBefore() + "\n\t";
-            if (p.getSpacingAfter() != null) paragraphResult += p.getSpacingAfter() + "\n\t";
-            if (p.getPageBreakBefore() != null) paragraphResult += p.getPageBreakBefore() + "\n\t";
-
-            result.append(paragraphResult);
-
-            String runResult = getRunsDifferenceAsString(p.getRuns());
-            result.append(runResult);
+            result
+                    .append(paragraphResult)
+                    .append(getParagraphDifferenceAsString(p))
+                    .append(getRunsDifferenceAsString(p.getRuns()));
         }
 
         return result;
     }
 
-    String getRunsDifferenceAsString(List<Run> runs) {
+    String getParagraphDifferenceAsString(Paragraph<String, String> paragraph) {
+        String paragraphResult = "";
+
+        if (paragraph.getAlignment() != null) paragraphResult += paragraph.getAlignment() + "\n\t";
+        if (paragraph.getFirstLineIndent() != null) paragraphResult += paragraph.getFirstLineIndent() + "\n\t";
+        if (paragraph.getLeftIndent() != null) paragraphResult += paragraph.getLeftIndent() + "\n\t";
+        if (paragraph.getRightIndent() != null) paragraphResult += paragraph.getRightIndent() + "\n\t";
+        if (paragraph.getLineSpacing() != null) paragraphResult += paragraph.getLineSpacing() + "\n\t";
+        if (paragraph.getSpacingBefore() != null) paragraphResult += paragraph.getSpacingBefore() + "\n\t";
+        if (paragraph.getSpacingAfter() != null) paragraphResult += paragraph.getSpacingAfter() + "\n\t";
+        if (paragraph.getPageBreakBefore() != null) paragraphResult += paragraph.getPageBreakBefore() + "\n\t";
+
+        return paragraphResult;
+    }
+
+    String getRunsDifferenceAsString(List<Run<String, String>> runs) {
         Set<String> result = new HashSet<>();
 
-        for (Run r : runs) {
+        for (Run<String, String> r : runs) {
             if (r.getFontFamily() != null) result.add(r.getFontFamily() + "\n\t");
             if (r.getFontSize() != null) result.add(r.getFontSize() + "\n\t");
             if (r.getBold() != null) result.add(r.getBold() + "\n\t");
@@ -155,5 +190,9 @@ public class DifferResultCollector {
         }
 
         return String.join("", result);
+    }
+
+    public String getDifferenceAsString() {
+        return differenceAsString;
     }
 }

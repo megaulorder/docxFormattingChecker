@@ -18,7 +18,8 @@ public class FooterParser {
     private static final String DEFAULT_ALIGNMENT = "left";
     private static final String PAGE_REGEXP = "\\s+";
 
-    String type, alignment;
+    String type;
+    String alignment;
     HeaderFooterPolicy headersAndFooters;
     Document defaultFooter;
     Footer footer;

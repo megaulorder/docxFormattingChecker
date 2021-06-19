@@ -1,10 +1,7 @@
 package com.formatChecker.config.model;
 
-import com.formatChecker.config.model.participants.Footer;
-import com.formatChecker.config.model.participants.Pages;
-import com.formatChecker.config.model.participants.Section;
-import com.formatChecker.config.model.participants.Style;
-import com.formatChecker.document.model.Heading;
+import com.formatChecker.config.model.participants.*;
+import com.formatChecker.document.model.participants.Heading;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +13,8 @@ public class Config {
     HashMap<String, Style> styles;
 
     Footer footer;
+
+    ConfigDrawing drawing;
 
     List<Heading> requiredHeadings;
 
@@ -40,6 +39,10 @@ public class Config {
 
     public Footer getFooter() {
         return footer;
+    }
+
+    public ConfigDrawing getPicture() {
+        return drawing;
     }
 
     public List<Heading> getRequiredHeadings() {

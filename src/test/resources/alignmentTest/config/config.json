@@ -68,6 +68,20 @@
         "type": "page",
         "alignment": "right"
     },
+    "drawing": {
+        "textStartsWith": "Рисунок",
+        "drawingPosition": {
+            "alignment": "center"
+        },
+        "description": {
+            "paragraphProperties": {
+                "alignment": "center"
+            },
+            "runProperties": {
+                "fontSize": 14
+            }
+        }
+    },
     "requiredHeadings": [
         {
             "level": 1,

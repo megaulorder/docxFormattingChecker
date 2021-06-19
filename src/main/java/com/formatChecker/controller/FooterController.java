@@ -13,22 +13,23 @@ import java.io.IOException;
 
 public class FooterController {
     HeaderFooterPolicy headersAndFooters;
-    Footer actualFooter, expectedFooter;
+    Footer actualFooter;
+    Footer expectedFooter;
     Difference difference;
     DocxDocument docxDocument;
 
     public FooterController(HeaderFooterPolicy headersAndFooters,
                             Footer expectedFooter,
                             DocxDocument docxDocument,
-                            Difference difference) {
+                            Difference difference) throws ParserConfigurationException, IOException, SAXException {
         this.headersAndFooters = headersAndFooters;
         this.expectedFooter = expectedFooter;
+        this.actualFooter = new FooterParser(headersAndFooters).getFooter();
         this.docxDocument = docxDocument;
         this.difference = difference;
     }
 
-    public void parseFooter() throws ParserConfigurationException, IOException, SAXException {
-        actualFooter = new FooterParser(headersAndFooters).getFooter();
+    public void parseFooter() {
         docxDocument.setFooter(actualFooter);
 
         difference.setFooter(new FooterDiffer(actualFooter, expectedFooter).getDifferenceFooter());
