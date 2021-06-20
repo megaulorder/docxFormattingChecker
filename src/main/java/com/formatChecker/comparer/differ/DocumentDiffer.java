@@ -14,6 +14,8 @@ public class DocumentDiffer {
     }
 
     String comparePages() {
+        if (expectedPages == null)
+            return null;
         if (actualPages >= expectedPages.getMin() && actualPages < expectedPages.getMax()) {
             return null;
         } else {

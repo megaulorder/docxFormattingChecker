@@ -44,4 +44,16 @@ public class DocxDocument {
     public void addDrawing(ConfigDrawing drawing) {
         drawings.add(drawing);
     }
+
+    public Footer getFooter() {
+        return footer;
+    }
+
+    public List<Paragraph<Double, Boolean>> getParagraphs() {
+        return paragraphs;
+    }
+
+    public List<Section<Double>> getSections() {
+        return sections;
+    }
 }

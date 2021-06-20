@@ -1,0 +1,15 @@
+{
+    "styles": {
+        "test": {
+            "paragraphs": [1],
+            "paragraphProperties": {
+            },
+            "runProperties": {
+            }
+        }
+    },
+    "footer": {
+        "type": "page",
+        "alignment": "center"
+    }
+}

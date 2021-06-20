@@ -19,6 +19,9 @@ public class SectionDiffer implements Differ {
     Section<String> getDifference() {
         Section<String> section = new Section<>();
 
+        if (expectedSection == null)
+            return null;
+
         section.setOrientation(checkStringParameter(
                 actualSection.getOrientation(),
                 expectedSection.getOrientation(),

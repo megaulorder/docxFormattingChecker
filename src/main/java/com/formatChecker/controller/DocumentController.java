@@ -130,4 +130,8 @@ public class DocumentController {
     public Difference getDifference() {
         return difference;
     }
+
+    public DocxDocument getDocxDocument() {
+        return docxDocument;
+    }
 }

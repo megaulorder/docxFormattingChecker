@@ -1,0 +1,22 @@
+{
+    "section": {
+        "orientation": "landscape",
+        "margins": [
+            2,
+            5,
+            2,
+            5
+        ],
+        "pageHeight": 21.0,
+        "pageWidth": 29.7
+    },
+    "styles": {
+        "test": {
+            "paragraphs": [1],
+            "paragraphProperties": {
+            },
+            "runProperties": {
+            }
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "styles": {
+        "heading1": {
+            "paragraphProperties": {
+                "alignment": "center"
+            },
+            "runProperties": {
+                "fontFamily": "Comic Sans MS",
+                "bold": true
+            }
+        },
+
+        "body": {
+            "paragraphProperties": {
+                "firstLineIndent": 1.25
+            },
+            "runProperties": {
+                "fontSize": 11
+            }
+        }
+    },
+    "findHeadingsByTOC": true
+}
