@@ -51,6 +51,9 @@ public class SectionFixer implements ConfigConverter {
     void fixMargins() {
         PgMar pageMargins = new PgMar();
 
+        if (differenceSection.getMargins() == null)
+            return;
+
         if (differenceSection.getMargins().get(0) != null)
             pageMargins.setTop(cmToPageVal(expectedSection.getMargins().get(0)));
         else

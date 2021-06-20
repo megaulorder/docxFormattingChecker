@@ -1,0 +1,25 @@
+{
+    "styles": {
+        "test": {
+            "paragraphs": [1, 2, 3],
+            "paragraphProperties": {
+            },
+            "runProperties": {
+            }
+        }
+    },
+    "drawing": {
+        "textStartsWith": "Рисунок",
+        "drawingPosition": {
+            "alignment": "center"
+        },
+        "description": {
+            "paragraphProperties": {
+                "alignment": "center"
+            },
+            "runProperties": {
+                "fontSize": 14
+            }
+        }
+    }
+}

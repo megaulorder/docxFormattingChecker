@@ -41,7 +41,7 @@ public class Config {
         return footer;
     }
 
-    public ConfigDrawing getPicture() {
+    public ConfigDrawing getDrawing() {
         return drawing;
     }
 

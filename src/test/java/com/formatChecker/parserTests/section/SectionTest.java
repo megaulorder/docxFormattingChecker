@@ -1,6 +1,7 @@
 package com.formatChecker.parserTests.section;
 
 import com.formatChecker.config.model.Config;
+import com.formatChecker.config.model.participants.Section;
 import com.formatChecker.config.parser.ConfigParser;
 import com.formatChecker.controller.DocumentController;
 import com.formatChecker.document.model.DocxDocument;
@@ -14,7 +15,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
-import static com.formatChecker.parserTests.constants.PathConstants.*;
+import static com.formatChecker.parserTests.constants.PathConstants.SECTION_CONFIG_PATH;
+import static com.formatChecker.parserTests.constants.PathConstants.SECTION_DOCUMENT_PATH;
 
 public class SectionTest {
     @DisplayName("Checks the result of parsing sections")
@@ -28,24 +30,24 @@ public class SectionTest {
 
         Config config = new ConfigParser(SECTION_CONFIG_PATH).getConfig();
 
-        for (int i = 0; i < docxDocument.getSections().size(); ++i) {
+        for (Section<Double> section : docxDocument.getSections()) {
             Assert.assertEquals(
-                    docxDocument.getSections().get(i).getPageWidth(),
-                    config.getSection().getPageWidth());
-
-            Assert.assertEquals(
-                    docxDocument.getSections().get(i).getPageHeight(),
-                    config.getSection().getPageHeight());
+                    config.getSection().getPageWidth(),
+                    section.getPageWidth());
 
             Assert.assertEquals(
-                    docxDocument.getSections().get(i).getOrientation(),
-                    config.getSection().getOrientation());
+                    config.getSection().getPageHeight(),
+                    section.getPageHeight());
+
+            Assert.assertEquals(
+                    config.getSection().getOrientation(),
+                    section.getOrientation());
 
 
-            for (int j = 0; j < docxDocument.getSections().get(i).getMargins().size(); ++j) {
+            for (int j = 0; j < section.getMargins().size(); ++j) {
                 Assert.assertEquals(
-                        docxDocument.getSections().get(i).getMargins().get(j),
-                        config.getSection().getMargins().get(j));
+                        config.getSection().getMargins().get(j),
+                        section.getMargins().get(j));
             }
         }
     }

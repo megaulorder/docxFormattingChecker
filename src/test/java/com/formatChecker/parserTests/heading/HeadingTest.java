@@ -14,7 +14,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
-import static com.formatChecker.parserTests.constants.PathConstants.*;
+import static com.formatChecker.parserTests.constants.PathConstants.HEADING_CONFIG_PATH;
+import static com.formatChecker.parserTests.constants.PathConstants.HEADING_DOCUMENT_PATH;
 
 public class HeadingTest {
     @DisplayName("Checks the result of parsing headings")
@@ -30,12 +31,12 @@ public class HeadingTest {
 
         for (int i = 0; i < docxDocument.getParagraphs().size(); ++i) {
             Assert.assertEquals(
-                    java.util.Optional.ofNullable(docxDocument.getParagraphs().get(i).getHeadingLevel()),
-                    java.util.Optional.ofNullable(config.getRequiredHeadings().get(i).getLevel()));
+                    java.util.Optional.ofNullable(config.getRequiredHeadings().get(i).getLevel()),
+                    java.util.Optional.ofNullable(docxDocument.getParagraphs().get(i).getHeadingLevel()));
 
             Assert.assertEquals(
-                    java.util.Optional.ofNullable(docxDocument.getParagraphs().get(i).getText()),
-                    java.util.Optional.ofNullable(config.getRequiredHeadings().get(i).getText()));
+                    java.util.Optional.ofNullable(config.getRequiredHeadings().get(i).getText()),
+                    java.util.Optional.ofNullable(docxDocument.getParagraphs().get(i).getText()));
         }
     }
 }

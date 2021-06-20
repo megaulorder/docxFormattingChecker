@@ -1,0 +1,23 @@
+{
+    "section": {
+        "orientation": "portrait",
+        "margins": [
+            2,
+            5,
+            2,
+            5
+        ],
+        "pageHeight": 29.7,
+        "pageWidth": 21.0
+    },
+    "styles": {
+        "test": {
+            "paragraphs": [1],
+            "paragraphProperties": {
+            },
+            "runProperties": {
+            }
+        }
+    },
+    "generateNewDocument": true
+}

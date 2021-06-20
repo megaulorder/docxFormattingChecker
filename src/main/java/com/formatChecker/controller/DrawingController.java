@@ -5,6 +5,7 @@ import com.formatChecker.comparer.model.Difference;
 import com.formatChecker.config.model.participants.ConfigDrawing;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.model.data.DocumentData;
+import com.formatChecker.document.model.participants.Drawing;
 import com.formatChecker.document.model.participants.raw.DrawingRaw;
 import com.formatChecker.document.parser.paragraph.ParagraphDirectParser;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -14,8 +15,7 @@ import org.docx4j.wml.Styles;
 
 public class DrawingController {
     DrawingRaw drawingRaw;
-    com.formatChecker.document.model.participants.Drawing drawing;
-    ConfigDrawing actualDrawing;
+    Drawing<Double, Boolean> drawing;
     ConfigDrawing expectedDrawing;
     Difference difference;
     DocxDocument docxDocument;
@@ -40,8 +40,8 @@ public class DrawingController {
         this.docxDocument = docxDocument;
     }
 
-    com.formatChecker.document.model.participants.Drawing parseDrawingFromRaw() throws Docx4JException {
-        com.formatChecker.document.model.participants.Drawing drawing = new com.formatChecker.document.model.participants.Drawing();
+    Drawing<Double, Boolean> parseDrawingFromRaw() throws Docx4JException {
+        Drawing<Double, Boolean> drawing = new Drawing<>();
 
         drawing.setDrawing(new ParagraphDirectParser(
                 docDefaults,
@@ -65,7 +65,7 @@ public class DrawingController {
     }
 
     void parseDrawing() {
-        docxDocument.addDrawing(actualDrawing);
+        docxDocument.addDrawing(drawing);
 
         difference.addDrawing(new DrawingDiffer(drawing, expectedDrawing).getDifferenceDrawing());
     }

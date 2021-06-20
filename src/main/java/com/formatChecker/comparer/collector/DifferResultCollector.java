@@ -35,13 +35,14 @@ public class DifferResultCollector {
         paragraphsResult = getParagraphsDifferenceAsString();
         drawingsResult = getDrawingsDifferenceAsString();
 
-        return "Comparison results:\n" +
-                pagesResult +
+        String totalResult = pagesResult +
                 sectionResult +
                 footerResult +
                 headingResult +
                 paragraphsResult +
                 drawingsResult;
+
+        return totalResult.equals("") ? "Comparison results: everything ok" : "Comparison results:\n" + totalResult;
     }
 
     String getPageDifferenceAsString() {
@@ -54,13 +55,13 @@ public class DifferResultCollector {
     String getSectionDifferenceAsString() {
         List<Section<String>> sectionsDifference = difference.getSections();
 
-        StringBuilder result = new StringBuilder("\nSection properties: \n\t");
+        StringBuilder result = new StringBuilder("");
 
         int count = 0;
         for (Section<String> sectionDifference : sectionsDifference) {
             ++count;
 
-            String sectionResult = String.format("\nSection #%d: \n\t", count);
+            String sectionResult = "";
 
             if (sectionDifference.getOrientation() != null)
                 sectionResult += sectionDifference.getOrientation() + "\n\t";
@@ -71,10 +72,11 @@ public class DifferResultCollector {
             if (sectionDifference.getPageHeight() != null) sectionResult += sectionDifference.getPageHeight() + "\n\t";
             if (sectionDifference.getPageWidth() != null) sectionResult += sectionDifference.getPageWidth() + "\n\t";
 
-            result.append(sectionResult);
+            if (!sectionResult.equals(""))
+                result.append(String.format("\nSection #%d: \n\t", count)).append(sectionResult);
         }
 
-        return result.toString();
+        return result.toString().equals("") ? "" : "\nSection properties: \n\t" + result;
     }
 
     String getFooterDifferenceAsString() {
@@ -118,7 +120,7 @@ public class DifferResultCollector {
     StringBuilder getDrawingsDifferenceAsString() {
         List<Drawing<String, String>> drawings = difference.getDrawings();
 
-        StringBuilder result = new StringBuilder("\nDrawings:\n");
+        StringBuilder result = new StringBuilder("");
 
         int count = 0;
         for (Drawing<String, String> drawing : drawings) {
@@ -137,28 +139,33 @@ public class DifferResultCollector {
                     .append(getParagraphDifferenceAsString(drawing.getDescription()));
         }
 
-        return result;
+        return result.toString().equals("") ? new StringBuilder() : new StringBuilder("\nDrawings:\n" + result);
     }
 
     StringBuilder getParagraphsDifferenceAsString() {
         List<Paragraph<String, String>> paragraphs = difference.getParagraphs();
 
-        StringBuilder result = new StringBuilder("\nParagraphs:\n");
+        StringBuilder result = new StringBuilder();
 
         int count = 0;
         for (Paragraph p : paragraphs) {
             ++count;
             String text = p.getText();
-            String paragraphResult = String.format("\nParagraph #%d (%s...): \n\t",
-                    count, text.substring(0, Math.min(text.length(), 100)));
+            String paragraphResult = "";
 
             result
                     .append(paragraphResult)
                     .append(getParagraphDifferenceAsString(p))
                     .append(getRunsDifferenceAsString(p.getRuns()));
+
+            if (!result.toString().equals(""))
+                return new StringBuilder(String.format("\nParagraph #%d (%s...): \n\t",
+                        count, text.substring(0, Math.min(text.length(), 100))) + result);
+            else
+                return new StringBuilder();
         }
 
-        return result;
+        return result.toString().equals("") ? new StringBuilder() : new StringBuilder("\nParagraphs:\n" + result);
     }
 
     String getParagraphDifferenceAsString(Paragraph<String, String> paragraph) {

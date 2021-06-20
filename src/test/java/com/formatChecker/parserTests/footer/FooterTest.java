@@ -20,7 +20,7 @@ public class FooterTest {
     @DisplayName("Checks the result of parsing a footer with page value aligned by center")
     @Test
     public void testParsePageFooter()
-            throws JAXBException,IOException, ParserConfigurationException, Docx4JException, SAXException {
+            throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
         DocxDocument docxDocument = new DocumentController(
                 PAGE_FOOTER_CONFIG_PATH,
                 PAGE_FOOTER_DOCUMENT_PATH)
@@ -28,14 +28,14 @@ public class FooterTest {
 
         Config config = new ConfigParser(PAGE_FOOTER_CONFIG_PATH).getConfig();
 
-        Assert.assertEquals(docxDocument.getFooter().getType(), config.getFooter().getType());
-        Assert.assertEquals(docxDocument.getFooter().getAlignment(), config.getFooter().getAlignment());
+        Assert.assertEquals(config.getFooter().getType(), docxDocument.getFooter().getType());
+        Assert.assertEquals(config.getFooter().getAlignment(), docxDocument.getFooter().getAlignment());
     }
 
     @DisplayName("Checks the result of parsing a footer with text value aligned by left")
     @Test
     public void testParseTextFooter()
-            throws JAXBException,IOException, ParserConfigurationException, Docx4JException, SAXException {
+            throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
         DocxDocument docxDocument = new DocumentController(
                 TEXT_FOOTER_CONFIG_PATH,
                 TEXT_FOOTER_DOCUMENT_PATH)
@@ -43,7 +43,7 @@ public class FooterTest {
 
         Config config = new ConfigParser(TEXT_FOOTER_CONFIG_PATH).getConfig();
 
-        Assert.assertEquals(docxDocument.getFooter().getType(), config.getFooter().getType());
-        Assert.assertEquals(docxDocument.getFooter().getAlignment(), config.getFooter().getAlignment());
+        Assert.assertEquals(config.getFooter().getType(), docxDocument.getFooter().getType());
+        Assert.assertEquals(config.getFooter().getAlignment(), docxDocument.getFooter().getAlignment());
     }
 }

@@ -2,32 +2,37 @@ package com.formatChecker.parserTests.constants;
 
 public class PathConstants {
     public static final String PAGE_FOOTER_CONFIG_PATH = "src/test/resources/parserTests/" +
-            "footerTest/pageFooter/config/config.json";
+            "footer/page/config/config.json";
     public static final String PAGE_FOOTER_DOCUMENT_PATH = "src/test/resources/parserTests/" +
-            "footerTest/pageFooter/documents/document.docx";
+            "footer/page/documents/document.docx";
 
     public static final String TEXT_FOOTER_CONFIG_PATH = "src/test/resources/parserTests/" +
-            "footerTest/textFooter/config/config.json";
+            "footer/text/config/config.json";
     public static final String TEXT_FOOTER_DOCUMENT_PATH = "src/test/resources/parserTests/" +
-            "footerTest/textFooter/documents/document.docx";
+            "footer/text/documents/document.docx";
 
     public static final String HEADING_CONFIG_PATH = "src/test/resources/parserTests/" +
-            "headingTest/config/config.json";
+            "heading/config/config.json";
     public static final String HEADING_DOCUMENT_PATH = "src/test/resources/parserTests/" +
-            "headingTest/documents/document.docx";
+            "heading/documents/document.docx";
 
     public static final String SECTION_CONFIG_PATH = "src/test/resources/parserTests/" +
-            "sectionTest/config/config.json";
+            "section/config/config.json";
     public static final String SECTION_DOCUMENT_PATH = "src/test/resources/parserTests/" +
-            "sectionTest/documents/document.docx";
+            "section/documents/document.docx";
 
     public static final String INDEX_PARAGRAPH_CONFIG_PATH = "src/test/resources/parserTests/" +
-            "paragraphAndRunTest/indexParagraph/config/config.json";
+            "paragraph/byIndex/config/config.json";
     public static final String INDEX_PARAGRAPH_DOCUMENT_PATH = "src/test/resources/parserTests/" +
-            "paragraphAndRunTest/indexParagraph/documents/document.docx";
+            "paragraph/byIndex/documents/document.docx";
 
     public static final String HEADING_PARAGRAPH_CONFIG_PATH = "src/test/resources/parserTests/" +
-            "paragraphAndRunTest/headingAndBody/config/config.json";
+            "paragraph/byHeading/config/config.json";
     public static final String HEADING_PARAGRAPH_DOCUMENT_PATH = "src/test/resources/parserTests/" +
-            "paragraphAndRunTest/headingAndBody/documents/document.docx";
+            "paragraph/byHeading/documents/document.docx";
+
+    public static final String DRAWING_CONFIG_PATH = "src/test/resources/parserTests/" +
+            "drawing/config/config.json";
+    public static final String DRAWING_DOCUMENT_PATH = "src/test/resources/parserTests/" +
+            "drawing/documents/document.docx";
 }

@@ -97,7 +97,7 @@ public class DocumentController {
 
     void runDrawingController(Difference difference) throws Docx4JException {
         for (DrawingRaw d : paragraphsWithDrawings) {
-            new DrawingController(d, config.getPicture(), difference, docxDocument, documentData).parseDrawing();
+            new DrawingController(d, config.getDrawing(), difference, docxDocument, documentData).parseDrawing();
         }
     }
 

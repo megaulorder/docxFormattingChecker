@@ -33,26 +33,26 @@ public class ParagraphAndRunTest {
         Paragraph<Double, Boolean> paragraph2 = docxDocument.getParagraphs().get(1);
 
         Assert.assertEquals(
-                paragraph1.getAlignment(),
-                config.getStyles().get("style1").getParagraph().getAlignment());
+                config.getStyles().get("style1").getParagraph().getAlignment(),
+                paragraph1.getAlignment());
 
         Assert.assertEquals(
-                paragraph2.getFirstLineIndent(),
-                config.getStyles().get("style2").getParagraph().getFirstLineIndent());
+                config.getStyles().get("style2").getParagraph().getFirstLineIndent(),
+                paragraph2.getFirstLineIndent());
 
         for (int i = 0; i < paragraph1.getRuns().size(); ++i) {
             Assert.assertEquals(
-                    paragraph1.getRuns().get(i).getFontFamily(),
-                    config.getStyles().get("style1").getRun().getFontFamily());
+                    config.getStyles().get("style1").getRun().getFontFamily(),
+                    paragraph1.getRuns().get(i).getFontFamily());
 
             Assert.assertEquals(
-                    paragraph1.getRuns().get(i).getBold(),
-                    config.getStyles().get("style1").getRun().getBold());
+                    config.getStyles().get("style1").getRun().getBold(),
+                    paragraph1.getRuns().get(i).getBold());
         }
         for (int i = 0; i < paragraph2.getRuns().size(); ++i) {
             Assert.assertEquals(
-                    paragraph2.getRuns().get(i).getFontSize(),
-                    config.getStyles().get("style2").getRun().getFontSize());
+                    config.getStyles().get("style2").getRun().getFontSize(),
+                    paragraph2.getRuns().get(i).getFontSize());
         }
     }
 
@@ -78,26 +78,26 @@ public class ParagraphAndRunTest {
         }
 
         Assert.assertEquals(
-                headingParagraph.getAlignment(),
-                config.getStyles().get("heading1").getParagraph().getAlignment());
+                config.getStyles().get("heading1").getParagraph().getAlignment(),
+                headingParagraph.getAlignment());
 
         Assert.assertEquals(
-                bodyParagraph.getFirstLineIndent(),
-                config.getStyles().get("body").getParagraph().getFirstLineIndent());
+                config.getStyles().get("body").getParagraph().getFirstLineIndent(),
+                bodyParagraph.getFirstLineIndent());
 
         for (int i = 0; i < headingParagraph.getRuns().size(); ++i) {
             Assert.assertEquals(
-                    headingParagraph.getRuns().get(i).getFontFamily(),
-                    config.getStyles().get("heading1").getRun().getFontFamily());
+                    config.getStyles().get("heading1").getRun().getFontFamily(),
+                    headingParagraph.getRuns().get(i).getFontFamily());
 
             Assert.assertEquals(
-                    headingParagraph.getRuns().get(i).getBold(),
-                    config.getStyles().get("heading1").getRun().getBold());
+                    config.getStyles().get("heading1").getRun().getBold(),
+                    headingParagraph.getRuns().get(i).getBold());
         }
         for (int i = 0; i < bodyParagraph.getRuns().size(); ++i) {
             Assert.assertEquals(
-                    bodyParagraph.getRuns().get(i).getFontSize(),
-                    config.getStyles().get("body").getRun().getFontSize());
+                    config.getStyles().get("body").getRun().getFontSize(),
+                    bodyParagraph.getRuns().get(i).getFontSize());
         }
     }
 }
