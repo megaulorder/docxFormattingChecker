@@ -1,0 +1,32 @@
+{
+    "styles": {
+        "heading1": {
+            "paragraphProperties": {
+                "alignment": "right",
+                "firstLineIndent": 1.25,
+                "leftIndent": 3,
+                "rightIndent": 3,
+                "spaceBefore": 16,
+                "spaceAfter": 16,
+                "lineSpacing": 1.5
+            },
+            "runProperties": {
+            }
+        },
+        "body": {
+            "paragraphProperties": {
+                "alignment": "center",
+                "firstLineIndent": 0,
+                "leftIndent": 2,
+                "rightIndent": 2,
+                "spaceBefore": 20,
+                "spaceAfter": 0,
+                "lineSpacing": 2
+            },
+            "runProperties": {
+            }
+        }
+    },
+    "findHeadingsByTOC": true,
+    "generateNewDocument": true
+}

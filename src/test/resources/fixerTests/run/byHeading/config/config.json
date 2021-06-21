@@ -1,0 +1,26 @@
+{
+    "styles": {
+        "heading1": {
+            "paragraphProperties": {
+            },
+            "runProperties": {
+                "fontFamily": "Papyrus",
+                "fontSize": 24,
+                "bold": true,
+                "underline": "wave"
+            }
+        },
+        "body": {
+            "paragraphProperties": {
+            },
+            "runProperties": {
+                "fontFamily": "Times New Roman",
+                "fontSize": 12,
+                "bold": false,
+                "italic": true
+            }
+        }
+    },
+    "findHeadingsByTOC": true,
+    "generateNewDocument": true
+}

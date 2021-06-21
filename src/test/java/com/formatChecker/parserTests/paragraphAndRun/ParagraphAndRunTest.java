@@ -23,11 +23,11 @@ public class ParagraphAndRunTest {
     public void testParseParagraphsAndRunsByIndexes()
             throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
         DocxDocument docxDocument = new DocumentController(
-                INDEX_PARAGRAPH_CONFIG_PATH,
-                INDEX_PARAGRAPH_DOCUMENT_PATH)
+                PARAGRAPH_BY_INDEX_CONFIG_PATH,
+                PARAGRAPH_BY_INDEX_DOCUMENT_PATH)
                 .getDocxDocument();
 
-        Config config = new ConfigParser(INDEX_PARAGRAPH_CONFIG_PATH).getConfig();
+        Config config = new ConfigParser(PARAGRAPH_BY_INDEX_CONFIG_PATH).getConfig();
 
         Paragraph<Double, Boolean> paragraph1 = docxDocument.getParagraphs().get(0);
         Paragraph<Double, Boolean> paragraph2 = docxDocument.getParagraphs().get(1);
@@ -61,11 +61,11 @@ public class ParagraphAndRunTest {
     public void testParseParagraphsAndRunsByHeadings()
             throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
         DocxDocument docxDocument = new DocumentController(
-                HEADING_PARAGRAPH_CONFIG_PATH,
-                HEADING_PARAGRAPH_DOCUMENT_PATH)
+                PARAGRAPH_BY_HEADING_CONFIG_PATH,
+                PARAGRAPH_BY_HEADING_DOCUMENT_PATH)
                 .getDocxDocument();
 
-        Config config = new ConfigParser(HEADING_PARAGRAPH_CONFIG_PATH).getConfig();
+        Config config = new ConfigParser(PARAGRAPH_BY_HEADING_CONFIG_PATH).getConfig();
 
         Paragraph<Double, Boolean> headingParagraph = new Paragraph<>();
         Paragraph<Double, Boolean> bodyParagraph = new Paragraph<>();

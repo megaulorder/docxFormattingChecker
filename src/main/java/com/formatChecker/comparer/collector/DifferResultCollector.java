@@ -55,11 +55,14 @@ public class DifferResultCollector {
     String getSectionDifferenceAsString() {
         List<Section<String>> sectionsDifference = difference.getSections();
 
-        StringBuilder result = new StringBuilder("");
+        StringBuilder result = new StringBuilder();
 
         int count = 0;
         for (Section<String> sectionDifference : sectionsDifference) {
             ++count;
+
+            if (sectionDifference == null)
+                return "";
 
             String sectionResult = "";
 

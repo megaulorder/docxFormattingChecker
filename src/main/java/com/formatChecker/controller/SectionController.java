@@ -38,7 +38,8 @@ public class SectionController {
         difference.addSection(differenceSection);
 
         if (shouldFix) {
-            new SectionFixer(sectionProperties, section, expectedSection, differenceSection).fixSection();
+            if (differenceSection != null)
+                new SectionFixer(sectionProperties, section, expectedSection, differenceSection).fixSection();
         }
     }
 }

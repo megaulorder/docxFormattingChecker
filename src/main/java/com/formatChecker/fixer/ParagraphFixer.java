@@ -4,11 +4,13 @@ import com.formatChecker.config.converter.ConfigConverter;
 import com.formatChecker.config.model.participants.Paragraph;
 import org.docx4j.wml.Jc;
 import org.docx4j.wml.P;
+import org.docx4j.wml.PPr;
 import org.docx4j.wml.PPrBase.Ind;
 import org.docx4j.wml.PPrBase.Spacing;
 
 public class ParagraphFixer implements ConfigConverter {
     P paragraph;
+    PPr paragraphProperties;
     Paragraph<Double, Boolean> actualParagraph;
     Paragraph<Double, Boolean> expectedParagraph;
     Paragraph<String, String> differenceParagraph;
@@ -18,27 +20,47 @@ public class ParagraphFixer implements ConfigConverter {
                           Paragraph<Double, Boolean> expectedParagraph,
                           Paragraph<String, String> differenceParagraph) {
         this.paragraph = paragraph;
+        this.paragraphProperties = paragraph.getPPr();
         this.actualParagraph = actualParagraph;
         this.expectedParagraph = expectedParagraph;
         this.differenceParagraph = differenceParagraph;
     }
 
     public void fixParagraph() {
-        fixAlignment();
-        fixIndent();
-        fixSpacing();
-    }
-
-    void fixAlignment() {
-        if (differenceParagraph.getAlignment() != null) {
-            Jc alignment = new Jc();
-            alignment.setVal(convertAlignment(expectedParagraph.getAlignment()));
-            paragraph.getPPr().setJc(alignment);
+        if (paragraphProperties == null)
+            fixParagraphProperties();
+        else {
+            fixAlignment(paragraphProperties);
+            fixIndent(paragraphProperties);
+            fixSpacing(paragraphProperties);
         }
     }
 
-    void fixIndent() {
+    void fixParagraphProperties() {
+        PPr newParagraphProperties = new PPr();
+
+        fixAlignment(newParagraphProperties);
+        fixIndent(newParagraphProperties);
+        fixSpacing(newParagraphProperties);
+
+        paragraph.setPPr(newParagraphProperties);
+    }
+
+    void fixAlignment(PPr ppr) {
+        if (differenceParagraph.getAlignment() != null) {
+            Jc alignment = new Jc();
+            alignment.setVal(convertAlignment(expectedParagraph.getAlignment()));
+            ppr.setJc(alignment);
+        }
+    }
+
+    void fixIndent(PPr ppr) {
         Ind indent = new Ind();
+
+        if (differenceParagraph.getRightIndent() == null &&
+                differenceParagraph.getLeftIndent() == null &&
+                differenceParagraph.getFirstLineIndent() == null)
+            return;
 
         if (differenceParagraph.getRightIndent() != null)
             indent.setRight(cmToTwips(expectedParagraph.getRightIndent()));
@@ -55,11 +77,16 @@ public class ParagraphFixer implements ConfigConverter {
         else
             indent.setFirstLine(cmToTwips(actualParagraph.getFirstLineIndent()));
 
-        paragraph.getPPr().setInd(indent);
+        ppr.setInd(indent);
     }
 
-    void fixSpacing() {
+    void fixSpacing(PPr ppr) {
         Spacing spacing = new Spacing();
+
+        if (differenceParagraph.getLineSpacing() == null &&
+                differenceParagraph.getSpacingBefore() == null &&
+                differenceParagraph.getSpacingAfter() == null)
+            return;
 
         if (differenceParagraph.getLineSpacing() != null)
             spacing.setLine(cmToLineSpacing(expectedParagraph.getLineSpacing()));
@@ -76,6 +103,6 @@ public class ParagraphFixer implements ConfigConverter {
         else
             spacing.setBefore(cmToAbsUnits(actualParagraph.getSpacingAfter()));
 
-        paragraph.getPPr().setSpacing(spacing);
+        ppr.setSpacing(spacing);
     }
 }

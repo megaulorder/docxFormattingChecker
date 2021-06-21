@@ -22,11 +22,11 @@ public class FooterTest {
     public void testParsePageFooter()
             throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
         DocxDocument docxDocument = new DocumentController(
-                PAGE_FOOTER_CONFIG_PATH,
-                PAGE_FOOTER_DOCUMENT_PATH)
+                FOOTER_PAGE_CONFIG_PATH,
+                FOOTER_PAGE_DOCUMENT_PATH)
                 .getDocxDocument();
 
-        Config config = new ConfigParser(PAGE_FOOTER_CONFIG_PATH).getConfig();
+        Config config = new ConfigParser(FOOTER_PAGE_CONFIG_PATH).getConfig();
 
         Assert.assertEquals(config.getFooter().getType(), docxDocument.getFooter().getType());
         Assert.assertEquals(config.getFooter().getAlignment(), docxDocument.getFooter().getAlignment());
@@ -37,11 +37,11 @@ public class FooterTest {
     public void testParseTextFooter()
             throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
         DocxDocument docxDocument = new DocumentController(
-                TEXT_FOOTER_CONFIG_PATH,
-                TEXT_FOOTER_DOCUMENT_PATH)
+                FOOTER_TEXT_CONFIG_PATH,
+                FOOTER_TEXT_DOCUMENT_PATH)
                 .getDocxDocument();
 
-        Config config = new ConfigParser(TEXT_FOOTER_CONFIG_PATH).getConfig();
+        Config config = new ConfigParser(FOOTER_TEXT_CONFIG_PATH).getConfig();
 
         Assert.assertEquals(config.getFooter().getType(), docxDocument.getFooter().getType());
         Assert.assertEquals(config.getFooter().getAlignment(), docxDocument.getFooter().getAlignment());

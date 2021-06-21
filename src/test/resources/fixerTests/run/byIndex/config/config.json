@@ -1,0 +1,27 @@
+{
+    "styles": {
+        "style1": {
+            "paragraphs": [1],
+            "paragraphProperties": {
+            },
+            "runProperties": {
+                "fontFamily": "Papyrus",
+                "fontSize": 24,
+                "bold": true,
+                "underline": "wave"
+            }
+        },
+        "style2": {
+            "paragraphs": [2],
+            "paragraphProperties": {
+            },
+            "runProperties": {
+                "fontFamily": "Times New Roman",
+                "fontSize": 12,
+                "bold": false,
+                "italic": true
+            }
+        }
+    },
+    "generateNewDocument": true
+}

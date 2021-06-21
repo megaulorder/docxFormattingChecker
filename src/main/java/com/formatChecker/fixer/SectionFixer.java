@@ -30,6 +30,11 @@ public class SectionFixer implements ConfigConverter {
     void fixPageSize() {
         PgSz pageProperties = new PgSz();
 
+        if (differenceSection.getOrientation() == null &&
+                differenceSection.getPageWidth() == null &&
+                differenceSection.getPageHeight() == null)
+            return;
+
         if (differenceSection.getOrientation() != null)
             pageProperties.setOrient(convertOrientation(expectedSection.getOrientation()));
         else
