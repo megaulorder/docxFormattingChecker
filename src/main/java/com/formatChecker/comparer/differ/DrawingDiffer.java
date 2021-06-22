@@ -51,7 +51,7 @@ public class DrawingDiffer {
         String result = null;
 
         if (!actualDrawing.getText().contains(expectedTextStart))
-            result = "picture description text should start with " + expectedTextStart;
+            result = "drawing description text should start with " + expectedTextStart;
 
         return result;
     }

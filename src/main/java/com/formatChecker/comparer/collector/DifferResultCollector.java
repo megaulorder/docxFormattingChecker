@@ -8,7 +8,10 @@ import com.formatChecker.config.model.participants.Section;
 import com.formatChecker.document.model.participants.Drawing;
 import com.formatChecker.document.model.participants.Heading;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DifferResultCollector {
@@ -17,8 +20,16 @@ public class DifferResultCollector {
     String sectionResult;
     String footerResult;
     String headingResult;
+
     StringBuilder drawingsResult;
     StringBuilder paragraphsResult;
+
+    Integer sectionErrors;
+    Integer drawingErrors;
+    Integer footerErrors;
+    Integer paragraphErrors;
+    Integer runErrors;
+    Integer headingErrors;
 
     String differenceAsString;
 
@@ -42,18 +53,35 @@ public class DifferResultCollector {
                 paragraphsResult +
                 drawingsResult;
 
-        return totalResult.equals("") ? "Comparison results: everything ok" : "Comparison results:\n" + totalResult;
+        return totalResult.equals("") ?
+                "Comparison results: everything ok" :
+                "Comparison results:" + getResultsStats(totalResult);
+    }
+
+    String getResultsStats(String totalResult) {
+        String total = String.format("\n\tTotal errors: %d",
+                sectionErrors + drawingErrors + footerErrors + headingErrors + paragraphErrors + runErrors);
+        String section = String.format("\n\tErrors in section properties: %d", sectionErrors);
+        String drawing = String.format("\n\tErrors in drawing properties: %d", drawingErrors);
+        String footer = String.format("\n\tErrors in footer properties: %d", footerErrors);
+        String heading = String.format("\n\tErrors in headings: %d", headingErrors);
+        String paragraph = String.format("\n\tErrors in paragraph properties: %d", paragraphErrors);
+        String run = String.format("\n\tErrors in font properties: %d", runErrors);
+
+        return total + section + drawing + footer + heading + paragraph + run + totalResult;
     }
 
     String getPageDifferenceAsString() {
         if (difference.getPages() != null)
-            return String.format("\nNumber of pages: %s", difference.getPages() + "\n");
+            return String.format("\n\nNumber of pages: %s", difference.getPages() + "\n");
 
         return "";
     }
 
     String getSectionDifferenceAsString() {
         List<Section<String>> sectionsDifference = difference.getSections();
+
+        sectionErrors = 0;
 
         StringBuilder result = new StringBuilder();
 
@@ -66,17 +94,32 @@ public class DifferResultCollector {
 
             String sectionResult = "";
 
-            if (sectionDifference.getOrientation() != null)
+            if (sectionDifference.getOrientation() != null) {
                 sectionResult += sectionDifference.getOrientation() + "\n\t";
-            if (sectionDifference.getMargins() != null) sectionResult += sectionDifference.getMargins().stream()
-                    .filter(Objects::nonNull)
-                    .map(String::valueOf)
-                    .collect(Collectors.joining("\n\t")) + "\n\t";
-            if (sectionDifference.getPageHeight() != null) sectionResult += sectionDifference.getPageHeight() + "\n\t";
-            if (sectionDifference.getPageWidth() != null) sectionResult += sectionDifference.getPageWidth() + "\n\t";
+                ++sectionErrors;
+            }
 
-            if (!sectionResult.equals(""))
+            if (sectionDifference.getMargins() != null) {
+                sectionResult += sectionDifference.getMargins().stream()
+                        .filter(Objects::nonNull)
+                        .map(String::valueOf)
+                        .collect(Collectors.joining("\n\t")) + "\n\t";
+                ++sectionErrors;
+            }
+
+            if (sectionDifference.getPageHeight() != null) {
+                sectionResult += sectionDifference.getPageHeight() + "\n\t";
+                ++sectionErrors;
+            }
+
+            if (sectionDifference.getPageWidth() != null) {
+                sectionResult += sectionDifference.getPageWidth() + "\n\t";
+                ++sectionErrors;
+            }
+
+            if (!sectionResult.equals("")) {
                 result.append(String.format("\nSection #%d: \n\t", count)).append(sectionResult);
+            }
         }
 
         return result.toString().equals("") ? "" : "\nSection properties: \n\t" + result;
@@ -85,22 +128,31 @@ public class DifferResultCollector {
     String getFooterDifferenceAsString() {
         Footer differenceFooter = difference.getFooter();
 
+        footerErrors = 0;
+
         if (differenceFooter != null) {
             String type = differenceFooter.getType();
             String alignment = differenceFooter.getAlignment();
 
-            if (!differenceFooter.getErrorMessage().equals(""))
+            if (!differenceFooter.getErrorMessage().equals("")) {
+                ++footerErrors;
                 return String.format("\nNo footer found: %s\n", differenceFooter.getErrorMessage());
+            }
 
             if (differenceFooter.getErrorMessage().equals("") && type == null && alignment == null)
                 return "";
 
             String result = "\nFooter:\n\t";
 
-            if (type != null)
+            if (type != null) {
                 result += type + "\n\t";
-            if (alignment != null)
+                ++footerErrors;
+            }
+
+            if (alignment != null) {
                 result += alignment + "\n\t";
+                ++footerErrors;
+            }
 
             return result;
         }
@@ -111,20 +163,27 @@ public class DifferResultCollector {
     String getHeadingDifferenceAsString() {
         List<Heading> headings = difference.getHeadings();
 
+        headingErrors = 0;
+
         if (headings == null)
             return "";
 
-        String result = headings
-                .stream()
-                .map(Heading::getText)
-                .filter(Objects::nonNull)
-                .collect(Collectors.joining("\n\t"));
+        StringBuilder result = new StringBuilder();
 
-            return result.equals("") ? "" : "\nHeadings:\n\t" + result + "\n\t";
+        for (Heading heading : headings) {
+            if (heading.getText() != null) {
+                result.append(heading.getText()).append("\n\t");
+                ++headingErrors;
+            }
+        }
+
+        return result.toString().equals("") ? "" : "\nHeadings:\n\t" + result + "\n\t";
     }
 
     StringBuilder getDrawingsDifferenceAsString() {
         List<Drawing<String, String>> drawings = difference.getDrawings();
+
+        drawingErrors = 0;
 
         StringBuilder result = new StringBuilder();
 
@@ -137,8 +196,16 @@ public class DifferResultCollector {
 
             String text = drawing.getText();
             String drawingResult = text != null ? text + "\n\t" : "";
-            drawingResult += getParagraphDifferenceAsString(drawing.getDrawing());
-            drawingResult += getParagraphDifferenceAsString(drawing.getDescription());
+
+            if (!getParagraphDifferenceAsString(drawing.getDrawing()).equals("")) {
+                drawingResult += "drawing: " + getParagraphDifferenceAsString(drawing.getDrawing());
+                ++drawingErrors;
+            }
+
+            if (!getParagraphDifferenceAsString(drawing.getDescription()).equals("")) {
+                drawingResult += "description: " + getParagraphDifferenceAsString(drawing.getDrawing());
+                ++drawingErrors;
+            }
 
             if (!drawingResult.equals(""))
                 result
@@ -153,6 +220,9 @@ public class DifferResultCollector {
         List<Paragraph<String, String>> paragraphs = difference.getParagraphs();
 
         StringBuilder result = new StringBuilder();
+
+        paragraphErrors = 0;
+        runErrors = 0;
 
         int count = 0;
         for (Paragraph p : paragraphs) {
@@ -174,14 +244,45 @@ public class DifferResultCollector {
     String getParagraphDifferenceAsString(Paragraph<String, String> paragraph) {
         String paragraphResult = "";
 
-        if (paragraph.getAlignment() != null) paragraphResult += paragraph.getAlignment() + "\n\t";
-        if (paragraph.getFirstLineIndent() != null) paragraphResult += paragraph.getFirstLineIndent() + "\n\t";
-        if (paragraph.getLeftIndent() != null) paragraphResult += paragraph.getLeftIndent() + "\n\t";
-        if (paragraph.getRightIndent() != null) paragraphResult += paragraph.getRightIndent() + "\n\t";
-        if (paragraph.getLineSpacing() != null) paragraphResult += paragraph.getLineSpacing() + "\n\t";
-        if (paragraph.getSpacingBefore() != null) paragraphResult += paragraph.getSpacingBefore() + "\n\t";
-        if (paragraph.getSpacingAfter() != null) paragraphResult += paragraph.getSpacingAfter() + "\n\t";
-        if (paragraph.getPageBreakBefore() != null) paragraphResult += paragraph.getPageBreakBefore() + "\n\t";
+        if (paragraph.getAlignment() != null) {
+            paragraphResult += paragraph.getAlignment() + "\n\t";
+            ++paragraphErrors;
+        }
+
+        if (paragraph.getFirstLineIndent() != null) {
+            paragraphResult += paragraph.getFirstLineIndent() + "\n\t";
+            ++paragraphErrors;
+        }
+
+        if (paragraph.getLeftIndent() != null) {
+            paragraphResult += paragraph.getLeftIndent() + "\n\t";
+            ++paragraphErrors;
+        }
+
+        if (paragraph.getRightIndent() != null) {
+            paragraphResult += paragraph.getRightIndent() + "\n\t";
+            ++paragraphErrors;
+        }
+
+        if (paragraph.getLineSpacing() != null) {
+            paragraphResult += paragraph.getLineSpacing() + "\n\t";
+            ++paragraphErrors;
+        }
+
+        if (paragraph.getSpacingBefore() != null) {
+            paragraphResult += paragraph.getSpacingBefore() + "\n\t";
+            ++paragraphErrors;
+        }
+
+        if (paragraph.getSpacingAfter() != null) {
+            paragraphResult += paragraph.getSpacingAfter() + "\n\t";
+            ++paragraphErrors;
+        }
+
+        if (paragraph.getPageBreakBefore() != null) {
+            paragraphResult += paragraph.getPageBreakBefore() + "\n\t";
+            ++paragraphErrors;
+        }
 
         return paragraphResult;
     }
@@ -190,13 +291,40 @@ public class DifferResultCollector {
         Set<String> result = new HashSet<>();
 
         for (Run<String, String> r : runs) {
-            if (r.getFontFamily() != null) result.add(r.getFontFamily() + "\n\t");
-            if (r.getFontSize() != null) result.add(r.getFontSize() + "\n\t");
-            if (r.getBold() != null) result.add(r.getBold() + "\n\t");
-            if (r.getItalic() != null) result.add(r.getItalic() + "\n\t");
-            if (r.getStrikethrough() != null) result.add(r.getStrikethrough() + "\n\t");
-            if (r.getUnderline() != null) result.add(r.getUnderline() + "\n\t");
-            if (r.getTextColor() != null) result.add(r.getTextColor() + "\n\t");
+            if (r.getFontFamily() != null) {
+                result.add(r.getFontFamily() + "\n\t");
+                ++runErrors;
+            }
+
+            if (r.getFontSize() != null) {
+                result.add(r.getFontSize() + "\n\t");
+                ++runErrors;
+            }
+
+            if (r.getBold() != null) {
+                result.add(r.getBold() + "\n\t");
+                ++runErrors;
+            }
+
+            if (r.getItalic() != null) {
+                result.add(r.getItalic() + "\n\t");
+                ++runErrors;
+            }
+
+            if (r.getStrikethrough() != null) {
+                result.add(r.getStrikethrough() + "\n\t");
+                ++runErrors;
+            }
+
+            if (r.getUnderline() != null) {
+                result.add(r.getUnderline() + "\n\t");
+                ++runErrors;
+            }
+
+            if (r.getTextColor() != null) {
+                result.add(r.getTextColor() + "\n\t");
+                ++runErrors;
+            }
         }
 
         return String.join("", result);
