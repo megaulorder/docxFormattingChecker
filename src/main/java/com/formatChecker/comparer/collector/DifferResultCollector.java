@@ -110,20 +110,23 @@ public class DifferResultCollector {
 
     String getHeadingDifferenceAsString() {
         List<Heading> headings = difference.getHeadings();
+
         if (headings == null)
             return "";
-        else
-            return "\nHeadings:\n\t" + headings
-                    .stream()
-                    .map(Heading::getText)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.joining("\n\t")) + "\n";
+
+        String result = headings
+                .stream()
+                .map(Heading::getText)
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining("\n\t"));
+
+            return result.equals("") ? "" : "\nHeadings:\n\t" + result;
     }
 
     StringBuilder getDrawingsDifferenceAsString() {
         List<Drawing<String, String>> drawings = difference.getDrawings();
 
-        StringBuilder result = new StringBuilder("");
+        StringBuilder result = new StringBuilder();
 
         int count = 0;
         for (Drawing<String, String> drawing : drawings) {
@@ -136,10 +139,12 @@ public class DifferResultCollector {
             String drawingResult = String.format("\nDrawing #%d: \n\t", count);
 
             result
-                    .append(drawingResult)
                     .append(text != null ? text + "\n\t" : "")
                     .append(getParagraphDifferenceAsString(drawing.getDrawing()))
                     .append(getParagraphDifferenceAsString(drawing.getDescription()));
+
+            if (!result.toString().equals(""))
+                result.insert(0, drawingResult);
         }
 
         return result.toString().equals("") ? new StringBuilder() : new StringBuilder("\nDrawings:\n" + result);

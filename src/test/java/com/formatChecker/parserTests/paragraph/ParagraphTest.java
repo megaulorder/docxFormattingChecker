@@ -1,4 +1,4 @@
-package com.formatChecker.parserTests.paragraphAndRun;
+package com.formatChecker.parserTests.paragraph;
 
 import com.formatChecker.config.model.Config;
 import com.formatChecker.config.model.participants.Paragraph;
@@ -17,10 +17,10 @@ import java.io.IOException;
 
 import static com.formatChecker.parserTests.constants.PathConstants.*;
 
-public class ParagraphAndRunTest {
-    @DisplayName("Checks the result of parsing paragraphs and runs by indexes")
+public class ParagraphTest {
+    @DisplayName("Checks the result of parsing paragraphs by indexes")
     @Test
-    public void testParseParagraphsAndRunsByIndexes()
+    public void testParseParagraphsByIndexes()
             throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
         DocxDocument docxDocument = new DocumentController(
                 PARAGRAPH_BY_INDEX_CONFIG_PATH,
@@ -56,9 +56,9 @@ public class ParagraphAndRunTest {
         }
     }
 
-    @DisplayName("Checks the result of parsing paragraphs and runs by headings")
+    @DisplayName("Checks the result of parsing paragraphs by headings")
     @Test
-    public void testParseParagraphsAndRunsByHeadings()
+    public void testParseParagraphsByHeadings()
             throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
         DocxDocument docxDocument = new DocumentController(
                 PARAGRAPH_BY_HEADING_CONFIG_PATH,

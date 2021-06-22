@@ -48,9 +48,9 @@ public class DrawingDiffer {
 
     String compareText() {
         String expectedTextStart = expectedDrawing.getTextStartsWith();
-        String result = "";
+        String result = null;
 
-        if (actualDrawing.getText().contains(expectedTextStart))
+        if (!actualDrawing.getText().contains(expectedTextStart))
             result = "picture description text should start with " + expectedTextStart;
 
         return result;
