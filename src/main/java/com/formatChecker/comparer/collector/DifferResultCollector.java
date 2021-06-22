@@ -28,7 +28,6 @@ public class DifferResultCollector {
     Integer drawingErrors;
     Integer footerErrors;
     Integer paragraphErrors;
-    Integer runErrors;
     Integer headingErrors;
 
     String differenceAsString;
@@ -60,15 +59,14 @@ public class DifferResultCollector {
 
     String getResultsStats(String totalResult) {
         String total = String.format("\n\tTotal errors: %d",
-                sectionErrors + drawingErrors + footerErrors + headingErrors + paragraphErrors + runErrors);
+                sectionErrors + drawingErrors + footerErrors + headingErrors + paragraphErrors);
         String section = String.format("\n\tErrors in section properties: %d", sectionErrors);
         String drawing = String.format("\n\tErrors in drawing properties: %d", drawingErrors);
         String footer = String.format("\n\tErrors in footer properties: %d", footerErrors);
         String heading = String.format("\n\tErrors in headings: %d", headingErrors);
-        String paragraph = String.format("\n\tErrors in paragraph properties: %d", paragraphErrors);
-        String run = String.format("\n\tErrors in font properties: %d", runErrors);
+        String paragraph = String.format("\n\tParagraphs with errors: %d", paragraphErrors);
 
-        return total + section + drawing + footer + heading + paragraph + run + totalResult;
+        return total + section + drawing + footer + heading + paragraph + totalResult;
     }
 
     String getPageDifferenceAsString() {
@@ -197,20 +195,18 @@ public class DifferResultCollector {
             String text = drawing.getText();
             String drawingResult = text != null ? text + "\n\t" : "";
 
-            if (!getParagraphDifferenceAsString(drawing.getDrawing()).equals("")) {
+            if (!getParagraphDifferenceAsString(drawing.getDrawing()).equals(""))
                 drawingResult += "drawing: " + getParagraphDifferenceAsString(drawing.getDrawing());
-                ++drawingErrors;
-            }
 
-            if (!getParagraphDifferenceAsString(drawing.getDescription()).equals("")) {
+            if (!getParagraphDifferenceAsString(drawing.getDescription()).equals(""))
                 drawingResult += "description: " + getParagraphDifferenceAsString(drawing.getDrawing());
-                ++drawingErrors;
-            }
 
-            if (!drawingResult.equals(""))
+            if (!drawingResult.equals("")) {
+                ++drawingErrors;
                 result
                         .append(String.format("\nDrawing #%d: \n\t", count))
                         .append(drawingResult);
+            }
         }
 
         return result.toString().equals("") ? new StringBuilder() : new StringBuilder("\nDrawings:\n" + result);
@@ -222,7 +218,6 @@ public class DifferResultCollector {
         StringBuilder result = new StringBuilder();
 
         paragraphErrors = 0;
-        runErrors = 0;
 
         int count = 0;
         for (Paragraph p : paragraphs) {
@@ -231,11 +226,14 @@ public class DifferResultCollector {
 
             String paragraphDifference = getParagraphDifferenceAsString(p) + getRunsDifferenceAsString(p.getRuns());
 
-            if (!paragraphDifference.equals(""))
+            if (!paragraphDifference.equals("")) {
+                ++paragraphErrors;
+
                 result
                         .append(String.format("\nParagraph #%d (%s...): \n\t",
                                 count, text.substring(0, Math.min(text.length(), 100))))
                         .append(paragraphDifference);
+            }
         }
 
         return result.toString().equals("") ? new StringBuilder() : new StringBuilder("\nParagraphs:\n" + result);
@@ -244,45 +242,29 @@ public class DifferResultCollector {
     String getParagraphDifferenceAsString(Paragraph<String, String> paragraph) {
         String paragraphResult = "";
 
-        if (paragraph.getAlignment() != null) {
+        if (paragraph.getAlignment() != null)
             paragraphResult += paragraph.getAlignment() + "\n\t";
-            ++paragraphErrors;
-        }
 
-        if (paragraph.getFirstLineIndent() != null) {
+        if (paragraph.getFirstLineIndent() != null)
             paragraphResult += paragraph.getFirstLineIndent() + "\n\t";
-            ++paragraphErrors;
-        }
 
-        if (paragraph.getLeftIndent() != null) {
+        if (paragraph.getLeftIndent() != null)
             paragraphResult += paragraph.getLeftIndent() + "\n\t";
-            ++paragraphErrors;
-        }
 
-        if (paragraph.getRightIndent() != null) {
+        if (paragraph.getRightIndent() != null)
             paragraphResult += paragraph.getRightIndent() + "\n\t";
-            ++paragraphErrors;
-        }
 
-        if (paragraph.getLineSpacing() != null) {
+        if (paragraph.getLineSpacing() != null)
             paragraphResult += paragraph.getLineSpacing() + "\n\t";
-            ++paragraphErrors;
-        }
 
-        if (paragraph.getSpacingBefore() != null) {
+        if (paragraph.getSpacingBefore() != null)
             paragraphResult += paragraph.getSpacingBefore() + "\n\t";
-            ++paragraphErrors;
-        }
 
-        if (paragraph.getSpacingAfter() != null) {
+        if (paragraph.getSpacingAfter() != null)
             paragraphResult += paragraph.getSpacingAfter() + "\n\t";
-            ++paragraphErrors;
-        }
 
-        if (paragraph.getPageBreakBefore() != null) {
+        if (paragraph.getPageBreakBefore() != null)
             paragraphResult += paragraph.getPageBreakBefore() + "\n\t";
-            ++paragraphErrors;
-        }
 
         return paragraphResult;
     }
@@ -291,40 +273,26 @@ public class DifferResultCollector {
         Set<String> result = new HashSet<>();
 
         for (Run<String, String> r : runs) {
-            if (r.getFontFamily() != null) {
+            if (r.getFontFamily() != null)
                 result.add(r.getFontFamily() + "\n\t");
-                ++runErrors;
-            }
 
-            if (r.getFontSize() != null) {
+            if (r.getFontSize() != null)
                 result.add(r.getFontSize() + "\n\t");
-                ++runErrors;
-            }
 
-            if (r.getBold() != null) {
+            if (r.getBold() != null)
                 result.add(r.getBold() + "\n\t");
-                ++runErrors;
-            }
 
-            if (r.getItalic() != null) {
+            if (r.getItalic() != null)
                 result.add(r.getItalic() + "\n\t");
-                ++runErrors;
-            }
 
-            if (r.getStrikethrough() != null) {
+            if (r.getStrikethrough() != null)
                 result.add(r.getStrikethrough() + "\n\t");
-                ++runErrors;
-            }
 
-            if (r.getUnderline() != null) {
+            if (r.getUnderline() != null)
                 result.add(r.getUnderline() + "\n\t");
-                ++runErrors;
-            }
 
-            if (r.getTextColor() != null) {
+            if (r.getTextColor() != null)
                 result.add(r.getTextColor() + "\n\t");
-                ++runErrors;
-            }
         }
 
         return String.join("", result);

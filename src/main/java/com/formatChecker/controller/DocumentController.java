@@ -14,9 +14,12 @@ import org.docx4j.Docx4J;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.wml.P;
+import org.docx4j.wml.SdtBlock;
 import org.docx4j.wml.SectPr;
+import org.docx4j.wml.Tbl;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -103,10 +106,15 @@ public class DocumentController {
 
     void runParagraphController(Difference difference) throws Docx4JException {
         int count = 0;
+        boolean afterTOC = false;
+
         for (Object p : documentData.getParagraphs()) {
+            if (p instanceof SdtBlock)
+                afterTOC = true;
+
             if (p instanceof P) {
                 P par = (P) p;
-                if (!par.toString().equals("")) {
+                if (!par.toString().equals("") && afterTOC) {
                     ++count;
                     new ParagraphController(count,
                             par,
