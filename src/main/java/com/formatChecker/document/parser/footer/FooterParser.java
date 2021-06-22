@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 
 public class FooterParser {
     private static final String DEFAULT_ALIGNMENT = "left";
+    private static final String DEFAULT_TYPE = "unknown";
     private static final String PAGE_REGEXP = "\\s+";
 
     String type;
@@ -58,7 +59,7 @@ public class FooterParser {
 
     String getAlignment() {
         if (defaultFooter != null) {
-            String alignment = null;
+            String alignment = DEFAULT_ALIGNMENT;
             Element element;
 
             element = getElement("w:framePr");
@@ -69,9 +70,14 @@ public class FooterParser {
             if (element != null)
                 alignment = element.getAttribute("w:alignment");
 
-            return alignment != null ? alignment : DEFAULT_ALIGNMENT;
+            element = getElement("w:jc");
+            if (element != null)
+                alignment = element.getAttribute("w:val");
+
+            return alignment;
         }
-        return null;
+        else
+            return null;
     }
 
     String getType() {
@@ -80,7 +86,7 @@ public class FooterParser {
             Element element = (Element) defaultFooter.adoptNode(elements.item(0));
 
             if (element == null)
-                return null;
+                return DEFAULT_TYPE;
 
             String value = element.getTextContent().toLowerCase().replaceAll(PAGE_REGEXP, "");
 
