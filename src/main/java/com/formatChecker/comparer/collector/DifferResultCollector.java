@@ -120,7 +120,7 @@ public class DifferResultCollector {
                 .filter(Objects::nonNull)
                 .collect(Collectors.joining("\n\t"));
 
-            return result.equals("") ? "" : "\nHeadings:\n\t" + result;
+            return result.equals("") ? "" : "\nHeadings:\n\t" + result + "\n\t";
     }
 
     StringBuilder getDrawingsDifferenceAsString() {
@@ -136,15 +136,14 @@ public class DifferResultCollector {
             ++count;
 
             String text = drawing.getText();
-            String drawingResult = String.format("\nDrawing #%d: \n\t", count);
+            String drawingResult = text != null ? text + "\n\t" : "";
+            drawingResult += getParagraphDifferenceAsString(drawing.getDrawing());
+            drawingResult += getParagraphDifferenceAsString(drawing.getDescription());
 
-            result
-                    .append(text != null ? text + "\n\t" : "")
-                    .append(getParagraphDifferenceAsString(drawing.getDrawing()))
-                    .append(getParagraphDifferenceAsString(drawing.getDescription()));
-
-            if (!result.toString().equals(""))
-                result.insert(0, drawingResult);
+            if (!drawingResult.equals(""))
+                result
+                        .append(String.format("\nDrawing #%d: \n\t", count))
+                        .append(drawingResult);
         }
 
         return result.toString().equals("") ? new StringBuilder() : new StringBuilder("\nDrawings:\n" + result);
@@ -159,18 +158,14 @@ public class DifferResultCollector {
         for (Paragraph p : paragraphs) {
             ++count;
             String text = p.getText();
-            String paragraphResult = "";
 
-            result
-                    .append(paragraphResult)
-                    .append(getParagraphDifferenceAsString(p))
-                    .append(getRunsDifferenceAsString(p.getRuns()));
+            String paragraphDifference = getParagraphDifferenceAsString(p) + getRunsDifferenceAsString(p.getRuns());
 
-            if (!result.toString().equals(""))
-                return new StringBuilder(String.format("\nParagraph #%d (%s...): \n\t",
-                        count, text.substring(0, Math.min(text.length(), 100))) + result);
-            else
-                return new StringBuilder();
+            if (!paragraphDifference.equals(""))
+                result
+                        .append(String.format("\nParagraph #%d (%s...): \n\t",
+                                count, text.substring(0, Math.min(text.length(), 100))))
+                        .append(paragraphDifference);
         }
 
         return result.toString().equals("") ? new StringBuilder() : new StringBuilder("\nParagraphs:\n" + result);

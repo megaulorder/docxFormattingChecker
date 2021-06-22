@@ -14,6 +14,8 @@ public class DocumentDiffer {
     }
 
     String comparePages() {
+        if (actualPages == null)
+            return "Could not read number of pages";
         if (expectedPages == null)
             return null;
         if (actualPages >= expectedPages.getMin() && actualPages < expectedPages.getMax()) {

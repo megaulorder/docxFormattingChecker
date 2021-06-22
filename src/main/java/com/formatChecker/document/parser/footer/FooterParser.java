@@ -2,6 +2,7 @@ package com.formatChecker.document.parser.footer;
 
 import com.formatChecker.config.model.participants.Footer;
 import org.docx4j.model.structure.HeaderFooterPolicy;
+import org.docx4j.openpackaging.parts.WordprocessingML.FooterPart;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -27,12 +28,20 @@ public class FooterParser {
     public FooterParser(HeaderFooterPolicy headersAndFooters)
             throws ParserConfigurationException, IOException, SAXException {
         this.headersAndFooters = headersAndFooters;
-        this.defaultFooter = convertStringToXMLDocument(headersAndFooters.getDefaultFooter().getXML());
+        this.defaultFooter = parseDefaultFooter();
 
         this.alignment = getAlignment();
         this.type = getType();
 
         this.footer = parseFooter();
+    }
+
+    Document parseDefaultFooter() throws ParserConfigurationException, IOException, SAXException {
+        FooterPart footer = headersAndFooters.getDefaultFooter();
+        if (footer == null)
+            return null;
+        else
+            return convertStringToXMLDocument(footer.getXML());
     }
 
     Footer parseFooter() {
