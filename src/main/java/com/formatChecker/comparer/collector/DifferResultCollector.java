@@ -8,10 +8,7 @@ import com.formatChecker.config.model.participants.Section;
 import com.formatChecker.document.model.participants.Drawing;
 import com.formatChecker.document.model.participants.Heading;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DifferResultCollector {
@@ -65,13 +62,14 @@ public class DifferResultCollector {
         String footer = String.format("\n\tErrors in footer properties: %d", footerErrors);
         String heading = String.format("\n\tErrors in headings: %d", headingErrors);
         String paragraph = String.format("\n\tParagraphs with errors: %d", paragraphErrors);
+        String mostCommon = String.format("\n\tMost common error: %s", mostCommonWord(totalResult));
 
-        return total + section + drawing + footer + heading + paragraph + totalResult;
+        return total + section + drawing + footer + heading + paragraph + mostCommon + totalResult;
     }
 
     String getPageDifferenceAsString() {
         if (difference.getPages() != null)
-            return String.format("\n\nNumber of pages: %s", difference.getPages() + "\n");
+            return String.format("\n\nnNumber of pages: %s", difference.getPages() + "\n");
 
         return "";
     }
@@ -120,7 +118,7 @@ public class DifferResultCollector {
             }
         }
 
-        return result.toString().equals("") ? "" : "\nSection properties: \n\t" + result;
+        return result.toString().equals("") ? "" : "\n\nSection properties: \n\t" + result;
     }
 
     String getFooterDifferenceAsString() {
@@ -296,6 +294,15 @@ public class DifferResultCollector {
         }
 
         return String.join("", result);
+    }
+
+    public String mostCommonWord(String p) {
+        Map<String, Integer> count = new HashMap<>();
+        List<String> words = Arrays.stream(p.split("\\n\\t+")).filter(s -> !s.contains("\n")).collect(Collectors.toList());
+        for (String w : words)
+            count.put(w, count.getOrDefault(w, 0) + 1);
+
+        return Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 
     public String getDifferenceAsString() {
