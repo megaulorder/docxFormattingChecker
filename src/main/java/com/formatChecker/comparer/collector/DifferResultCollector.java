@@ -62,14 +62,14 @@ public class DifferResultCollector {
         String footer = String.format("\n\tErrors in footer properties: %d", footerErrors);
         String heading = String.format("\n\tErrors in headings: %d", headingErrors);
         String paragraph = String.format("\n\tParagraphs with errors: %d", paragraphErrors);
-        String mostCommon = String.format("\n\tMost common error: %s", mostCommonWord(totalResult));
+        String mostCommon = String.format("\n\tMost common error: %s", getMostCommonError(totalResult));
 
         return total + section + drawing + footer + heading + paragraph + mostCommon + totalResult;
     }
 
     String getPageDifferenceAsString() {
         if (difference.getPages() != null)
-            return String.format("\n\nnNumber of pages: %s", difference.getPages() + "\n");
+            return String.format("\n\nNumber of pages: %s", difference.getPages() + "\n");
 
         return "";
     }
@@ -296,9 +296,12 @@ public class DifferResultCollector {
         return String.join("", result);
     }
 
-    public String mostCommonWord(String p) {
+    public String getMostCommonError(String p) {
         Map<String, Integer> count = new HashMap<>();
-        List<String> words = Arrays.stream(p.split("\\n\\t+")).filter(s -> !s.contains("\n")).collect(Collectors.toList());
+        List<String> words = Arrays.stream(p.split("\\n\\t+"))
+                .filter(s -> !s.contains("\n"))
+                .collect(Collectors.toList());
+
         for (String w : words)
             count.put(w, count.getOrDefault(w, 0) + 1);
 
