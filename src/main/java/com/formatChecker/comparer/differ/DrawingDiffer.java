@@ -48,7 +48,10 @@ public class DrawingDiffer {
 
     String compareText() {
         String expectedTextStart = expectedDrawing.getTextStartsWith();
-        String result = null;
+        String result = actualDrawing.getText();
+
+        if (actualDrawing.getText() == null)
+            return "add a drawing description";
 
         if (!actualDrawing.getText().contains(expectedTextStart))
             result = "drawing description text should start with " + expectedTextStart;

@@ -193,7 +193,7 @@ public class DifferResultCollector {
             ++count;
 
             String text = drawing.getText();
-            String drawingResult = text != null ? text + "\n\t" : "";
+            String drawingResult = text.contains("drawing") ? text + "\n\t" : "";
 
             if (!getParagraphDifferenceAsString(drawing.getDrawing()).equals(""))
                 drawingResult += "drawing: " + getParagraphDifferenceAsString(drawing.getDrawing());
@@ -204,7 +204,7 @@ public class DifferResultCollector {
             if (!drawingResult.equals("")) {
                 ++drawingErrors;
                 result
-                        .append(String.format("\nDrawing #%d: \n\t", count))
+                        .append(String.format("\nDrawing #%d: %s\n\t", count, drawing.getText()))
                         .append(drawingResult);
             }
         }

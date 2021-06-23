@@ -16,10 +16,8 @@ import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.wml.P;
 import org.docx4j.wml.SdtBlock;
 import org.docx4j.wml.SectPr;
-import org.docx4j.wml.Tbl;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -114,18 +112,20 @@ public class DocumentController {
 
             if (p instanceof P) {
                 P par = (P) p;
-                if (!par.toString().equals("") && afterTOC) {
-                    ++count;
-                    new ParagraphController(count,
-                            par,
-                            difference,
-                            docxDocument,
-                            documentData,
-                            config,
-                            configStyles,
-                            headings,
-                            paragraphOnNewPageIds)
-                            .parseParagraph();
+                if (!par.toString().equals("")) {
+                    if (!config.getFindHeadingsByTOC() || afterTOC) {
+                        ++count;
+                        new ParagraphController(count,
+                                par,
+                                difference,
+                                docxDocument,
+                                documentData,
+                                config,
+                                configStyles,
+                                headings,
+                                paragraphOnNewPageIds)
+                                .parseParagraph();
+                    }
                 }
             }
         }
