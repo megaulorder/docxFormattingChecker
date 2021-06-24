@@ -8,7 +8,7 @@ import com.formatChecker.config.parser.ConfigParser;
 import com.formatChecker.document.model.data.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.model.participants.raw.DrawingRaw;
-import com.formatChecker.document.model.participants.Heading;
+import com.formatChecker.config.model.participants.Heading;
 import com.formatChecker.document.parser.DocxParser;
 import org.docx4j.Docx4J;
 import org.docx4j.openpackaging.exceptions.Docx4JException;

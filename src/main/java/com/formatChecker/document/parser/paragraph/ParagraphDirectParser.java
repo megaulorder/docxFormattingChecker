@@ -2,7 +2,7 @@ package com.formatChecker.document.parser.paragraph;
 
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
-import com.formatChecker.document.model.participants.Heading;
+import com.formatChecker.config.model.participants.Heading;
 import com.formatChecker.document.parser.run.RunDirectParser;
 import org.apache.commons.lang3.StringUtils;
 import org.docx4j.openpackaging.exceptions.Docx4JException;

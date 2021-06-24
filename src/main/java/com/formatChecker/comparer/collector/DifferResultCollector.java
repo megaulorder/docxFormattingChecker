@@ -6,7 +6,7 @@ import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.config.model.participants.Section;
 import com.formatChecker.document.model.participants.Drawing;
-import com.formatChecker.document.model.participants.Heading;
+import com.formatChecker.config.model.participants.Heading;
 
 import java.util.*;
 import java.util.stream.Collectors;

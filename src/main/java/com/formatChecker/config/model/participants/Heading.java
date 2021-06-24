@@ -1,4 +1,4 @@
-package com.formatChecker.document.model.participants;
+package com.formatChecker.config.model.participants;
 
 public class Heading {
     Integer level;

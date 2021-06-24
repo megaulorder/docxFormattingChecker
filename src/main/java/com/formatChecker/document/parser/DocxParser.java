@@ -3,7 +3,7 @@ package com.formatChecker.document.parser;
 import com.formatChecker.document.model.data.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.model.participants.raw.DrawingRaw;
-import com.formatChecker.document.model.participants.Heading;
+import com.formatChecker.config.model.participants.Heading;
 import org.docx4j.jaxb.XPathBinderAssociationIsPartialException;
 import org.docx4j.model.structure.SectionWrapper;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;

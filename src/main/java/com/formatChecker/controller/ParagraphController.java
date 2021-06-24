@@ -8,7 +8,7 @@ import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.controller.helper.RunHelper;
 import com.formatChecker.document.model.data.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
-import com.formatChecker.document.model.participants.Heading;
+import com.formatChecker.config.model.participants.Heading;
 import com.formatChecker.document.parser.paragraph.ParagraphDirectParser;
 import com.formatChecker.fixer.ParagraphFixer;
 import org.apache.commons.lang3.StringUtils;

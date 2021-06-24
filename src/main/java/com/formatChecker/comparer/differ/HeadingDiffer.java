@@ -1,6 +1,6 @@
 package com.formatChecker.comparer.differ;
 
-import com.formatChecker.document.model.participants.Heading;
+import com.formatChecker.config.model.participants.Heading;
 
 import java.util.ArrayList;
 import java.util.List;

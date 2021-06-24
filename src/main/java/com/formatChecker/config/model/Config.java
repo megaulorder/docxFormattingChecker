@@ -1,7 +1,7 @@
 package com.formatChecker.config.model;
 
 import com.formatChecker.config.model.participants.*;
-import com.formatChecker.document.model.participants.Heading;
+import com.formatChecker.config.model.participants.Heading;
 
 import java.util.HashMap;
 import java.util.List;
