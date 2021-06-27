@@ -6,15 +6,18 @@ import com.formatChecker.config.model.Config;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.controller.helper.RunHelper;
-import com.formatChecker.document.model.data.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
-import com.formatChecker.config.model.participants.Heading;
+import com.formatChecker.document.model.data.DocumentData;
+import com.formatChecker.document.model.participants.HeadingsList;
 import com.formatChecker.document.parser.paragraph.ParagraphDirectParser;
 import com.formatChecker.fixer.ParagraphFixer;
 import org.apache.commons.lang3.StringUtils;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
-import org.docx4j.wml.*;
+import org.docx4j.wml.DocDefaults;
+import org.docx4j.wml.P;
+import org.docx4j.wml.R;
+import org.docx4j.wml.Styles;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +35,7 @@ public class ParagraphController implements RunHelper {
 
     Config config;
     DocumentData documentData;
-    List<Heading> headings;
+    HeadingsList headings;
     List<String> paragraphsOnNewPages;
     DocxDocument docxDocument;
     Map<Integer, String> configStyles;
@@ -49,7 +52,7 @@ public class ParagraphController implements RunHelper {
                                DocumentData documentData,
                                Config config,
                                Map<Integer, String> configStyles,
-                               List<Heading> headings,
+                               HeadingsList headings,
                                List<String> paragraphsOnNewPages) throws Docx4JException {
         this.index = index;
         this.documentParagraph = documentParagraph;

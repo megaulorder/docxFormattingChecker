@@ -5,7 +5,6 @@ import org.docx4j.model.structure.HeaderFooterPolicy;
 import org.docx4j.openpackaging.parts.WordprocessingML.FooterPart;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -82,18 +81,26 @@ public class FooterParser {
 
     String getType() {
         if (defaultFooter != null) {
-            NodeList elements = defaultFooter.getElementsByTagName("w:t");
-            Element element = (Element) defaultFooter.adoptNode(elements.item(0));
+            String type = DEFAULT_TYPE;
+            Element element;
 
-            if (element == null)
-                return DEFAULT_TYPE;
+            element = getElement("w:instrText");
+            if (element != null) {
+                type = element.getTextContent().toLowerCase().replaceAll(PAGE_REGEXP, "");
 
-            String value = element.getTextContent().toLowerCase().replaceAll(PAGE_REGEXP, "");
+                if (type.contains("page"))
+                    return "page";
+            }
 
-            if (value.matches("[0-9]+"))
-                return "page";
-            else
-                return "text";
+            element = getElement("w:t");
+            if (element != null) {
+                String value = element.getTextContent().toLowerCase().replaceAll(PAGE_REGEXP, "");
+
+                if (value.matches("[0-9]+"))
+                    return "page";
+                else
+                    return "text";
+            }
         }
         return null;
     }

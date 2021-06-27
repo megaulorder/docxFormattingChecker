@@ -4,7 +4,7 @@ import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Section;
 import com.formatChecker.document.model.participants.Drawing;
-import com.formatChecker.config.model.participants.Heading;
+import com.formatChecker.document.model.participants.HeadingsList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class Difference {
     List<Paragraph<String, String>> paragraphs;
     Footer footer;
     List<Drawing<String, String>> drawings;
-    List<Heading> headings;
+    HeadingsList headings;
 
     public void setPages(String pages) {
         this.pages = pages;
@@ -52,11 +52,11 @@ public class Difference {
         this.footer = footer;
     }
 
-    public List<Heading> getHeadings() {
+    public HeadingsList getHeadings() {
         return headings;
     }
 
-    public void setHeadings(List<Heading> headings) {
+    public void setHeadings(HeadingsList headings) {
         this.headings = headings;
     }
 

@@ -1,8 +1,9 @@
 package com.formatChecker.document.parser.paragraph;
 
+import com.formatChecker.config.model.participants.Heading;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
-import com.formatChecker.config.model.participants.Heading;
+import com.formatChecker.document.model.participants.HeadingsList;
 import com.formatChecker.document.parser.run.RunDirectParser;
 import org.apache.commons.lang3.StringUtils;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -18,7 +19,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     P par;
     Styles styles;
     ThemePart themePart;
-    List<Heading> headings;
+    HeadingsList headings;
     List<String> paragraphsOnNewPages;
 
     String styleId;
@@ -31,7 +32,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
                                  Styles styles,
                                  ThemePart themePart,
                                  P par,
-                                 List<Heading> headings,
+                                 HeadingsList headings,
                                  List<String> paragraphsOnNewPages) {
         super(docDefaults);
 
@@ -190,8 +191,8 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     void setIsHeading() {
         paragraph.setHeadingLevel(0);
 
-        if (headings != null) {
-            for (Heading heading : headings) {
+        if (headings != null && headings.getHeadings() != null) {
+            for (Heading heading : headings.getHeadings()) {
                 if (heading.getText().equals(text)) {
                     paragraph.setHeadingLevel(heading.getLevel());
                     break;

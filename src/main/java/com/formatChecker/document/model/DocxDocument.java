@@ -1,6 +1,5 @@
 package com.formatChecker.document.model;
 
-import com.formatChecker.config.model.participants.ConfigDrawing;
 import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Section;

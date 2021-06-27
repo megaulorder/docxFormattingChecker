@@ -5,10 +5,10 @@ import com.formatChecker.comparer.differ.HeadingDiffer;
 import com.formatChecker.comparer.model.Difference;
 import com.formatChecker.config.model.Config;
 import com.formatChecker.config.parser.ConfigParser;
-import com.formatChecker.document.model.data.DocumentData;
 import com.formatChecker.document.model.DocxDocument;
+import com.formatChecker.document.model.data.DocumentData;
+import com.formatChecker.document.model.participants.HeadingsList;
 import com.formatChecker.document.model.participants.raw.DrawingRaw;
-import com.formatChecker.config.model.participants.Heading;
 import com.formatChecker.document.parser.DocxParser;
 import org.docx4j.Docx4J;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -44,7 +44,7 @@ public class DocumentController {
     List<String> paragraphOnNewPageIds;
     List<DrawingRaw> paragraphsWithDrawings;
 
-    List<Heading> headings;
+    HeadingsList headings;
 
     public DocumentController(String configPath, String docxPath)
             throws IOException, Docx4JException, ParserConfigurationException, SAXException, JAXBException {

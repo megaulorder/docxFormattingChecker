@@ -1,9 +1,9 @@
 package com.formatChecker.config.parser;
 
-import com.formatChecker.config.model.participants.Style;
-import com.formatChecker.config.model.participants.Heading;
-import com.google.gson.Gson;
 import com.formatChecker.config.model.Config;
+import com.formatChecker.config.model.participants.Heading;
+import com.formatChecker.config.model.participants.Style;
+import com.google.gson.Gson;
 
 import java.io.FileReader;
 import java.io.IOException;

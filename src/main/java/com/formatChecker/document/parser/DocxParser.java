@@ -1,17 +1,18 @@
 package com.formatChecker.document.parser;
 
-import com.formatChecker.document.model.data.DocumentData;
-import com.formatChecker.document.model.DocxDocument;
-import com.formatChecker.document.model.participants.raw.DrawingRaw;
 import com.formatChecker.config.model.participants.Heading;
+import com.formatChecker.document.model.DocxDocument;
+import com.formatChecker.document.model.data.DocumentData;
+import com.formatChecker.document.model.participants.HeadingsList;
+import com.formatChecker.document.model.participants.raw.DrawingRaw;
+import org.docx4j.docProps.extended.Properties;
 import org.docx4j.jaxb.XPathBinderAssociationIsPartialException;
 import org.docx4j.model.structure.SectionWrapper;
+import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.WordprocessingML.DocumentSettingsPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
-import org.docx4j.wml.Body;
-import org.docx4j.wml.P;
-import org.docx4j.wml.SectPr;
-import org.docx4j.wml.Styles;
+import org.docx4j.wml.*;
 
 import javax.xml.bind.JAXBException;
 import java.util.ArrayList;
@@ -29,11 +30,11 @@ public class DocxParser {
     DocumentData documentData;
     List<SectPr> sectionsProperties;
     List<String> paragraphOnNewPageIds;
-    List<Heading> headings;
+    HeadingsList headings;
     List<DrawingRaw> drawingsAndDescriptions;
 
     public DocxParser(WordprocessingMLPackage wordprocessingMLPackage)
-            throws JAXBException, XPathBinderAssociationIsPartialException {
+            throws JAXBException, XPathBinderAssociationIsPartialException, InvalidFormatException {
         this.wordprocessingMLPackage = wordprocessingMLPackage;
         this.headings = parseHeadings();
         this.documentData = parseDocumentData();
@@ -49,8 +50,13 @@ public class DocxParser {
         Styles styles = documentPart.getStyleDefinitionsPart().getJaxbElement();
         List<SectionWrapper> sections = wordprocessingMLPackage.getDocumentModel().getSections();
 
+        Properties properties = wordprocessingMLPackage.getDocPropsExtendedPart() == null ?
+                null :
+                wordprocessingMLPackage.getDocPropsExtendedPart().getJaxbElement();
+
+
         return new DocumentData(
-                wordprocessingMLPackage.getDocPropsExtendedPart().getJaxbElement(),
+                properties,
                 styles.getDocDefaults(),
                 documentPart.getThemePart(),
                 sections,
@@ -62,7 +68,8 @@ public class DocxParser {
 
     DocxDocument parseDocument() {
         DocxDocument docxDocument = new DocxDocument();
-        docxDocument.setPages(documentData.getDocumentInfo().getPages());
+        if (documentData.getDocumentInfo() != null)
+            docxDocument.setPages(documentData.getDocumentInfo().getPages());
 
         return docxDocument;
     }
@@ -92,23 +99,44 @@ public class DocxParser {
         return paragraphIds;
     }
 
-    List<Heading> parseHeadings() throws JAXBException, XPathBinderAssociationIsPartialException {
+    HeadingsList parseHeadings() throws JAXBException, XPathBinderAssociationIsPartialException, InvalidFormatException {
+        updateTOC();
+
         List<Object> TOCObjects = wordprocessingMLPackage.getMainDocumentPart()
                 .getJAXBNodesViaXPath(TOC_XPATH, false);
 
         List<Object> TOCElementObjects = wordprocessingMLPackage
                 .getMainDocumentPart().getJAXBNodesViaXPath(TOC_ELEMENT_XPATH, false);
 
+        HeadingsList headingsList = new HeadingsList();
+
         List<Heading> headings = new ArrayList<>();
 
-        for (int i = 0; i < TOCObjects.size(); ++i) {
-            Heading heading = new Heading();
-            heading.setLevel(Integer.parseInt(((P) TOCObjects.get(i)).getPPr().getPStyle().getVal()) / 10);
-            heading.setText(TOCElementObjects.get(i).toString());
-            headings.add(heading);
+        if (TOCObjects.size() != TOCElementObjects.size())
+            headingsList.setWarningMessage("Cannot recognize headings: please update Table of Contents manually");
+
+        else {
+            for (int i = 0; i < TOCObjects.size(); ++i) {
+                Heading heading = new Heading();
+                heading.setLevel(Integer.parseInt(((P) TOCObjects.get(i)).getPPr().getPStyle().getVal()) / 10);
+                heading.setText(TOCElementObjects.get(i).toString());
+                headings.add(heading);
+            }
+
+            headingsList.setHeadings(headings);
         }
 
-        return headings;
+        return headingsList;
+    }
+
+    void updateTOC() throws InvalidFormatException {
+        DocumentSettingsPart dsp = wordprocessingMLPackage.getMainDocumentPart().getDocumentSettingsPart();
+        CTSettings objCTSettings = dsp.getJaxbElement();
+        BooleanDefaultTrue b = new BooleanDefaultTrue();
+        b.setVal(true);
+        objCTSettings.setUpdateFields(b);
+        dsp.setJaxbElement(objCTSettings);
+        wordprocessingMLPackage.getMainDocumentPart().addTargetPart(dsp);
     }
 
     List<DrawingRaw> parseDrawingsAndDescriptions() throws JAXBException, XPathBinderAssociationIsPartialException {
@@ -147,7 +175,7 @@ public class DocxParser {
         return paragraphOnNewPageIds;
     }
 
-    public List<Heading> getHeadings() {
+    public HeadingsList getHeadings() {
         return headings;
     }
 

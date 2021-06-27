@@ -1,12 +1,9 @@
 package com.formatChecker.comparer.collector;
 
 import com.formatChecker.comparer.model.Difference;
-import com.formatChecker.config.model.participants.Footer;
-import com.formatChecker.config.model.participants.Paragraph;
-import com.formatChecker.config.model.participants.Run;
-import com.formatChecker.config.model.participants.Section;
+import com.formatChecker.config.model.participants.*;
 import com.formatChecker.document.model.participants.Drawing;
-import com.formatChecker.config.model.participants.Heading;
+import com.formatChecker.document.model.participants.HeadingsList;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -157,7 +154,7 @@ public class DifferResultCollector {
     }
 
     String getHeadingDifferenceAsString() {
-        List<Heading> headings = difference.getHeadings();
+        HeadingsList headings = difference.getHeadings();
 
         headingErrors = 0;
 
@@ -166,7 +163,10 @@ public class DifferResultCollector {
 
         StringBuilder result = new StringBuilder();
 
-        for (Heading heading : headings) {
+        if (headings.getWarningMessage() != null)
+            return "\nHeadings:\n\t" + headings.getWarningMessage() + "\n\t";
+
+        for (Heading heading : headings.getHeadings()) {
             if (heading.getText() != null) {
                 result.append(heading.getText()).append("\n\t");
                 ++headingErrors;

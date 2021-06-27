@@ -1,7 +1,6 @@
 package com.formatChecker.document.parser.paragraph;
 
 import com.formatChecker.config.model.participants.Paragraph;
-
 import com.formatChecker.document.parser.styles.StyleHierarchy;
 import org.docx4j.wml.DocDefaults;
 import org.docx4j.wml.PPr;
