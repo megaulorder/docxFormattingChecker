@@ -6,15 +6,9 @@ import com.formatChecker.config.parser.ConfigParser;
 import com.formatChecker.controller.DocumentController;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.model.participants.Drawing;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.xml.sax.SAXException;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 
 import static com.formatChecker.parserTests.constants.PathConstants.DRAWING_CONFIG_PATH;
 import static com.formatChecker.parserTests.constants.PathConstants.DRAWING_DOCUMENT_PATH;
@@ -23,7 +17,7 @@ public class DrawingTest {
     @DisplayName("Checks the result of parsing a drawing with description")
     @Test
     public void testParseDrawing()
-            throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
+            throws Exception {
         DocxDocument docxDocument = new DocumentController(
                 DRAWING_CONFIG_PATH,
                 DRAWING_DOCUMENT_PATH)
@@ -31,7 +25,7 @@ public class DrawingTest {
 
         Config config = new ConfigParser(DRAWING_CONFIG_PATH).getConfig();
 
-        for (Drawing<Double, Boolean> drawing : docxDocument.getDrawings()) {
+        for (Drawing<Double, Boolean> drawing : docxDocument.getDrawings().getDrawings()) {
             Assert.assertEquals(
                     config.getDrawing().getDrawingPosition().getAlignment(),
                     drawing.getDrawing().getAlignment());

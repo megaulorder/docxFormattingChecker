@@ -1,9 +1,10 @@
 package com.formatChecker.comparer.collector;
 
 import com.formatChecker.comparer.model.Difference;
+import com.formatChecker.comparer.model.participants.DrawingsList;
+import com.formatChecker.comparer.model.participants.HeadingsList;
 import com.formatChecker.config.model.participants.*;
 import com.formatChecker.document.model.participants.Drawing;
-import com.formatChecker.document.model.participants.HeadingsList;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -156,6 +157,8 @@ public class DifferResultCollector {
     String getHeadingDifferenceAsString() {
         HeadingsList headings = difference.getHeadings();
 
+        String warningMessage = "Warning : you might need to update Table of Contents manually\n\t";
+
         headingErrors = 0;
 
         if (headings == null)
@@ -173,25 +176,32 @@ public class DifferResultCollector {
             }
         }
 
-        return result.toString().equals("") ? "" : "\nHeadings:\n\t" + result + "\n\t";
+        return result.toString().equals("") ? "" : "\nHeadings:\n\t" + warningMessage + result + "\n\t";
     }
 
     StringBuilder getDrawingsDifferenceAsString() {
-        List<Drawing<String, String>> drawings = difference.getDrawings();
+        DrawingsList drawings = difference.getDrawings();
 
         drawingErrors = 0;
 
         StringBuilder result = new StringBuilder();
 
+        if (drawings.getErrorMessage() != null) {
+            ++drawingErrors;
+            return new StringBuilder("\nDrawings:\n\t" + drawings.getErrorMessage() + "\n\t");
+        }
+
         int count = 0;
-        for (Drawing<String, String> drawing : drawings) {
+        for (Drawing<String, String> drawing : drawings.getDrawings()) {
             if (drawing == null)
                 return new StringBuilder();
 
             ++count;
 
-            String text = drawing.getText();
-            String drawingResult = text.contains("drawing") ? text + "\n\t" : "";
+            String drawingResult = "";
+
+            if (!drawing.getTextErrorMessage().equals(""))
+                drawingResult += drawing.getTextErrorMessage() + "\n\t";
 
             if (!getParagraphDifferenceAsString(drawing.getDrawing()).equals(""))
                 drawingResult += "drawing: " + getParagraphDifferenceAsString(drawing.getDrawing());
@@ -202,7 +212,7 @@ public class DifferResultCollector {
             if (!drawingResult.equals("")) {
                 ++drawingErrors;
                 result
-                        .append(String.format("\nDrawing #%d: %s\n\t", count, drawing.getText()))
+                        .append(String.format("\nDrawing #%d: (%s)\n\t", count, drawing.getText()))
                         .append(drawingResult);
             }
         }

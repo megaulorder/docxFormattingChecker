@@ -1,9 +1,9 @@
 package com.formatChecker.document.model;
 
+import com.formatChecker.comparer.model.participants.DrawingsList;
 import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Section;
-import com.formatChecker.document.model.participants.Drawing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +12,13 @@ public class DocxDocument {
     public DocxDocument() {
         this.paragraphs = new ArrayList<>();
         this.sections = new ArrayList<>();
-        this.drawings = new ArrayList<>();
     }
 
     List<Paragraph<Double, Boolean>> paragraphs;
     Integer pages;
     List<Section<Double>> sections;
     Footer footer;
-    List<Drawing<Double, Boolean>> drawings;
+    DrawingsList drawings;
 
     public void setPages(Integer pages) {
         this.pages = pages;
@@ -41,10 +40,6 @@ public class DocxDocument {
         sections.add(section);
     }
 
-    public void addDrawing(Drawing<Double, Boolean> drawing) {
-        drawings.add(drawing);
-    }
-
     public Footer getFooter() {
         return footer;
     }
@@ -57,7 +52,11 @@ public class DocxDocument {
         return sections;
     }
 
-    public List<Drawing<Double, Boolean>> getDrawings() {
+    public DrawingsList getDrawings() {
         return drawings;
+    }
+
+    public void setDrawings(DrawingsList drawings) {
+        this.drawings = drawings;
     }
 }

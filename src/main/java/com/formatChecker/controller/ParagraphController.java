@@ -2,13 +2,13 @@ package com.formatChecker.controller;
 
 import com.formatChecker.comparer.differ.ParagraphDiffer;
 import com.formatChecker.comparer.model.Difference;
+import com.formatChecker.comparer.model.participants.HeadingsList;
 import com.formatChecker.config.model.Config;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.controller.helper.RunHelper;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.model.data.DocumentData;
-import com.formatChecker.document.model.participants.HeadingsList;
 import com.formatChecker.document.parser.paragraph.ParagraphDirectParser;
 import com.formatChecker.fixer.ParagraphFixer;
 import org.apache.commons.lang3.StringUtils;

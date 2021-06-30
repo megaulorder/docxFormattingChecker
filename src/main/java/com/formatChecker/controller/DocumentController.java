@@ -3,12 +3,12 @@ package com.formatChecker.controller;
 import com.formatChecker.comparer.differ.DocumentDiffer;
 import com.formatChecker.comparer.differ.HeadingDiffer;
 import com.formatChecker.comparer.model.Difference;
+import com.formatChecker.comparer.model.participants.HeadingsList;
 import com.formatChecker.config.model.Config;
 import com.formatChecker.config.parser.ConfigParser;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.model.data.DocumentData;
-import com.formatChecker.document.model.participants.HeadingsList;
-import com.formatChecker.document.model.participants.raw.DrawingRaw;
+import com.formatChecker.document.model.participants.raw.DrawingsRawList;
 import com.formatChecker.document.parser.DocxParser;
 import org.docx4j.Docx4J;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -18,7 +18,6 @@ import org.docx4j.wml.SdtBlock;
 import org.docx4j.wml.SectPr;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,12 +41,12 @@ public class DocumentController {
     DocumentData documentData;
     List<SectPr> sectionsProperties;
     List<String> paragraphOnNewPageIds;
-    List<DrawingRaw> paragraphsWithDrawings;
+    DrawingsRawList paragraphsWithDrawings;
 
     HeadingsList headings;
 
     public DocumentController(String configPath, String docxPath)
-            throws IOException, Docx4JException, ParserConfigurationException, SAXException, JAXBException {
+            throws Exception {
         this.docxPath = docxPath;
 
         this.configParser = new ConfigParser(configPath);
@@ -68,7 +67,7 @@ public class DocumentController {
         this.difference = getDocumentDifference();
     }
 
-    Difference getDocumentDifference() throws Docx4JException, ParserConfigurationException, IOException, SAXException {
+    Difference getDocumentDifference() throws Exception {
         Difference difference = new Difference();
 
         difference.setPages(new DocumentDiffer(docxDocument.getPages(), config.getPages()).getDifference());
@@ -97,12 +96,16 @@ public class DocumentController {
     }
 
     void runDrawingController(Difference difference) throws Docx4JException {
-        for (DrawingRaw d : paragraphsWithDrawings) {
-            new DrawingController(d, config.getDrawing(), difference, docxDocument, documentData).parseDrawing();
-        }
+        new DrawingController(
+                paragraphsWithDrawings,
+                config.getDrawing(),
+                difference,
+                docxDocument,
+                documentData)
+                .parseDrawing();
     }
 
-    void runParagraphController(Difference difference) throws Docx4JException {
+    void runParagraphController(Difference difference) throws Exception {
         int count = 0;
         boolean afterTOC = false;
 
@@ -129,6 +132,9 @@ public class DocumentController {
                 }
             }
         }
+
+        if (config.getFindHeadingsByTOC() && !afterTOC)
+            System.out.println("\nError: Table of Contents not found. Please create or update Table of Contents.\n");
     }
 
     void saveNewDocument() throws Docx4JException {

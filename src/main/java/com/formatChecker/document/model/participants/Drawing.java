@@ -4,6 +4,7 @@ import com.formatChecker.config.model.participants.Paragraph;
 
 public class Drawing<T, D> {
     String text;
+    String textErrorMessage;
     Paragraph<T, D> drawing;
     Paragraph<T, D> description;
 
@@ -29,5 +30,13 @@ public class Drawing<T, D> {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getTextErrorMessage() {
+        return textErrorMessage;
+    }
+
+    public void setTextErrorMessage(String textErrorMessage) {
+        this.textErrorMessage = textErrorMessage;
     }
 }

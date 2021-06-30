@@ -5,15 +5,9 @@ import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.parser.ConfigParser;
 import com.formatChecker.controller.DocumentController;
 import com.formatChecker.document.model.DocxDocument;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.xml.sax.SAXException;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 
 import static com.formatChecker.parserTests.constants.PathConstants.*;
 
@@ -21,7 +15,7 @@ public class ParagraphTest {
     @DisplayName("Checks the result of parsing paragraphs by indexes")
     @Test
     public void testParseParagraphsByIndexes()
-            throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
+            throws Exception {
         DocxDocument docxDocument = new DocumentController(
                 PARAGRAPH_BY_INDEX_CONFIG_PATH,
                 PARAGRAPH_BY_INDEX_DOCUMENT_PATH)
@@ -59,7 +53,7 @@ public class ParagraphTest {
     @DisplayName("Checks the result of parsing paragraphs by headings")
     @Test
     public void testParseParagraphsByHeadings()
-            throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
+            throws Exception {
         DocxDocument docxDocument = new DocumentController(
                 PARAGRAPH_BY_HEADING_CONFIG_PATH,
                 PARAGRAPH_BY_HEADING_DOCUMENT_PATH)

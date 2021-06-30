@@ -5,15 +5,9 @@ import com.formatChecker.config.model.participants.Section;
 import com.formatChecker.config.parser.ConfigParser;
 import com.formatChecker.controller.DocumentController;
 import com.formatChecker.document.model.DocxDocument;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.xml.sax.SAXException;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 
 import static com.formatChecker.parserTests.constants.PathConstants.SECTION_CONFIG_PATH;
 import static com.formatChecker.parserTests.constants.PathConstants.SECTION_DOCUMENT_PATH;
@@ -22,7 +16,7 @@ public class SectionTest {
     @DisplayName("Checks the result of parsing sections")
     @Test
     public void testParseSections()
-            throws JAXBException, IOException, ParserConfigurationException, Docx4JException, SAXException {
+            throws Exception {
         DocxDocument docxDocument = new DocumentController(
                 SECTION_CONFIG_PATH,
                 SECTION_DOCUMENT_PATH)

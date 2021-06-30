@@ -1,7 +1,7 @@
 package com.formatChecker.comparer.differ;
 
+import com.formatChecker.comparer.model.participants.HeadingsList;
 import com.formatChecker.config.model.participants.Heading;
-import com.formatChecker.document.model.participants.HeadingsList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class HeadingDiffer {
             return null;
 
         if (actualHeadings.getHeadings() == null) {
-            headingsList.setWarningMessage("Cannot recognize headings: please update Table of Contents manually");
+            headingsList.setWarningMessage(actualHeadings.getWarningMessage());
             return headingsList;
         }
 

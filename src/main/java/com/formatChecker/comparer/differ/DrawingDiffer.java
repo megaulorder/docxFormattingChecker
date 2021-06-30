@@ -5,6 +5,8 @@ import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.document.model.participants.Drawing;
 
 public class DrawingDiffer {
+    private static final String DESCRIPTION_EXTRA_WORDS = "(ARABIC | SEQ| Рисунок \\\\\\*)";
+
     Drawing<Double, Boolean> actualDrawing;
     ConfigDrawing expectedDrawing;
     Drawing<String, String> differenceDrawing;
@@ -23,7 +25,10 @@ public class DrawingDiffer {
         else if (actualDrawing != null && expectedDrawing == null)
             return  null;
         else {
-            drawing.setText(compareText());
+            if (actualDrawing.getText() != null)
+                drawing.setText(actualDrawing.getText().replaceAll(DESCRIPTION_EXTRA_WORDS, ""));
+
+            drawing.setTextErrorMessage(compareText());
 
             drawing.setDrawing(new ParagraphDiffer(
                     actualDrawing.getDrawing(),
@@ -48,12 +53,12 @@ public class DrawingDiffer {
 
     String compareText() {
         String expectedTextStart = expectedDrawing.getTextStartsWith();
-        String result = actualDrawing.getText();
+        String result = "";
 
-        if (actualDrawing.getText() == null)
+        if (actualDrawing.getText() == null || actualDrawing.getText().equals(""))
             return "add a drawing description";
 
-        if (!actualDrawing.getText().contains(expectedTextStart))
+        if (!actualDrawing.getText().startsWith(expectedTextStart))
             result = "drawing description text should start with " + expectedTextStart;
 
         return result;

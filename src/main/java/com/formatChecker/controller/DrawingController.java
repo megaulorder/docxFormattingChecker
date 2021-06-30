@@ -2,20 +2,23 @@ package com.formatChecker.controller;
 
 import com.formatChecker.comparer.differ.DrawingDiffer;
 import com.formatChecker.comparer.model.Difference;
+import com.formatChecker.comparer.model.participants.DrawingsList;
 import com.formatChecker.config.model.participants.ConfigDrawing;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.model.data.DocumentData;
 import com.formatChecker.document.model.participants.Drawing;
 import com.formatChecker.document.model.participants.raw.DrawingRaw;
+import com.formatChecker.document.model.participants.raw.DrawingsRawList;
 import com.formatChecker.document.parser.paragraph.ParagraphDirectParser;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.wml.DocDefaults;
 import org.docx4j.wml.Styles;
 
+
 public class DrawingController {
-    DrawingRaw drawingRaw;
-    Drawing<Double, Boolean> drawing;
+    DrawingsRawList drawingsRawList;
+    DrawingsList drawingsList;
     ConfigDrawing expectedDrawing;
     Difference difference;
     DocxDocument docxDocument;
@@ -24,7 +27,7 @@ public class DrawingController {
     Styles styles;
     ThemePart themePart;
 
-    public DrawingController(DrawingRaw drawingRaw,
+    public DrawingController(DrawingsRawList drawingsRawList,
                              ConfigDrawing expectedDrawing,
                              Difference difference,
                              DocxDocument docxDocument,
@@ -33,40 +36,61 @@ public class DrawingController {
         this.styles = documentData.getStyles();
         this.themePart = documentData.getThemePart();
 
-        this.drawingRaw = drawingRaw;
-        this.drawing = parseDrawingFromRaw();
+        this.drawingsRawList = drawingsRawList;
+        this.drawingsList = parseDrawingFromRaw();
         this.expectedDrawing = expectedDrawing;
         this.difference = difference;
         this.docxDocument = docxDocument;
     }
 
-    Drawing<Double, Boolean> parseDrawingFromRaw() throws Docx4JException {
-        Drawing<Double, Boolean> drawing = new Drawing<>();
+    DrawingsList parseDrawingFromRaw() throws Docx4JException {
+        DrawingsList drawingsList = new DrawingsList();
 
-        drawing.setDrawing(new ParagraphDirectParser(
-                docDefaults,
-                styles,
-                themePart,
-                drawingRaw.getDrawing())
-                .parseParagraph());
+        if (drawingsRawList.getErrorMessage() != null) {
+            drawingsList.setErrorMessage(drawingsRawList.getErrorMessage());
+            return drawingsList;
+        }
 
-        if (drawingRaw.getDescription() != null) {
-            drawing.setDescription(new ParagraphDirectParser(
+        for (DrawingRaw drawingRaw : drawingsRawList.getDrawingsRaw()) {
+            Drawing<Double, Boolean> drawing = new Drawing<>();
+
+            drawing.setDrawing(new ParagraphDirectParser(
                     docDefaults,
                     styles,
                     themePart,
-                    drawingRaw.getDescription())
+                    drawingRaw.getDrawing())
                     .parseParagraph());
 
-            drawing.setText(drawing.getDescription().getText());
+            if (drawingRaw.getDescription() != null) {
+                drawing.setDescription(new ParagraphDirectParser(
+                        docDefaults,
+                        styles,
+                        themePart,
+                        drawingRaw.getDescription())
+                        .parseParagraph());
+
+                drawing.setText(drawing.getDescription().getText());
+            }
+
+            drawingsList.addDrawing(drawing);
         }
 
-        return drawing;
+        return drawingsList;
     }
 
     void parseDrawing() {
-        docxDocument.addDrawing(drawing);
+        docxDocument.setDrawings(drawingsList);
 
-        difference.addDrawing(new DrawingDiffer(drawing, expectedDrawing).getDifferenceDrawing());
+        DrawingsList list = new DrawingsList();
+        list.setErrorMessage(drawingsList.getErrorMessage());
+
+        for (Drawing<Double, Boolean> drawing: drawingsList.getDrawings()) {
+            Drawing<String, String> differenceDrawing = new DrawingDiffer(drawing, expectedDrawing)
+                    .getDifferenceDrawing();
+
+            list.addDrawing(differenceDrawing);
+        }
+
+        difference.setDrawings(list);
     }
 }

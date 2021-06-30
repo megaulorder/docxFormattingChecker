@@ -1,4 +1,4 @@
-package com.formatChecker.document.model.participants;
+package com.formatChecker.comparer.model.participants;
 
 import com.formatChecker.config.model.participants.Heading;
 

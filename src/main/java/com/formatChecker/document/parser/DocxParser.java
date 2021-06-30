@@ -1,10 +1,11 @@
 package com.formatChecker.document.parser;
 
+import com.formatChecker.comparer.model.participants.HeadingsList;
 import com.formatChecker.config.model.participants.Heading;
 import com.formatChecker.document.model.DocxDocument;
 import com.formatChecker.document.model.data.DocumentData;
-import com.formatChecker.document.model.participants.HeadingsList;
 import com.formatChecker.document.model.participants.raw.DrawingRaw;
+import com.formatChecker.document.model.participants.raw.DrawingsRawList;
 import org.docx4j.docProps.extended.Properties;
 import org.docx4j.jaxb.XPathBinderAssociationIsPartialException;
 import org.docx4j.model.structure.SectionWrapper;
@@ -31,7 +32,7 @@ public class DocxParser {
     List<SectPr> sectionsProperties;
     List<String> paragraphOnNewPageIds;
     HeadingsList headings;
-    List<DrawingRaw> drawingsAndDescriptions;
+    DrawingsRawList drawingsAndDescriptions;
 
     public DocxParser(WordprocessingMLPackage wordprocessingMLPackage)
             throws JAXBException, XPathBinderAssociationIsPartialException, InvalidFormatException {
@@ -100,6 +101,12 @@ public class DocxParser {
     }
 
     HeadingsList parseHeadings() throws JAXBException, XPathBinderAssociationIsPartialException, InvalidFormatException {
+        if (wordprocessingMLPackage.getMainDocumentPart().getContent().size() == 0) {
+            System.out.println("Error: cannot read contents of .docx file. File might be corrupted.\n" +
+                    "Updating Table of Contents might help to solve the problem.");
+            System.exit(0);
+        }
+
         updateTOC();
 
         List<Object> TOCObjects = wordprocessingMLPackage.getMainDocumentPart()
@@ -112,12 +119,22 @@ public class DocxParser {
 
         List<Heading> headings = new ArrayList<>();
 
-        if (TOCObjects.size() != TOCElementObjects.size())
-            headingsList.setWarningMessage("Cannot recognize headings: please update Table of Contents manually");
+        if (TOCObjects.size() != TOCElementObjects.size()) {
+            headingsList.setWarningMessage("Cannot recognize headings: please fix or update Table of Contents manually");
+            if (TOCObjects.size() < TOCElementObjects.size())
+                headingsList.setWarningMessage("Cannot recognize headings: please remove extra links within the text " +
+                        "and update Table of Contents");
+        }
 
         else {
             for (int i = 0; i < TOCObjects.size(); ++i) {
                 Heading heading = new Heading();
+
+                if (((P) TOCObjects.get(i)).getPPr().getPStyle() == null) {
+                    System.out.println("Cannot recognize heading levels. Please update Table of Contents\n");
+                    break;
+                }
+
                 heading.setLevel(Integer.parseInt(((P) TOCObjects.get(i)).getPPr().getPStyle().getVal()) / 10);
                 heading.setText(TOCElementObjects.get(i).toString());
                 headings.add(heading);
@@ -139,12 +156,19 @@ public class DocxParser {
         wordprocessingMLPackage.getMainDocumentPart().addTargetPart(dsp);
     }
 
-    List<DrawingRaw> parseDrawingsAndDescriptions() throws JAXBException, XPathBinderAssociationIsPartialException {
+    DrawingsRawList parseDrawingsAndDescriptions() throws JAXBException, XPathBinderAssociationIsPartialException {
+        DrawingsRawList drawingsRawList = new DrawingsRawList();
+
         List<DrawingRaw> drawingsAndDescriptions = new ArrayList<>();
         List<Object> drawingTOCObjects = wordprocessingMLPackage.getMainDocumentPart()
                 .getJAXBNodesViaXPath(DRAWING_PARAGRAPH_XPATH, false);
         List<Object> descriptionTOCObjects = wordprocessingMLPackage.getMainDocumentPart()
                 .getJAXBNodesViaXPath(DESCRIPTION_PARAGRAPH_XPATH, false);
+
+        if (drawingTOCObjects.size() != descriptionTOCObjects.size())
+            drawingsRawList.setErrorMessage(
+                    "Error: number of drawings does not match number of drawing descriptions.\n\t" +
+                    "Please add a description to each drawing.");
 
         for (int i = 0; i < drawingTOCObjects.size(); ++i) {
             DrawingRaw drawingRaw = new DrawingRaw();
@@ -156,7 +180,9 @@ public class DocxParser {
             drawingsAndDescriptions.add(drawingRaw);
         }
 
-        return drawingsAndDescriptions;
+        drawingsRawList.setDrawingsRaw(drawingsAndDescriptions);
+
+        return drawingsRawList;
     }
 
     public DocxDocument getDocument() {
@@ -179,7 +205,7 @@ public class DocxParser {
         return headings;
     }
 
-    public List<DrawingRaw> getDrawingsAndDescriptions() {
+    public DrawingsRawList getDrawingsAndDescriptions() {
         return drawingsAndDescriptions;
     }
 }

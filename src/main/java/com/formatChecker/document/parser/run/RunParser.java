@@ -73,7 +73,14 @@ public abstract class RunParser implements ValuesConverter {
             return null;
         else {
             U underline = runProperties.getU();
-            return underline == null ? null : underline.getVal().value();
+
+            if (underline == null)
+                return null;
+
+            if (underline.getVal() == null)
+                return null;
+
+            return underline.getVal().value();
         }
     }
 

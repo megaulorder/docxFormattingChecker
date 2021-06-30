@@ -1,10 +1,10 @@
 package com.formatChecker.comparer.model;
 
+import com.formatChecker.comparer.model.participants.DrawingsList;
+import com.formatChecker.comparer.model.participants.HeadingsList;
 import com.formatChecker.config.model.participants.Footer;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Section;
-import com.formatChecker.document.model.participants.Drawing;
-import com.formatChecker.document.model.participants.HeadingsList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,6 @@ public class Difference {
     public Difference() {
         this.paragraphs = new ArrayList<>();
         this.sections = new ArrayList<>();
-        this.drawings = new ArrayList<>();
     }
 
     String pages;
@@ -21,7 +20,7 @@ public class Difference {
     List<Section<String>> sections;
     List<Paragraph<String, String>> paragraphs;
     Footer footer;
-    List<Drawing<String, String>> drawings;
+    DrawingsList drawings;
     HeadingsList headings;
 
     public void setPages(String pages) {
@@ -44,7 +43,7 @@ public class Difference {
         return footer;
     }
 
-    public List<Drawing<String, String>> getDrawings() {
+    public DrawingsList getDrawings() {
         return drawings;
     }
 
@@ -68,8 +67,7 @@ public class Difference {
         sections.add(section);
     }
 
-    public void addDrawing(Drawing<String, String> drawing) {
-        drawings.add(drawing);
+    public void setDrawings(DrawingsList drawings) {
+        this.drawings = drawings;
     }
-
 }

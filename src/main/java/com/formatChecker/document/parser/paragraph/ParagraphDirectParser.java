@@ -1,9 +1,9 @@
 package com.formatChecker.document.parser.paragraph;
 
+import com.formatChecker.comparer.model.participants.HeadingsList;
 import com.formatChecker.config.model.participants.Heading;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
-import com.formatChecker.document.model.participants.HeadingsList;
 import com.formatChecker.document.parser.run.RunDirectParser;
 import org.apache.commons.lang3.StringUtils;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -202,7 +202,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
     }
 
     void setPageBreakBefore() {
-        if (paragraphsOnNewPages != null)
+        if (paragraphsOnNewPages != null && id != null)
             paragraph.setPageBreakBefore(paragraphsOnNewPages.stream().anyMatch(p -> p.equals(id)));
     }
 }
