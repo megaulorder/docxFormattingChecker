@@ -11,10 +11,10 @@ import org.docx4j.wml.PPrBase.Spacing;
 import java.math.BigInteger;
 
 public abstract class ParagraphParser implements ValuesConverter {
-    DocDefaults docDefaults;
+    protected final DocDefaults docDefaults;
 
-    Paragraph<Double, Boolean> paragraph;
-    PPr paragraphProperties;
+    protected Paragraph<Double, Boolean> paragraph;
+    protected PPr paragraphProperties;
 
     public ParagraphParser(DocDefaults docDefaults) {
         this.docDefaults = docDefaults;
@@ -22,8 +22,7 @@ public abstract class ParagraphParser implements ValuesConverter {
         this.paragraph = new Paragraph<>();
     }
 
-
-    String getAlignment(PPr paragraphProperties) {
+    protected String getAlignment(PPr paragraphProperties) {
         if (paragraphProperties == null)
             return null;
         else {
@@ -35,14 +34,14 @@ public abstract class ParagraphParser implements ValuesConverter {
         }
     }
 
-    Ind getIndent(PPr paragraphProperties) {
+    protected Ind getIndent(PPr paragraphProperties) {
         if (paragraphProperties == null)
             return null;
         else
             return paragraphProperties.getInd();
     }
 
-    Double getFirstLineIndent(Ind indent) {
+    protected Double getFirstLineIndent(Ind indent) {
         if (indent == null)
             return null;
         else {
@@ -51,7 +50,7 @@ public abstract class ParagraphParser implements ValuesConverter {
         }
     }
 
-    Double getLeftIndent(Ind indent) {
+    protected Double getLeftIndent(Ind indent) {
         if (indent == null)
             return null;
         else {
@@ -60,7 +59,7 @@ public abstract class ParagraphParser implements ValuesConverter {
         }
     }
 
-    Double getRightIndent(Ind indent) {
+    protected Double getRightIndent(Ind indent) {
         if (indent == null)
             return null;
         else {
@@ -69,14 +68,14 @@ public abstract class ParagraphParser implements ValuesConverter {
         }
     }
 
-    Spacing getSpacing(PPr paragraphProperties) {
+    protected Spacing getSpacing(PPr paragraphProperties) {
         if (paragraphProperties == null)
             return null;
         else
             return paragraphProperties.getSpacing();
     }
 
-    Double getLineSpacing(Spacing spacing) {
+    protected Double getLineSpacing(Spacing spacing) {
         if (spacing == null)
             return null;
         else {
@@ -85,7 +84,7 @@ public abstract class ParagraphParser implements ValuesConverter {
         }
     }
 
-    Double getSpacingBefore(Spacing spacing) {
+    protected Double getSpacingBefore(Spacing spacing) {
         if (spacing == null)
             return null;
         else {
@@ -94,7 +93,7 @@ public abstract class ParagraphParser implements ValuesConverter {
         }
     }
 
-    Double getSpacingAfter(Spacing spacing) {
+    protected Double getSpacingAfter(Spacing spacing) {
         if (spacing == null)
             return null;
         else {
@@ -103,7 +102,7 @@ public abstract class ParagraphParser implements ValuesConverter {
         }
     }
 
-    Paragraph<Double, Boolean> getDefaultProperties(DocDefaults docDefaults) {
+    protected Paragraph<Double, Boolean> getDefaultProperties(DocDefaults docDefaults) {
         return new ParagraphDefaultsParser(docDefaults).parseParagraph();
     }
 }

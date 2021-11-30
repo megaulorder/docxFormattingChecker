@@ -5,7 +5,7 @@ import com.formatChecker.config.model.participants.Section;
 import java.util.Arrays;
 import java.util.List;
 
-public class SectionDiffer implements Differ {
+public class SectionDiffer implements ParametersChecker {
     Section<Double> actualSection;
     Section<Double> expectedSection;
     Section<String> differenceSection;

@@ -2,16 +2,17 @@ package com.formatChecker.document.parser.run;
 
 import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.document.converter.ValuesConverter;
+import com.formatChecker.document.parser.ParserType;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.wml.*;
 
 public abstract class RunParser implements ValuesConverter {
-    DocDefaults docDefaults;
-    ThemePart themePart;
+    protected final DocDefaults docDefaults;
+    protected final ThemePart themePart;
 
-    Run<Boolean, Double> run;
-    RPr runProperties;
+    protected Run<Boolean, Double> run;
+    protected RPr runProperties;
 
     public RunParser(DocDefaults docDefaults, ThemePart themePart) {
         this.docDefaults = docDefaults;
@@ -20,7 +21,7 @@ public abstract class RunParser implements ValuesConverter {
         this.run = new Run<>();
     }
 
-    String getFontFamily(RPr runProperties, ThemePart themePart) throws Docx4JException {
+    String getFontFamily(RPr runProperties) {
         if (runProperties == null)
             return null;
         else {
@@ -32,7 +33,7 @@ public abstract class RunParser implements ValuesConverter {
         }
     }
 
-    Double getFontSize(RPr runProperties) {
+    protected Double getFontSize(RPr runProperties) {
         if (runProperties == null)
             return null;
         else {
@@ -41,7 +42,7 @@ public abstract class RunParser implements ValuesConverter {
         }
     }
 
-    Boolean getBold(RPr runProperties) {
+    protected Boolean getBold(RPr runProperties) {
         if (runProperties == null)
             return null;
         else {
@@ -50,7 +51,7 @@ public abstract class RunParser implements ValuesConverter {
         }
     }
 
-    Boolean getItalic(RPr runProperties) {
+    protected Boolean getItalic(RPr runProperties) {
         if (runProperties == null)
             return null;
         else {
@@ -59,7 +60,7 @@ public abstract class RunParser implements ValuesConverter {
         }
     }
 
-    Boolean getStrikethrough(RPr runProperties) {
+    protected Boolean getStrikethrough(RPr runProperties) {
         if (runProperties == null)
             return null;
         else {
@@ -68,7 +69,7 @@ public abstract class RunParser implements ValuesConverter {
         }
     }
 
-    String getUnderline(RPr runProperties) {
+    protected String getUnderline(RPr runProperties) {
         if (runProperties == null)
             return null;
         else {
@@ -84,7 +85,7 @@ public abstract class RunParser implements ValuesConverter {
         }
     }
 
-    String getTextColor(RPr runProperties) {
+    protected String getTextColor(RPr runProperties) {
         if (runProperties == null)
             return null;
         else {
@@ -93,7 +94,7 @@ public abstract class RunParser implements ValuesConverter {
         }
     }
 
-    Run<Boolean, Double> getDefaultProperties(DocDefaults docDefaults, ThemePart themePart) throws Docx4JException {
-        return new RunDefaultsParser(docDefaults, themePart).parseRun();
+    protected Run<Boolean, Double> getDefaultProperties() throws Docx4JException {
+        return RunParserFactory.makeParser(ParserType.DEFAULTS, null, null).parseRun();
     }
 }

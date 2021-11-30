@@ -2,7 +2,7 @@ package com.formatChecker.comparer.differ;
 
 import com.formatChecker.config.model.participants.Footer;
 
-public class FooterDiffer implements Differ {
+public class FooterDiffer implements ParametersChecker {
     Footer actualFooter;
     Footer expectedFooter;
     Footer differenceFooter;

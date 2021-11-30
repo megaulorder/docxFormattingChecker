@@ -110,7 +110,7 @@ public class ParagraphController implements RunHelper {
 
                     Run<Boolean, Double> actualRun = (Run<Boolean, Double>) actualParagraph.getRuns().get(count - 1);
                     new RunController(index, r, actualRun, differenceParagraph, configStyles,
-                            actualParagraph.getHeadingLevel(), config, shouldFix).parseRun();
+                            actualParagraph.getHeadingLevel(), config, shouldFix).parse();
                 }
             }
         }

@@ -55,16 +55,16 @@ public class DocxParser {
                 null :
                 wordprocessingMLPackage.getDocPropsExtendedPart().getJaxbElement();
 
-
-        return new DocumentData(
-                properties,
+        DocumentData documentData = DocumentData.getInstance();
+        documentData.init(properties,
                 styles.getDocDefaults(),
                 documentPart.getThemePart(),
                 sections,
                 styles,
                 body.getContent(),
-                sections.get(0).getHeaderFooterPolicy()
-        );
+                sections.get(0).getHeaderFooterPolicy());
+
+        return documentData;
     }
 
     DocxDocument parseDocument() {

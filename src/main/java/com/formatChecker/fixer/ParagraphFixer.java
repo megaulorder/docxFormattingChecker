@@ -9,11 +9,11 @@ import org.docx4j.wml.PPrBase.Ind;
 import org.docx4j.wml.PPrBase.Spacing;
 
 public class ParagraphFixer implements ConfigConverter {
-    P paragraph;
-    PPr paragraphProperties;
-    Paragraph<Double, Boolean> actualParagraph;
-    Paragraph<Double, Boolean> expectedParagraph;
-    Paragraph<String, String> differenceParagraph;
+    private final P paragraph;
+    private final PPr paragraphProperties;
+    private final Paragraph<Double, Boolean> actualParagraph;
+    private final Paragraph<Double, Boolean> expectedParagraph;
+    private final Paragraph<String, String> differenceParagraph;
 
     public ParagraphFixer(P paragraph,
                           Paragraph<Double, Boolean> actualParagraph,
@@ -36,7 +36,7 @@ public class ParagraphFixer implements ConfigConverter {
         }
     }
 
-    void fixParagraphProperties() {
+    private void fixParagraphProperties() {
         PPr newParagraphProperties = new PPr();
 
         fixAlignment(newParagraphProperties);
@@ -46,7 +46,7 @@ public class ParagraphFixer implements ConfigConverter {
         paragraph.setPPr(newParagraphProperties);
     }
 
-    void fixAlignment(PPr ppr) {
+    private void fixAlignment(PPr ppr) {
         if (differenceParagraph.getAlignment() != null) {
             Jc alignment = new Jc();
             alignment.setVal(convertAlignment(expectedParagraph.getAlignment()));
@@ -54,7 +54,7 @@ public class ParagraphFixer implements ConfigConverter {
         }
     }
 
-    void fixIndent(PPr ppr) {
+    private void fixIndent(PPr ppr) {
         Ind indent = new Ind();
 
         if (differenceParagraph.getRightIndent() == null &&
@@ -80,7 +80,7 @@ public class ParagraphFixer implements ConfigConverter {
         ppr.setInd(indent);
     }
 
-    void fixSpacing(PPr ppr) {
+    private void fixSpacing(PPr ppr) {
         Spacing spacing = new Spacing();
 
         if (differenceParagraph.getLineSpacing() == null &&

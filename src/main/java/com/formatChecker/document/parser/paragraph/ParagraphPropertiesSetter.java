@@ -2,7 +2,8 @@ package com.formatChecker.document.parser.paragraph;
 
 import com.formatChecker.document.converter.ValuesConverter;
 
-public interface ParagraphSetProperties extends ValuesConverter {
+public interface ParagraphPropertiesSetter extends ValuesConverter {
+
     void setAlignment();
 
     void setFirstLineIndent();

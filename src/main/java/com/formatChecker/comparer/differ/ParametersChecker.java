@@ -1,6 +1,6 @@
 package com.formatChecker.comparer.differ;
 
-public interface Differ {
+public interface ParametersChecker {
     default String checkStringParameter(String actualParameter, String expectedParameter, String parameterName) {
         if (expectedParameter == null)
             return null;

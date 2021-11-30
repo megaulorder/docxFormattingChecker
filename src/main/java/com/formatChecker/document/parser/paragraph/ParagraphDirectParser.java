@@ -4,7 +4,8 @@ import com.formatChecker.comparer.model.participants.HeadingsList;
 import com.formatChecker.config.model.participants.Heading;
 import com.formatChecker.config.model.participants.Paragraph;
 import com.formatChecker.config.model.participants.Run;
-import com.formatChecker.document.parser.run.RunDirectParser;
+import com.formatChecker.document.parser.ParserType;
+import com.formatChecker.document.parser.run.RunParserFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
@@ -15,18 +16,18 @@ import org.docx4j.wml.Styles;
 
 import java.util.List;
 
-public class ParagraphDirectParser extends ParagraphParser implements ParagraphSetProperties {
-    P par;
-    Styles styles;
-    ThemePart themePart;
-    HeadingsList headings;
-    List<String> paragraphsOnNewPages;
+public class ParagraphDirectParser extends ParagraphParser implements ParagraphPropertiesSetter, ParagraphPropertiesParser {
+    private final P par;
+    private final Styles styles;
+    private final ThemePart themePart;
+    private final String styleId;
+    private final Paragraph<Double, Boolean> styleParagraph;
+    private final Paragraph<Double, Boolean> defaultParagraph;
+    private final String text;
+    private final String id;
 
-    String styleId;
-    Paragraph<Double, Boolean> styleParagraph;
-    Paragraph<Double, Boolean> defaultParagraph;
-    String text;
-    String id;
+    private HeadingsList headings;
+    private List<String> paragraphsOnNewPages;
 
     public ParagraphDirectParser(DocDefaults docDefaults,
                                  Styles styles,
@@ -72,6 +73,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         this.id = getId();
     }
 
+    @Override
     public Paragraph<Double, Boolean> parseParagraph() throws Docx4JException {
         paragraph.setText(text);
         paragraph.setId(id);
@@ -92,7 +94,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         for (Object o : par.getContent()) {
             if (o instanceof R) {
                 R r = (R) o;
-                Run<Boolean, Double> run = new RunDirectParser(docDefaults, themePart, styleId, styles, r).parseRun();
+                Run<Boolean, Double> run = RunParserFactory.makeParser(ParserType.DIRECT, styleId, r).parseRun();
                 if (!StringUtils.isBlank(run.getText())) {
                     paragraph.addRun(run);
                 }
@@ -201,7 +203,7 @@ public class ParagraphDirectParser extends ParagraphParser implements ParagraphS
         }
     }
 
-    void setPageBreakBefore() {
+    private void setPageBreakBefore() {
         if (paragraphsOnNewPages != null && id != null)
             paragraph.setPageBreakBefore(paragraphsOnNewPages.stream().anyMatch(p -> p.equals(id)));
     }

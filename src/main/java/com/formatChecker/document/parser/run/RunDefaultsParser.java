@@ -5,7 +5,7 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.wml.DocDefaults;
 
-public class RunDefaultsParser extends RunParser implements RunSetProperties {
+public class RunDefaultsParser extends RunParser implements RunPropertiesSetter, RunPropertiesParser {
     static final String DEFAULT_FONT_FAMILY = "Calibri";
     static final Double DEFAULT_FONT_SIZE = 12.0;
     static final String DEFAULT_TEXT_COLOR = "000000";
@@ -19,6 +19,7 @@ public class RunDefaultsParser extends RunParser implements RunSetProperties {
         this.runProperties = docDefaults.getRPrDefault().getRPr();
     }
 
+    @Override
     public Run<Boolean, Double> parseRun() throws Docx4JException {
         if (runProperties == null) {
             run.setFontFamily(DEFAULT_FONT_FAMILY);
@@ -43,7 +44,7 @@ public class RunDefaultsParser extends RunParser implements RunSetProperties {
 
     @Override
     public void setFontFamily() throws Docx4JException {
-        String fontFamily = getFontFamily(runProperties, themePart);
+        String fontFamily = getFontFamily(runProperties);
         run.setFontFamily(fontFamily != null ? fontFamily : DEFAULT_FONT_FAMILY);
     }
 

@@ -9,11 +9,11 @@ import org.docx4j.wml.Styles;
 
 import java.util.Optional;
 
-public class ParagraphStyleParser extends ParagraphParser implements ParagraphSetProperties, StyleHierarchy {
-    String styleId;
-    Styles styles;
+public class ParagraphStyleParser extends ParagraphParser implements ParagraphPropertiesSetter, ParagraphPropertiesParser, StyleHierarchy {
+    private final String styleId;
+    private final Styles styles;
 
-    Paragraph<Double, Boolean> defaultParagraph;
+    private final Paragraph<Double, Boolean> defaultParagraph;
 
     Optional<Style> style;
     Optional<Style> parentStyle;
@@ -31,6 +31,7 @@ public class ParagraphStyleParser extends ParagraphParser implements ParagraphSe
         this.paragraphProperties = getParagraphProperties(style);
     }
 
+    @Override
     public Paragraph<Double, Boolean> parseParagraph() {
         setAlignment();
 

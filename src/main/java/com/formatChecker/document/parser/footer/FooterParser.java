@@ -19,11 +19,11 @@ public class FooterParser {
     private static final String DEFAULT_TYPE = "unknown";
     private static final String PAGE_REGEXP = "\\s+";
 
-    String type;
-    String alignment;
-    HeaderFooterPolicy headersAndFooters;
-    Document defaultFooter;
-    Footer footer;
+    private final String type;
+    private final String alignment;
+    private final HeaderFooterPolicy headersAndFooters;
+    private final Document defaultFooter;
+    private final Footer footer;
 
     public FooterParser(HeaderFooterPolicy headersAndFooters)
             throws ParserConfigurationException, IOException, SAXException {
@@ -36,7 +36,7 @@ public class FooterParser {
         this.footer = parseFooter();
     }
 
-    Document parseDefaultFooter() throws ParserConfigurationException, IOException, SAXException {
+    private Document parseDefaultFooter() throws ParserConfigurationException, IOException, SAXException {
         FooterPart footer = headersAndFooters.getDefaultFooter();
         if (footer == null)
             return null;
@@ -44,7 +44,7 @@ public class FooterParser {
             return convertStringToXMLDocument(footer.getXML());
     }
 
-    Footer parseFooter() {
+    private Footer parseFooter() {
         Footer footer = new Footer();
 
         if (alignment == null && type == null)
@@ -56,7 +56,7 @@ public class FooterParser {
         return footer;
     }
 
-    String getAlignment() {
+    private String getAlignment() {
         if (defaultFooter != null) {
             String alignment = DEFAULT_ALIGNMENT;
             Element element;
@@ -79,7 +79,7 @@ public class FooterParser {
             return null;
     }
 
-    String getType() {
+    private String getType() {
         if (defaultFooter != null) {
             String type = DEFAULT_TYPE;
             Element element;
@@ -105,14 +105,14 @@ public class FooterParser {
         return null;
     }
 
-    Document convertStringToXMLDocument(String xmlString)
+    private Document convertStringToXMLDocument(String xmlString)
             throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = factory.newDocumentBuilder();
         return db.parse(new ByteArrayInputStream(xmlString.getBytes(StandardCharsets.UTF_8)));
     }
 
-    Element getElement(String tag) {
+    private Element getElement(String tag) {
         return (Element) defaultFooter.adoptNode(defaultFooter.getElementsByTagName(tag).item(0));
     }
 

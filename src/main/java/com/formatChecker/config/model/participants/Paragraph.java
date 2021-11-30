@@ -8,23 +8,23 @@ public class Paragraph<T, D> {
         this.runs = new ArrayList<>();
     }
 
-    String id;
-    List<Run> runs;
+    private String id;
+    private List<Run> runs;
 
-    String text;
+    private String text;
 
-    Integer headingLevel;
-    D pageBreakBefore;
+    private Integer headingLevel;
+    private D pageBreakBefore;
 
-    String alignment;
+    private String alignment;
 
-    T firstLineIndent;
-    T leftIndent;
-    T rightIndent;
+    private T firstLineIndent;
+    private T leftIndent;
+    private T rightIndent;
 
-    T lineSpacing;
-    T spacingBefore;
-    T spacingAfter;
+    private T lineSpacing;
+    private T spacingBefore;
+    private T spacingAfter;
 
     public void addRun(Run run) {
         runs.add(run);

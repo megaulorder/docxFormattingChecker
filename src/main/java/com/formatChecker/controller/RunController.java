@@ -9,20 +9,21 @@ import org.docx4j.wml.R;
 
 import java.util.Map;
 
-public class RunController {
+public class RunController extends ParametersProcessing {
     private static final String HEADING_STYLE_NAME = "heading";
     private static final String BODY_STYLE_NAME = "body";
 
-    Integer index;
-    R documentRun;
-    Run<Boolean, Double> actualRun;
-    Run<Boolean, Double> expectedRun;
-    Boolean shouldFix;
+    private final Integer index;
+    private final R documentRun;
+    private final Run<Boolean, Double> actualRun;
+    private final Boolean shouldFix;
+    private final Paragraph<String, String> differenceParagraph;
+    private final Map<Integer, String> configStyles;
+    private final Config config;
+    private final Integer headingLevel;
 
-    Paragraph<String, String> differenceParagraph;
-    Map<Integer, String> configStyles;
-    Config config;
-    Integer headingLevel;
+    private Run<Boolean, Double> expectedRun;
+    private Run<String, String> differenceRun;
 
     public RunController(Integer index,
                          R documentRun,
@@ -43,7 +44,8 @@ public class RunController {
         this.headingLevel = headingLevel;
     }
 
-    public void parseRun() {
+    @Override
+    void parse() {
         if (configStyles == null) {
             if (headingLevel > 0) {
                 expectedRun = config.getStyles().get(HEADING_STYLE_NAME + headingLevel).getRun();
@@ -53,13 +55,16 @@ public class RunController {
         } else {
             expectedRun = config.getStyles().get(configStyles.get(index)).getRun();
         }
-        compareRun();
     }
 
-    void compareRun() {
-        Run<String, String> differenceRun = new RunDiffer(actualRun, expectedRun).getRunDifference();
+    @Override
+    void compare() {
+        differenceRun = new RunDiffer(actualRun, expectedRun).getRunDifference();
         differenceParagraph.addRun(differenceRun);
+    }
 
+    @Override
+    void fix() {
         if (shouldFix) {
             new RunFixer(this.documentRun, this.actualRun, expectedRun, differenceRun).fixRun();
         }

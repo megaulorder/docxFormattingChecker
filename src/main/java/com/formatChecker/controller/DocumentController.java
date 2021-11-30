@@ -84,18 +84,18 @@ public class DocumentController {
         return difference;
     }
 
-    void runSectionController(Difference difference) {
+    private void runSectionController(Difference difference) {
         for (SectPr sectPr : sectionsProperties) {
-            new SectionController(sectPr, docxDocument, difference, config.getSection(), shouldFix).parseSection();
+            new SectionController(sectPr, docxDocument, difference, config.getSection(), shouldFix).parse();
         }
     }
 
-    void runFooterController(Difference difference) throws ParserConfigurationException, IOException, SAXException {
+    private void runFooterController(Difference difference) throws ParserConfigurationException, IOException, SAXException {
         new FooterController(documentData.getHeadersAndFooters(), config.getFooter(), docxDocument, difference)
                 .parseFooter();
     }
 
-    void runDrawingController(Difference difference) throws Docx4JException {
+    private void runDrawingController(Difference difference) throws Docx4JException {
         new DrawingController(
                 paragraphsWithDrawings,
                 config.getDrawing(),
@@ -105,7 +105,7 @@ public class DocumentController {
                 .parseDrawing();
     }
 
-    void runParagraphController(Difference difference) throws Exception {
+    private void runParagraphController(Difference difference) throws Exception {
         int count = 0;
         boolean afterTOC = false;
 
@@ -137,7 +137,7 @@ public class DocumentController {
             System.out.println("\nError: Table of Contents not found. Please create or update Table of Contents.\n");
     }
 
-    void saveNewDocument() throws Docx4JException {
+    private void saveNewDocument() throws Docx4JException {
         wordMLPackage.save(new File(new File(docxPath).getParent() + "/fixed.docx"));
     }
 

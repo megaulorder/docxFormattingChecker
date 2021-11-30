@@ -7,10 +7,10 @@ import org.docx4j.wml.SectPr.PgMar;
 import org.docx4j.wml.SectPr.PgSz;
 
 public class SectionFixer implements ConfigConverter {
-    SectPr sectionProperties;
-    Section<Double> actualSection;
-    Section<Double> expectedSection;
-    Section<String> differenceSection;
+    private final SectPr sectionProperties;
+    private final Section<Double> actualSection;
+    private final Section<Double> expectedSection;
+    private final Section<String> differenceSection;
 
     public SectionFixer(SectPr sectionProperties,
                         Section<Double> actualSection,
@@ -27,7 +27,7 @@ public class SectionFixer implements ConfigConverter {
         fixMargins();
     }
 
-    void fixPageSize() {
+    private void fixPageSize() {
         PgSz pageProperties = new PgSz();
 
         if (differenceSection.getOrientation() == null &&
@@ -53,7 +53,7 @@ public class SectionFixer implements ConfigConverter {
         sectionProperties.setPgSz(pageProperties);
     }
 
-    void fixMargins() {
+    private void fixMargins() {
         PgMar pageMargins = new PgMar();
 
         if (differenceSection.getMargins() == null)

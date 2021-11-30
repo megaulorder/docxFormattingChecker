@@ -8,15 +8,15 @@ import com.formatChecker.document.parser.section.SectionParser;
 import com.formatChecker.fixer.SectionFixer;
 import org.docx4j.wml.SectPr;
 
-public class SectionController {
-    SectPr sectionProperties;
-    Section<Double> section;
+public class SectionController extends ParametersProcessing {
+    private final SectPr sectionProperties;
+    private final DocxDocument docxDocument;
+    private final Difference difference;
+    private final Section<Double> expectedSection;
+    private final Boolean shouldFix;
 
-    DocxDocument docxDocument;
-    Difference difference;
-    Section<Double> expectedSection;
-
-    Boolean shouldFix;
+    private Section<Double> section;
+    private Section<String> differenceSection;
 
     public SectionController(SectPr sectionProperties,
                              DocxDocument docxDocument,
@@ -24,19 +24,24 @@ public class SectionController {
                              Section<Double> expectedSection,
                              Boolean shouldFix) {
         this.sectionProperties = sectionProperties;
-        this.section = new SectionParser(sectionProperties).getSection();
         this.docxDocument = docxDocument;
         this.difference = difference;
         this.expectedSection = expectedSection;
         this.shouldFix = shouldFix;
     }
+    @Override
+    void parse() {
+       section = new SectionParser(sectionProperties).getSection();
+    }
 
-    public void parseSection() {
-        docxDocument.addSection(section);
-
+    @Override
+    void compare() {
         Section<String> differenceSection = new SectionDiffer(section, expectedSection).getDifferenceSection();
         difference.addSection(differenceSection);
+    }
 
+    @Override
+    void fix() {
         if (shouldFix) {
             if (differenceSection != null)
                 new SectionFixer(sectionProperties, section, expectedSection, differenceSection).fixSection();

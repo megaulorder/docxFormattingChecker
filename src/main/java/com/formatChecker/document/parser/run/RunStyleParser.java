@@ -11,7 +11,7 @@ import org.docx4j.wml.Styles;
 
 import java.util.Optional;
 
-public class RunStyleParser extends RunParser implements RunSetProperties, StyleHierarchy {
+public class RunStyleParser extends RunParser implements RunPropertiesSetter, RunPropertiesParser, StyleHierarchy {
     String styleId;
     Styles styles;
 
@@ -32,9 +32,10 @@ public class RunStyleParser extends RunParser implements RunSetProperties, Style
         this.styles = styles;
         this.parentStyle = getParentStyle(style, styles);
 
-        this.defaultRun = getDefaultProperties(docDefaults, themePart);
+        this.defaultRun = getDefaultProperties();
     }
 
+    @Override
     public Run<Boolean, Double> parseRun() throws Docx4JException {
         setFontFamily();
         setFontSize();
@@ -53,10 +54,10 @@ public class RunStyleParser extends RunParser implements RunSetProperties, Style
 
     @Override
     public void setFontFamily() throws Docx4JException {
-        String fontFamily = getFontFamily(runProperties, themePart);
+        String fontFamily = getFontFamily(runProperties);
 
         while (parentStyle != null && fontFamily == null) {
-            fontFamily = getFontFamily(getRunProperties(parentStyle), themePart);
+            fontFamily = getFontFamily(getRunProperties(parentStyle));
             parentStyle = getParentStyle(parentStyle, styles);
         }
 

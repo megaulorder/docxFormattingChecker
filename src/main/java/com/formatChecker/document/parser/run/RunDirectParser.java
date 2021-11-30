@@ -2,6 +2,7 @@ package com.formatChecker.document.parser.run;
 
 import com.formatChecker.config.model.participants.Run;
 import com.formatChecker.controller.helper.RunHelper;
+import com.formatChecker.document.parser.ParserType;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.parts.ThemePart;
 import org.docx4j.wml.DocDefaults;
@@ -9,7 +10,7 @@ import org.docx4j.wml.R;
 import org.docx4j.wml.RPr;
 import org.docx4j.wml.Styles;
 
-public class RunDirectParser extends RunParser implements RunSetProperties, RunHelper {
+public class RunDirectParser extends RunParser implements RunPropertiesSetter, RunPropertiesParser, RunHelper {
     R r;
     String styleId;
     Styles styles;
@@ -32,10 +33,11 @@ public class RunDirectParser extends RunParser implements RunSetProperties, RunH
         this.styles = styles;
 
         this.styleRun = getStyleProperties();
-        this.defaultRun = getDefaultProperties(docDefaults, themePart);
+        this.defaultRun = getDefaultProperties();
         this.text = getText(r);
     }
 
+    @Override
     public Run<Boolean, Double> parseRun() {
         run.setText(text);
 
@@ -50,6 +52,7 @@ public class RunDirectParser extends RunParser implements RunSetProperties, RunH
         return run;
     }
 
+    @Override
     String getFontFamily(RPr runProperties) {
         if (runProperties == null) {
             return null;
@@ -59,7 +62,8 @@ public class RunDirectParser extends RunParser implements RunSetProperties, RunH
     }
 
     Run<Boolean, Double> getStyleProperties() throws Docx4JException {
-        return new RunStyleParser(docDefaults, themePart, styleId, styles).parseRun();
+//        return new RunStyleParser(docDefaults, themePart, styleId, styles).parseRun();
+        return RunParserFactory.makeParser(ParserType.STYLE, styleId, null).parseRun();
     }
 
     @Override

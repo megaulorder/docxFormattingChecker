@@ -2,7 +2,7 @@ package com.formatChecker.comparer.differ;
 
 import com.formatChecker.config.model.participants.Run;
 
-public class RunDiffer implements Differ {
+public class RunDiffer implements ParametersChecker {
     Run<Boolean, Double> actualRun;
     Run<Boolean, Double> expectedRun;
     Run<String, String> runDifference;

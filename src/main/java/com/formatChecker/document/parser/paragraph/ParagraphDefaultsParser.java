@@ -3,7 +3,7 @@ package com.formatChecker.document.parser.paragraph;
 import com.formatChecker.config.model.participants.Paragraph;
 import org.docx4j.wml.DocDefaults;
 
-public class ParagraphDefaultsParser extends ParagraphParser implements ParagraphSetProperties {
+public class ParagraphDefaultsParser extends ParagraphParser implements ParagraphPropertiesSetter, ParagraphPropertiesParser {
     static final String DEFAULT_ALIGNMENT = "left";
     static final Double DEFAULT_LINE_SPACING = 1.0;
     static final Double DEFAULT_SPACING_BEFORE = 0.0;
@@ -16,6 +16,7 @@ public class ParagraphDefaultsParser extends ParagraphParser implements Paragrap
         this.paragraphProperties = docDefaults.getPPrDefault().getPPr();
     }
 
+    @Override
     public Paragraph<Double, Boolean> parseParagraph() {
         if (paragraphProperties == null) {
             paragraph.setAlignment(DEFAULT_ALIGNMENT);

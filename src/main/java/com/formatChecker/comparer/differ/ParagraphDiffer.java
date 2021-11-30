@@ -2,7 +2,7 @@ package com.formatChecker.comparer.differ;
 
 import com.formatChecker.config.model.participants.Paragraph;
 
-public class ParagraphDiffer implements Differ {
+public class ParagraphDiffer implements ParametersChecker {
     Paragraph<Double, Boolean> actualParagraph;
     Paragraph<Double, Boolean> expectedParagraph;
     Paragraph<String, String> paragraphDifference;

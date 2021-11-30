@@ -5,11 +5,11 @@ import com.formatChecker.config.model.participants.Run;
 import org.docx4j.wml.*;
 
 public class RunFixer implements ConfigConverter {
-    R run;
-    RPr runProperties;
-    Run<Boolean, Double> actualRun;
-    Run<Boolean, Double> expectedRun;
-    Run<String, String> differenceRun;
+    private final R run;
+    private final Run<Boolean, Double> actualRun;
+    private final Run<Boolean, Double> expectedRun;
+    private final Run<String, String> differenceRun;
+    private final RPr runProperties;
 
     public RunFixer(R run,
                     Run<Boolean, Double> actualRun,
@@ -35,7 +35,7 @@ public class RunFixer implements ConfigConverter {
         }
     }
 
-    void fixRunProperties() {
+    private void fixRunProperties() {
         RPr newRunProperties = new RPr();
 
         fixBold(newRunProperties);
@@ -48,7 +48,7 @@ public class RunFixer implements ConfigConverter {
         run.setRPr(newRunProperties);
     }
 
-    void fixBold(RPr rpr) {
+    private void fixBold(RPr rpr) {
         if (differenceRun.getBold() != null) {
             BooleanDefaultTrue bold = new BooleanDefaultTrue();
             bold.setVal(expectedRun.getBold());
@@ -56,7 +56,7 @@ public class RunFixer implements ConfigConverter {
         }
     }
 
-    void fixItalic(RPr rpr) {
+    private void fixItalic(RPr rpr) {
         if (differenceRun.getItalic() != null) {
             BooleanDefaultTrue italic = new BooleanDefaultTrue();
             italic.setVal(expectedRun.getItalic());
@@ -64,7 +64,7 @@ public class RunFixer implements ConfigConverter {
         }
     }
 
-    void fixStrikethrough(RPr rpr) {
+    private void fixStrikethrough(RPr rpr) {
         if (differenceRun.getStrikethrough() != null) {
             BooleanDefaultTrue strikethrough = new BooleanDefaultTrue();
             strikethrough.setVal(expectedRun.getStrikethrough());
@@ -72,7 +72,7 @@ public class RunFixer implements ConfigConverter {
         }
     }
 
-    void fixFontSize(RPr rpr) {
+    private void fixFontSize(RPr rpr) {
         if (differenceRun.getFontSize() != null) {
             HpsMeasure fontSize = new HpsMeasure();
             fontSize.setVal(ptToHalfPt(expectedRun.getFontSize()));
@@ -80,7 +80,7 @@ public class RunFixer implements ConfigConverter {
         }
     }
 
-    void fixFontFamily(RPr rpr) {
+    private void fixFontFamily(RPr rpr) {
         if (differenceRun.getFontFamily() != null) {
             RFonts fontFamily = new RFonts();
             fontFamily.setAscii(expectedRun.getFontFamily());
@@ -88,7 +88,7 @@ public class RunFixer implements ConfigConverter {
         }
     }
 
-    void fixUnderline(RPr rpr) {
+    private void fixUnderline(RPr rpr) {
         if (differenceRun.getUnderline() != null) {
             U underline = new U();
             underline.setVal(convertUnderline(expectedRun.getUnderline()));
